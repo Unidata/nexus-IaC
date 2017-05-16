@@ -8,12 +8,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # See https://bugs.launchpad.net/cloud-images/+bug/1569237/comments/57
   config.vm.box = "bento/ubuntu-16.04"
 
-  config.vm.network :private_network, ip: "192.168.66.66"
+  config.vm.network :private_network, ip: "192.168.22.22"
   config.vm.hostname = "nexus.dev"
   config.ssh.insert_key = false
 
   config.vm.provider :virtualbox do |v|
-    v.memory = 1024
+    v.memory = 2048
   end
 
   # Ansible provisioner.
