@@ -1,6 +1,0 @@
----
-# We've already defined this as a dependency of nexus in roles/nexus/meta/main.yml, but the ansible-galaxy command
-# doesn't process that info for local roles. See: https://github.com/ansible/ansible/issues/20537
-# So, we must define nexus's dependencies here.
-- src: ansiblebit.oracle-java
-#- src: geerlingguy.apache

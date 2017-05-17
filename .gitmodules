@@ -1,0 +1,4 @@
+[submodule "provisioning/roles/oracle-java"]
+	path = provisioning/roles/oracle-java
+	url = git@github.com:cwardgar/oracle-java.git
+	branch = mine
