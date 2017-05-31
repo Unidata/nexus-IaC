@@ -1,0 +1,16 @@
+-Xms1200M
+-Xmx1200M
+-XX:MaxDirectMemorySize=2G
+-XX:+UnlockDiagnosticVMOptions
+-XX:+UnsyncloadClass
+-XX:+LogVMOutput
+-XX:LogFile={{ nexus_data_dir }}/log/jvm.log
+-Djava.net.preferIPv4Stack=true
+-Dkaraf.home=.
+-Dkaraf.base=.
+-Dkaraf.etc=etc/karaf
+-Djava.util.logging.config.file=etc/karaf/java.util.logging.properties
+-Dkaraf.data={{ nexus_data_dir }}
+-Djava.io.tmpdir={{ nexus_tmp_dir }}
+-Dkaraf.startLocalConsole=false
+-Duser.timezone={{ nexus_timezone }}
