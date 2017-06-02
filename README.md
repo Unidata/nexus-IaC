@@ -12,3 +12,10 @@ not be downloaded using the typical `git clone` command. Instead, you'll need to
 ```
 git clone --recursive git@github.com:cwardgar/nexus-IaC.git
 ```
+
+## Launching Nexus server in a Vagrant VM
+
+Once you have Vagrant and Ansible installed, simply do:
+```
+vagrant up
+```

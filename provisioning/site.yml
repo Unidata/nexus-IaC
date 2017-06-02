@@ -1,0 +1,7 @@
+---
+- name: Master playbook. Provision Nexus and all supporting services.
+  hosts: nexus
+
+  roles:
+    - oracle-java
+    - nexus

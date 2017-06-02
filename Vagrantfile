@@ -18,7 +18,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Ansible provisioner.
   config.vm.provision :ansible do |ansible|
-    ansible.playbook = "provisioning/playbook.yml"
+    ansible.playbook = "provisioning/site.yml"
+    ansible.inventory_path = "provisioning/inventories/vagrant/hosts"
+    ansible.limit = "all"  # Do not limit the hosts here; do it in the playbook instead.
     ansible.sudo = true
   end
 end
