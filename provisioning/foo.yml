@@ -1,6 +1,6 @@
 ---
 - name: Dummy playbook used to test running ansible-playbook against a Vagrant VM.
-  hosts: nexus
+  hosts: all
 
   tasks:
     - debug:

@@ -1,0 +1,6 @@
+---
+services: docker
+
+script:
+  # Run tests.
+  - ${PWD}/tests/test.sh

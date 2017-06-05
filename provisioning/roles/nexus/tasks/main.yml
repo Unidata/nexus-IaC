@@ -1,2 +1,2 @@
 ---
-- include: nexus_install.yml
+- include: nexus_install.yml tags=nexus_install

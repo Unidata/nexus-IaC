@@ -1,2 +1,21 @@
 ---
-# vars file for nexus
+nexus_os_group: 'nexus'
+nexus_os_user: 'nexus'
+
+nexus_installation_dir: '/opt'
+nexus_version: '3.3.1-01'
+nexus_package: "nexus-{{ nexus_version }}-unix.tar.gz"
+
+nexus_home_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+sonatype_work_dir: "{{ nexus_installation_dir }}/sonatype-work"
+
+nexus_data_dir: '/var/nexus'
+nexus_tmp_dir: '/tmp/nexus'
+nexus_backup_dir: '/var/nexus-backup'
+
+nexus_timezone: 'America/Denver' # The time zone of Unidata. The location of the server may be elsewhere.
+
+application_port: 8081
+nexus_context_path: '/'
+application_host: 0.0.0.0
+# application_host: 127.0.0.1  # Only listen for connections from localhost (i.e. apache), not the rest of the internet.

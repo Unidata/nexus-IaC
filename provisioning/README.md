@@ -10,8 +10,8 @@ For the most part, the project follows the alternative directory layout describe
 ## Execute ad-hoc commands on Vagrant VM
 
 ```
-ansible nexus -i inventories/vagrant/hosts -a date
-ansible nexus -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
+ansible all -i inventories/vagrant/hosts -a date
+ansible all -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
 ```
 [Reference](http://docs.ansible.com/ansible/intro_adhoc.html)
 
@@ -22,3 +22,7 @@ ansible-playbook -i inventories/vagrant/hosts foo.yml
 ansible-playbook -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"
 ansible-playbook -i inventories/vagrant/hosts site.yml --tags "configuration,packages"
 ```
+
+When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
+that were set in tasks that aren't set to run. These are often `set_fact` tasks. To include them in the run,
+add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#special-tags).

@@ -16,11 +16,6 @@
     path: "{{ nexus_installation_dir }}"
     state: "directory"
 
-- name: Set 'nexus_home_dir' and 'sonatype_work_dir'
-  set_fact:
-    nexus_home_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
-    sonatype_work_dir: "{{ nexus_installation_dir }}/sonatype-work"
-
 - name: Download and unpack Nexus
   unarchive:
     src: "http://download.sonatype.com/nexus/3/{{ nexus_package }}"
@@ -92,5 +87,6 @@
       src: "nexus.service"
       dest: "/etc/systemd/system"
 
+# FIXME: Is this being started by the 'nexus' user? Write a test to confirm.
 - name: Finish installation of Nexus service, enable it, and start it
   systemd: name=nexus daemon_reload=yes enabled=yes state=started

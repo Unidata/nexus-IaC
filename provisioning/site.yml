@@ -1,6 +1,13 @@
 ---
 - name: Master playbook. Provision Nexus and all supporting services.
-  hosts: nexus
+  hosts: all
+  become: yes  # Need this for starting nexus service.
+
+#  vars_files:
+    # Nothing yet, but I'll probably include overrides of role variables here.
+
+  pre_tasks:
+    - include: tasks/init.yml
 
   roles:
     - oracle-java
