@@ -1,10 +1,11 @@
 ---
 - name: Master playbook. Provision Nexus and all supporting services.
   hosts: all
-  become: yes  # Need this for starting nexus service.
+  gather_facts: yes  # Needed by 'oracle-java' role for 'ansible_os_family'. Probably many other places too.
+  become: yes        # Need this for starting nexus service.
 
-#  vars_files:
-    # Nothing yet, but I'll probably include overrides of role variables here.
+  vars_files:
+    - vars/main.yml
 
   pre_tasks:
     - include: tasks/init.yml

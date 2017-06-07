@@ -12,6 +12,7 @@
 set -e
 
 # Pretty colors.
+blue='\033[0;34m'
 red='\033[0;31m'
 green='\033[0;32m'
 neutral='\033[0m'
@@ -31,7 +32,7 @@ container_main_playbook="$container_proj_dir/provisioning/site.yml"
 container_test_playbook="$container_proj_dir/tests/test.yml"
 
 # Run the container using the supplied OS.
-printf ${green}"Starting Docker container: geerlingguy/docker-$distro-ansible."${neutral}"\n"
+printf ${blue}"Starting Docker container: geerlingguy/docker-$distro-ansible."${neutral}"\n"
 docker pull geerlingguy/docker-$distro-ansible:latest
 docker run --detach --privileged --name $container_id  \
            --volume="$PWD":$container_proj_dir:rw      \
@@ -41,18 +42,18 @@ docker run --detach --privileged --name $container_id  \
 printf "\n"
 
 # Test Ansible syntax.
-printf ${green}"Checking Ansible playbook syntax."${neutral}
+printf ${blue}"Checking Ansible playbook syntax."${neutral}
 docker exec $container_id ansible-playbook $container_main_playbook --syntax-check
 
 printf "\n"
 
 # Run Ansible playbook.
-printf ${green}"Running playbook: functional test"${neutral}
+printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}
 docker exec $container_id $color_opts ansible-playbook $container_main_playbook
 
+# Run Ansible playbook again, if configured.
 if [ "$test_idempotence" = true ]; then
-  # Run Ansible playbook again (idempotence test).
-  printf ${green}"Running playbook again: idempotence test"${neutral}
+  printf ${blue}"Running playbook again: idempotence test"${neutral}
   idempotence=$(mktemp)
   docker exec $container_id $color_opts ansible-playbook $container_main_playbook | tee -a $idempotence
   tail $idempotence \
@@ -61,10 +62,16 @@ if [ "$test_idempotence" = true ]; then
     || (printf ${red}'Idempotence test: fail'${neutral}"\n" && exit 1)
 fi
 
-# TODO: Run test playbook here.
+printf "\n"
 
-# Remove the Docker container (if configured).
+# Run test playbook.
+printf ${blue}"Running test playbook: functional tests against live instance."${neutral}
+docker exec $container_id $color_opts ansible-playbook $container_test_playbook
+
+printf "\n"
+
+# Remove the Docker container, if configured.
 if [ "$cleanup" = true ]; then
-  printf "Removing Docker container...\n"
+  printf ${blue}"Removing Docker container...\n"${neutral}
   docker rm -f $container_id
 fi

@@ -1,0 +1,4 @@
+---
+# The port Nexus is listening on.
+# Overrides value from nexus role.
+application_port: 8081
