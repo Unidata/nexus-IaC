@@ -15,7 +15,27 @@ git clone --recursive git@github.com:cwardgar/nexus-IaC.git
 
 ## Launching Nexus server in a Vagrant VM
 
-Once you have Vagrant and Ansible installed, simply do:
+Once you have Vagrant, VirtualBox, and Ansible installed, simply do:
 ```
 vagrant up
 ```
+
+The Nexus site will then be available at `http://192.168.22.22:8081/`.
+
+## Licensing
+
+This software is licensed under the MIT License (MIT). See `LICENSE.md`.
+
+Furthermore, this project includes code from third-party open-source software components, detailed below.
+
+### Roles
+
+All of the Ansible roles in `provisioning/roles/` are git submodules pointing to third-party repositories.
+As such, any licensing terms that those projects have are reproduced in their respective role directories.
+
+The exception to this is `provisioning/roles/nexus/`, which is not a git submodule but does include third-party
+code. See `README.md` in that directory for more information.
+
+### Tests
+
+For details, see `/tests/README.md`.

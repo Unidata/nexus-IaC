@@ -23,7 +23,7 @@ neutral='\033[0m'
 color_opts='env ANSIBLE_FORCE_COLOR=1'
 
 # Default container name. Only chars in [a-zA-Z0-9_.-] are allowed.
-timestamp="$(date +%Y-%m-%dT%H.%M.%S)"
+timestamp="$(date +%Y-%m-%dT%H.%M.%S_%Z)"
 
 # Allow environment variables to override defaults.
 distro='ubuntu1604'

@@ -1,38 +1,15 @@
-Role Name
-=========
+# nexus
 
-A brief description of the role goes here.
+This role installs and configures [Nexus Repository Manager OSS](https://www.sonatype.com/nexus-repository-oss)
+version 3.x on Ubuntu 16.04.
 
-Requirements
-------------
+## Inclusion of third-party software
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This project contains source code from [ansible-nexus3-oss](https://github.com/savoirfairelinux/ansible-nexus3-oss),
+version 1.7.1. The license for that project is available in `/licenses/third-party/ansible-nexus3-oss/`.
 
-Role Variables
---------------
+### Details of use:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+The original project aims to be more configurable and robust than our needs require. So, we've stripped away all of
+the automation that we won't need for our immutable server. The list of changes is too long to track;
+in reality, we're rewriting the entire role, using the original project as a guide (and copying some bits).

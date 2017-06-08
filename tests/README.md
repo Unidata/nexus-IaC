@@ -73,3 +73,18 @@ It should no longer appear in `docker ps`.
 ## Continuous integration
 
 `test.sh` runs automatically on [Travis](https://travis-ci.org/cwardgar/nexus-IaC) each time we push a commit to GitHub.
+
+## Inclusion of third-party software
+
+This project contains source code from Jeff Geerling's
+[Ansible Role Test Shim Script](https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/).
+The license for the script is not explicitly stated, but it is likely MIT, as that is the license he uses for all of
+his [GitHub public repositories](https://github.com/geerlingguy?tab=repositories).
+
+A copy of the MIT license can be found in `/licenses/third-party/geerlingguy/`.
+
+### Details of use:
+
+`test.sh` is derived from the aforementioned script. We've simplified it by dropping support for all Linux distros
+except 'ubuntu1604'. We've also done some light refactoring and documentation additions. Finally, we've added
+support for running functional tests in our main playbook, which we've marked with the 'test' tag.
