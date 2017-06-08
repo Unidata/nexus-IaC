@@ -18,9 +18,9 @@ ansible all -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
 ## Execute playbooks on Vagrant VM
 
 ```
-ansible-playbook -i inventories/vagrant/hosts foo.yml
+ansible-playbook -i inventories/vagrant/hosts site.yml
 ansible-playbook -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"
-ansible-playbook -i inventories/vagrant/hosts site.yml --tags "configuration,packages"
+ansible-playbook -i inventories/vagrant/hosts site.yml --tags "test"
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables

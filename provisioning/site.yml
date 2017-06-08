@@ -13,3 +13,7 @@
   roles:
     - oracle-java
     - nexus
+
+  tasks:
+    - include: tasks/tests.yml
+      tags: ['test']

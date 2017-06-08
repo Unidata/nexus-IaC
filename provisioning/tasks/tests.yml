@@ -1,0 +1,12 @@
+---
+- name: Check that Nexus returns a status 200
+  uri:
+    url: "http://{{ ansible_host }}:{{ application_port }}/"
+    status_code: 200
+    return_content: yes
+  register: webpage
+
+- name: Fail if expected title is not in the page content
+  fail:
+    msg: Nexus is not giving the expected response.
+  when: "'<title>Nexus Repository Manager</title>' not in webpage.content"

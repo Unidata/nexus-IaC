@@ -1,4 +1,2 @@
 ---
-# The port Nexus is listening on.
-# Overrides value from nexus role.
-application_port: 8081
+# Nothing for now, but this will be where I override role variables.
