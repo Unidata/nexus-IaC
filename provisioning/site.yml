@@ -11,6 +11,7 @@
     - include: tasks/init.yml
 
   roles:
+    - ansible-role-ntp
     - oracle-java
     - nexus
 

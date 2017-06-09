@@ -1,2 +1,4 @@
 ---
-# Nothing for now, but this will be where I override role variables.
+# Set the timezone for the server.
+# Overrides role variable in ansible-role-ntp.
+ntp_timezone: 'America/Denver'

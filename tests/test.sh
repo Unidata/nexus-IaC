@@ -53,7 +53,7 @@ init_exe='/lib/systemd/systemd'
 # Run the container using the supplied OS.
 printf ${blue}"Starting Docker container: geerlingguy/docker-$distro-ansible."${neutral}"\n"
 docker pull geerlingguy/docker-$distro-ansible:latest
-docker run --detach --name $container_id --volume=$host_proj_dir:$container_proj_dir:ro $init_opts  \
+docker run --detach --name $container_id --volume=$host_proj_dir:$container_proj_dir:rw $init_opts  \
            geerlingguy/docker-$distro-ansible:latest $init_exe
 
 printf "\n"
@@ -65,8 +65,8 @@ docker exec $container_id ansible-playbook $container_playbook --syntax-check
 printf "\n"
 
 # Run Ansible playbook.
-printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_playbook --skip-tags "test"
+printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
+docker exec $container_id $color_opts ansible-playbook $container_playbook --verbose --skip-tags "test"
 
 # Run Ansible playbook again, if configured.
 if [ "$test_idempotence" = true ]; then
@@ -84,7 +84,7 @@ printf "\n"
 
 # Run functional tests.
 printf ${blue}"Running functional tests against live instance."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_playbook --tags "test"
+docker exec $container_id $color_opts ansible-playbook $container_playbook --verbose --tags "test"
 
 printf "\n"
 

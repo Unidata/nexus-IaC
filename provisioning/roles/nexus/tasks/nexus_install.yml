@@ -87,9 +87,11 @@
       src: "nexus.service"
       dest: "/etc/systemd/system"
 
-# FIXME: Is this being started by the 'nexus' user? Write a test to confirm.
 - name: Finish installation of Nexus service, enable it, and start it
   systemd: name=nexus daemon_reload=yes enabled=yes state=started
 
 - name: Wait for Nexus to be ready. Could take over a minute on Docker.
   wait_for: "port={{ application_port }}"
+
+# TODO: Make sure that the correct time zone is being displayed on the Nexus admin page.
+# Of course, I can't do that until I get the admin user/pass set up.

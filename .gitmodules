@@ -2,3 +2,6 @@
 	path = provisioning/roles/oracle-java
 	url = https://github.com/ansiblebit/oracle-java.git
 	branch = master
+[submodule "provisioning/roles/ansible-role-ntp"]
+	path = provisioning/roles/ansible-role-ntp
+	url = https://github.com/geerlingguy/ansible-role-ntp.git

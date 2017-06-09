@@ -7,4 +7,5 @@
 - name: Install required dependencies.
   apt: "name={{ item }} state=installed"
   with_items:
+    - tzdata  # For ansible-role-ntp. This should really be added to the upstream role.
     - rsync

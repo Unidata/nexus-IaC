@@ -13,4 +13,3 @@
 -Dkaraf.data={{ nexus_data_dir }}
 -Djava.io.tmpdir={{ nexus_tmp_dir }}
 -Dkaraf.startLocalConsole=false
--Duser.timezone={{ nexus_timezone }}

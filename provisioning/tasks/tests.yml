@@ -1,12 +1,22 @@
 ---
-- name: Check that Nexus returns a status 200
+- name: Assert that timezone has been changed to MDT
+  command: date
+  register: date
+- assert:
+    that: "'MDT' in date.stdout"
+
+- name: Assert that Nexus returns a status 200 and page content has expected title
   uri:
     url: "http://{{ ansible_host }}:{{ application_port }}/"
     status_code: 200
     return_content: yes
   register: webpage
+- assert:
+    that: "'<title>Nexus Repository Manager</title>' in webpage.content"
 
-- name: Fail if expected title is not in the page content
-  fail:
-    msg: Nexus is not giving the expected response.
-  when: "'<title>Nexus Repository Manager</title>' not in webpage.content"
+- name: Assert that Nexus process was started by user '{{ nexus_os_user }}'
+  shell: "ps aux | grep org.sonatype.nexus.karaf.NexusMain$"
+  register: nexus_proc_info
+- assert:
+    # startswith(s) is a function from the Python standard library
+    that: "nexus_proc_info.stdout.startswith('{{ nexus_os_user }}')"
