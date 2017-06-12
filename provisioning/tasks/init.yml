@@ -8,3 +8,4 @@
   apt: "name={{ item }} state=installed"
   with_items:
     - rsync
+    - tzdata  # For ansible-role-ntp, temporary.
