@@ -7,7 +7,7 @@
 
 - name: Assert that Nexus returns a status 200 and page content has expected title
   uri:
-    url: "http://{{ ansible_host }}:{{ application_port }}/"
+    url: "http://{{ ansible_host }}:{{ nexus_default_port }}/"
     status_code: 200
     return_content: yes
   register: webpage

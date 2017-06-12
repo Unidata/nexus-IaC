@@ -1,17 +1,28 @@
 # Nexus Infrastructure-as-Code
 
-This project contains code for the
-[orchestration and configuration](https://blog.gruntwork.io/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation-7989dad2865c#3f44)
+[![Build Status](https://travis-ci.org/cwardgar/nexus-IaC.svg?branch=master)](https://travis-ci.org/cwardgar/nexus-IaC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+This project contains code for the [orchestration and configuration](
+https://blog.gruntwork.io/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation-7989dad2865c#3f44)
 of a Sonatype Nexus server in the cloud. At first, only orchestration for localhost
 (via [Vagrant](https://www.vagrantup.com/)) and [OpenStack](https://www.openstack.org/) are provided.
 
-## Obtaining source
+## Working with submodules - IMPORTANT!!
 
-This repository contains [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), the source for which will
-not be downloaded using the typical `git clone` command. Instead, you'll need to do something like:
+This repository contains [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), the sources for which
+will not be downloaded using the typical `git clone` command. Instead, you'll need to do something like:
 ```
-git clone --recursive git@github.com:cwardgar/nexus-IaC.git
+git clone --recursive https://github.com/cwardgar/nexus-IaC.git
 ```
+
+However, that's not the only change you'll need to make to your typical Git workflow. Please read this
+[cheat sheet](https://medium.com/@porteneuve/mastering-git-submodules-34c65e940407#5450).
+
+### Future
+
+If working with submodules proves too cumbersome or error-prone, give
+[git-subrepo](https://github.com/ingydotnet/git-subrepo#readme) a try.
 
 ## Launching Nexus server in a Vagrant VM
 
@@ -32,9 +43,6 @@ Furthermore, this project includes code from third-party open-source software co
 
 All of the Ansible roles in `provisioning/roles/` are git submodules pointing to third-party repositories.
 As such, any licensing terms that those projects have are reproduced in their respective role directories.
-
-The exception to this is `provisioning/roles/nexus/`, which is not a git submodule but does include third-party
-code. See `README.md` in that directory for more information.
 
 ### Tests
 

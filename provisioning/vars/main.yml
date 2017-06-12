@@ -1,4 +1,37 @@
 ---
+########################################## ansible-role-ntp ##########################################
+
 # Set the timezone for the server.
-# Overrides role variable in ansible-role-ntp.
 ntp_timezone: 'America/Denver'
+
+########################################## ansible-nexus3-oss ##########################################
+
+# The nexus version to install.
+nexus_version: '3.3.1-01'
+
+# Location where Nexus will be installed.
+nexus_installation_dir: '/opt'
+
+# The directory in which Nexus is installed. It is created when we unpack 'nexus_package'.
+nexus_home_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}"
+
+# The initial directory where Nexus writes its application data. It is also created when we unpack 'nexus_package'.
+# It doesn't remain, however. {{ sonatype_work_dir }}/nexus3/ is copied to {{ nexus_data_dir }} and then
+# {{ sonatype_work_dir }} is deleted.
+sonatype_work_dir: "{{ nexus_installation_dir }}/sonatype-work"
+
+# We're installing in /opt, so app data should go here. See http://www.pathname.com/fhs/2.2/fhs-5.12.html
+opt_data_dir: '/var/opt'
+
+# Where Nexus application data will be stored. Default value: '/var/nexus'
+nexus_data_dir: '{{ opt_data_dir }}/nexus'
+
+# Location where backups of databases and blob stores will go. Default value: '/var/nexus-backup'.
+# '/var/backups' is not an appropriate place. See http://www.pathname.com/fhs/pub/fhs-2.3.html#REQUIREMENTS12
+nexus_backup_dir: '{{ opt_data_dir }}/nexus-backups'
+
+# This variable is not part of the original role; we created it for use in 'templates/nexus.properties'.
+application_host: 0.0.0.0  # Accept connections from all IP addresses.
+# application_host: 127.0.0.1  # Accept only from localhost (i.e. Apache), not the rest of the internet.
+
+########################################## non-role variables ##########################################

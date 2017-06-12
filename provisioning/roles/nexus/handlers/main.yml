@@ -1,3 +1,0 @@
----
-- name: restart nexus
-  systemd: name=nexus state=restarted
