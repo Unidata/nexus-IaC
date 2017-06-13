@@ -20,3 +20,12 @@
 - assert:
     # startswith(s) is a function from the Python standard library
     that: "nexus_proc_info.stdout.startswith('{{ nexus_os_user }}')"
+
+- name: Assert that admin password was successfully changed to what we want
+  uri:
+    url: "{{ rest_api_endpoint }}"
+    user: 'admin'
+    password: "{{ nexus_admin_password }}"
+    method: GET
+    force_basic_auth: yes
+    status_code: 200   # If the password hasn't been changed, we'll get a 404, which'll cause this task to fail.

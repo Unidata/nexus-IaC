@@ -34,4 +34,6 @@ nexus_backup_dir: '{{ opt_data_dir }}/nexus-backups'
 application_host: 0.0.0.0  # Accept connections from all IP addresses.
 # application_host: 127.0.0.1  # Accept only from localhost (i.e. Apache), not the rest of the internet.
 
+nexus_admin_password: 'changeme'
+
 ########################################## non-role variables ##########################################
