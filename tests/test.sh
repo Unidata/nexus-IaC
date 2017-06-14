@@ -66,7 +66,7 @@ printf "\n"
 
 # Run Ansible playbook.
 printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
-docker exec $container_id $color_opts ansible-playbook $container_playbook --verbose --skip-tags "test"
+docker exec $container_id $color_opts ansible-playbook $container_playbook --skip-tags "test"
 
 # Run Ansible playbook again, if configured.
 if [ "$test_idempotence" = true ]; then
@@ -84,7 +84,7 @@ printf "\n"
 
 # Run functional tests.
 printf ${blue}"Running functional tests against live instance."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_playbook --verbose --tags "test"
+docker exec $container_id $color_opts ansible-playbook $container_playbook --tags "test"
 
 printf "\n"
 

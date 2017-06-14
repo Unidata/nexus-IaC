@@ -11,15 +11,10 @@
     - include: tasks/init.yml
 
   roles:
-    - ansible-role-ntp
-    - oracle-java
-    # While we're using end_play in ansible-nexus3-oss's main.yml, we'll need to comment this out if we want to test.
-    - ansible-nexus3-oss
+    - { role: ansible-role-ntp,   tags: [ 'ntp'   ] }
+    - { role: oracle-java,        tags: [ 'java'  ] }
+    - { role: ansible-nexus3-oss, tags: [ 'nexus' ] }
 
   tasks:
     - include: tasks/tests.yml
       tags: ['test']
-      # And we'll also have to define these, because they're not set in 'ansible-nexus3-oss' any more.
-      vars:
-        nexus_default_port: 8081
-        nexus_os_user: 'nexus'
