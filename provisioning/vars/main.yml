@@ -121,4 +121,10 @@ nexus_repos_raw_proxy: []  # Don't want ansible-nexus3-oss's default raw proxy r
 
 nexus_repos_raw_group: []  # Don't want ansible-nexus3-oss's default raw group repos.
 
+
+nexus_config_gitlfs: true  # Configure a gitlfs repository.
+
+nexus_repos_gitlfs_hosted:
+  - name: cdm-unit-test
+
 ########################################## non-role variables ##########################################
