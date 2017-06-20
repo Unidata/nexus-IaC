@@ -46,4 +46,8 @@ As such, any licensing terms that those projects have are reproduced in their re
 
 ### Tests
 
-For details, see `/tests/README.md`.
+See `/tests/README.md`.
+
+### Ansible plugin
+
+See `/provisioning/callback_plugins/README.md`.

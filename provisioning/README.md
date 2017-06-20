@@ -17,6 +17,9 @@ ansible all -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
 
 ## Execute playbooks on Vagrant VM
 
+`ansible-playbook` should be run from the `provisioning/` directory, so that it can find `ansible.cfg`.
+[Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
+
 ```
 ansible-playbook -i inventories/vagrant/hosts site.yml
 ansible-playbook -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"

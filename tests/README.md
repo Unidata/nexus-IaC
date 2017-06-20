@@ -83,7 +83,7 @@ his [GitHub public repositories](https://github.com/geerlingguy?tab=repositories
 
 A copy of the MIT license can be found in `/licenses/third-party/geerlingguy/`.
 
-### Details of use:
+### Details of use
 
 `test.sh` is derived from the aforementioned script. We've simplified it by dropping support for all Linux distros
 except 'ubuntu1604'. We've also done some light refactoring and documentation additions. Finally, we've added

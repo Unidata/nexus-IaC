@@ -53,8 +53,28 @@ init_exe='/lib/systemd/systemd'
 # Run the container using the supplied OS.
 printf ${blue}"Starting Docker container: geerlingguy/docker-$distro-ansible."${neutral}"\n"
 docker pull geerlingguy/docker-$distro-ansible:latest
-docker run --detach --name $container_id --volume=$host_proj_dir:$container_proj_dir:rw $init_opts  \
-           geerlingguy/docker-$distro-ansible:latest $init_exe
+
+# Below is a trick for documenting a long argument list. See https://unix.stackexchange.com/a/152554.
+# It turns out that embedding the comments within the list (along with continuation operators) doesn't work:
+# https://stackoverflow.com/questions/1455988/commenting-in-bash-script#comment18282079_1456059
+
+# Run container in background.
+DOCKER_RUN_PARAMS=(--detach)
+# The name of the container. By default, it is a timestamp of when this script was run.
+DOCKER_RUN_PARAMS+=(--name $container_id)
+# Mount the host's nexus-IaC project directory to the container, with read-only privileges.
+DOCKER_RUN_PARAMS+=(--volume=$host_proj_dir:$container_proj_dir:ro)
+# Some black magic to make systemD init work in the container.
+DOCKER_RUN_PARAMS+=($init_opts)
+# Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
+# See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
+DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_proj_dir/provisioning/ansible.cfg)
+# The image to run.
+DOCKER_RUN_PARAMS+=(geerlingguy/docker-$distro-ansible:latest)
+# The name of the system initialization program that will run first in the container.
+DOCKER_RUN_PARAMS+=($init_exe)
+
+docker run "${DOCKER_RUN_PARAMS[@]}"
 
 printf "\n"
 

@@ -1,7 +1,7 @@
 ---
 - name: Master playbook. Provision Nexus and all supporting services.
   hosts: all
-  gather_facts: yes  # Needed by 'oracle-java' role for 'ansible_os_family'. Probably many other places too.
+  gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
   become: yes        # Need this for starting nexus service.
 
   vars_files:
