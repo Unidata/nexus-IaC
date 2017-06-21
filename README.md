@@ -41,12 +41,13 @@ Furthermore, this project includes code from third-party open-source software co
 
 ### Roles
 
-All of the Ansible roles in `provisioning/roles/` are git submodules pointing to third-party repositories.
-As such, any licensing terms that those projects have are reproduced in their respective role directories.
+All of the Ansible roles in `/provisioning/roles/`--except for `testing`--are git submodules pointing to
+third-party repositories. As such, any licensing terms that those projects have are reproduced in their
+respective role directories.
 
-### Tests
+### Testing
 
-See `/tests/README.md`.
+See `/provisioning/roles/testing/README.md`.
 
 ### Ansible plugin
 

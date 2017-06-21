@@ -33,10 +33,12 @@ test_idempotence=${test_idempotence:-"true"}
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-host_proj_dir="$(dirname $parent_dir_of_this_script)"
+host_provis_dir="$(dirname "$(dirname $parent_dir_of_this_script)")"
 
-container_proj_dir='/root/nexus-IaC'
-container_playbook="$container_proj_dir/provisioning/site.yml"
+container_provis_dir="/root/nexus-IaC/provisioning"
+container_site_playbook="$container_provis_dir/site.yml"
+container_test_playbook="$container_provis_dir/test.yml"
+container_inventory="--inventory-file=$container_provis_dir/inventories/docker/hosts"
 
 # From Ansible for DevOps, version 2017-06-02, page 349:
 #   Why use an init system in Docker? With Docker, it’s preferable to either
@@ -63,12 +65,12 @@ DOCKER_RUN_PARAMS=(--detach)
 # The name of the container. By default, it is a timestamp of when this script was run.
 DOCKER_RUN_PARAMS+=(--name $container_id)
 # Mount the host's nexus-IaC project directory to the container, with read-only privileges.
-DOCKER_RUN_PARAMS+=(--volume=$host_proj_dir:$container_proj_dir:ro)
+DOCKER_RUN_PARAMS+=(--volume=$host_provis_dir:$container_provis_dir:ro)
 # Some black magic to make systemD init work in the container.
 DOCKER_RUN_PARAMS+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
 # See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
-DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_proj_dir/provisioning/ansible.cfg)
+DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
 # The image to run.
 DOCKER_RUN_PARAMS+=(geerlingguy/docker-$distro-ansible:latest)
 # The name of the system initialization program that will run first in the container.
@@ -80,19 +82,19 @@ printf "\n"
 
 # Test Ansible syntax.
 printf ${blue}"Checking Ansible playbook syntax."${neutral}
-docker exec $container_id ansible-playbook $container_playbook --syntax-check
+docker exec $container_id ansible-playbook $container_inventory $container_site_playbook --syntax-check
 
 printf "\n"
 
 # Run Ansible playbook.
 printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
-docker exec $container_id $color_opts ansible-playbook $container_playbook --skip-tags "test"
+docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook
 
 # Run Ansible playbook again, if configured.
 if [ "$test_idempotence" = true ]; then
   printf ${blue}"Running playbook again: idempotence test"${neutral}
   idempotence=$(mktemp)
-  docker exec $container_id $color_opts ansible-playbook $container_playbook --skip-tags "test" \
+  docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook \
                                         | tee -a $idempotence
   tail $idempotence \
     | grep -q 'changed=0.*failed=0' \
@@ -104,7 +106,7 @@ printf "\n"
 
 # Run functional tests.
 printf ${blue}"Running functional tests against live instance."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_playbook --tags "test"
+docker exec $container_id $color_opts ansible-playbook $container_inventory $container_test_playbook
 
 printf "\n"
 

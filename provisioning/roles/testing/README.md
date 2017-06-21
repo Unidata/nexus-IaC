@@ -1,4 +1,4 @@
-# Tests
+# Testing
 
 Leverages Docker to ensure that our playbook is well-written and that it puts the system in the desired state.
 
@@ -10,10 +10,10 @@ Tests can be executed locally in two ways.
 
 In the provisioning directory, do:
 ```
-ansible-playbook -i inventories/vagrant/hosts site.yml --tags "test"
+ansible-playbook -i inventories/vagrant/hosts test.yml
 ```
 
-This will execute only the functional tests defined in `/provisioning/tasks/tests.yml`.
+This will execute only the tests included in the test playbook; Nexus config is assumed to have already been done.
 
 ### Against a fresh Docker container
 
@@ -30,7 +30,7 @@ This script will:
    of the main playbook.
 1. Run the main playbook to ensure that the configuration of Nexus succeeds.
 1. Run the main playbook again, to test whether it is idempotent.
-1. Execute the functional tests defined in `/provisioning/tasks/tests.yml`.
+1. Run the test playbook.
 
 #### Log in to container
 
@@ -44,7 +44,7 @@ To skip the removal step, run the script like so:
 ```
 cleanup=false ./test.sh
 ```
-The container will also be left running if one of the tests fail.
+The container will also be left running if one of the tests fails.
 
 ##### Find container ID
 
@@ -87,4 +87,4 @@ A copy of the MIT license can be found in `/licenses/third-party/geerlingguy/`.
 
 `test.sh` is derived from the aforementioned script. We've simplified it by dropping support for all Linux distros
 except 'ubuntu1604'. We've also done some light refactoring and documentation additions. Finally, we've added
-support for running functional tests in our main playbook, which we've marked with the 'test' tag.
+support for running a separate playbook that includes tests only.

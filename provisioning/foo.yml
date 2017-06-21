@@ -1,8 +1,0 @@
----
-- name: Dummy playbook used to test running ansible-playbook against a Vagrant VM.
-  hosts: all
-
-  tasks:
-    - debug:
-        msg: "System {{ inventory_hostname }} has gateway {{ ansible_default_ipv4.gateway }}"
-      when: ansible_default_ipv4.gateway is defined

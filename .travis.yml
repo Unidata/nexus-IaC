@@ -3,4 +3,4 @@ services: docker
 
 script:
   # Run tests.
-  - tests/test.sh
+  - provisioning/roles/testing/test.sh

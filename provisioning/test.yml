@@ -1,0 +1,11 @@
+---
+- name: Test playbook. Execute integration and functional tests against running Nexus server.
+  hosts: all
+  gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
+  become: no
+
+  vars_files:
+    - vars/main.yml
+
+  roles:
+    - { role: testing, tags: [ 'test' ] }

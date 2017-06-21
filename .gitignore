@@ -1,3 +1,6 @@
 .idea/
 .vagrant/
+# Added by Ansible when a playbook fails. They aren't useful for our single-host deploys.
 *.retry
+# Python byte code file. Created when /provisioning/callback_plugins/no_cyan.py is run.
+*.pyc
