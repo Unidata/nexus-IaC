@@ -30,6 +30,10 @@
     force_basic_auth: yes
     status_code: 200   # If the password hasn't been changed, we'll get a 404, which'll cause this task to fail.
 
-- name: Test Git LFS.
-  include: test-git-lfs.yml
-  tags: ['test-git-lfs']
+- name: Test Git LFS repo.
+  include: test-gitlfs-repo.yml
+  tags: ['test-gitlfs-repo']
+
+- name: Test raw repo.
+  include: test-raw-repo.yml
+  tags: ['test-raw-repo']

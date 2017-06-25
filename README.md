@@ -31,7 +31,7 @@ Once you have Vagrant, VirtualBox, and Ansible installed, simply do:
 vagrant up
 ```
 
-The Nexus site will then be available at `nexus_base_url`.
+The Nexus site will then be available at `http://192.168.22.22:8081/`.
 
 ## Licensing
 
