@@ -2,10 +2,15 @@
 - name: Test playbook. Execute integration and functional tests against running Nexus server.
   hosts: all
   gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
-  become: no
+  become: yes        # For installing git-lfs.
 
   vars_files:
+    # Grab Nexus variables. Order is important here: vars/main.yml often redefines variables declared in the other
+    # files. It can do so because it appears last in this list.
+    - roles/ansible-nexus3-oss/defaults/main.yml
+    - roles/ansible-nexus3-oss/vars/main.yml
     - vars/main.yml
 
   roles:
-    - { role: testing, tags: [ 'test' ] }
+    - { role: github-git-lfs, tags: [ 'git-lfs' ] }
+    - { role: testing,        tags: [ 'test'    ] }

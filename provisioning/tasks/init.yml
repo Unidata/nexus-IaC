@@ -1,11 +1,9 @@
 ---
 - name: Update apt cache if needed.
-  apt:
-     update_cache: yes
-     cache_valid_time: 3600  # May cause problems for freshly-updated Docker containers.
+  apt: update_cache=yes cache_valid_time=86400
 
 - name: Install required dependencies.
   apt: "name={{ item }} state=installed"
   with_items:
-    - rsync
+    - rsync   # For copying default Nexus work dir to proper location.
     - tzdata  # For ansible-role-ntp, temporary.

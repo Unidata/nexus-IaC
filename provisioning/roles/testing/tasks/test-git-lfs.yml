@@ -1,0 +1,69 @@
+---
+- name: Delete testing directory, if it was created by previous run.
+  file:
+    path: "{{ testing_dir }}"
+    state: absent
+
+- name: Recreate testing directory.
+  file:
+    path: "{{ testing_dir }}"
+    state: directory
+
+- name: Create local bare repo to be used as a remote by Git LFS.
+  command: "git init --bare {{ local_remote_repo }}"
+
+- name: Create local repo that will test pushing objects to the Git LFS server.
+  command: "git init {{ test_lfs_push_dir }}"
+
+- name: Configure git 'user.name'.
+  command: git config --global user.name '{{ nexus_local_users[0].first_name }} {{ nexus_local_users[0].last_name }}'
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Configure git 'user.email'.
+  command: git config --global user.email '{{ nexus_local_users[0].username }}@{{ public_hostname }}'
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Configure Git LFS. Creates '.lfsconfig'.
+  command: "git config -f {{ test_lfs_push_dir }}/.lfsconfig lfs.url {{ lfs_url }}"
+
+- name: Track NetCDF files with Git LFS. Creates '.gitattributes'.
+  command: git lfs track '*.nc'
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Copy large file to repo.
+  copy: "src=jan.nc dest={{ test_lfs_push_dir }}/jan.nc"
+
+- name: Stage all files for commit.
+  command: git add --all
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Commit all files.
+  command: git commit -m "Test commit."
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Add a (local) remote repository to push to.
+  command: git remote add origin {{ local_remote_repo }}
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Push to the repo. This will upload the large file to Nexus.
+  command: git push origin master
+  args:
+    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Clone the repo. This will download the large file from Nexus.
+  git:
+    repo: "{{ local_remote_repo }}"
+    dest: "{{ test_lfs_pull_dir }}"
+
+- name: Assert that the large file was downloaded during the clone, not a pointer file.
+  stat:
+    path: "{{ test_lfs_pull_dir }}/jan.nc"
+  register: jan_stat
+- assert:
+    that: jan_stat.stat.size == 6580

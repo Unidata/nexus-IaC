@@ -9,6 +9,7 @@
 
   pre_tasks:
     - include: tasks/init.yml
+      tags: [ 'init' ]
 
   roles:
     - { role: ansible-role-ntp,   tags: [ 'ntp'   ] }

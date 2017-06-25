@@ -7,7 +7,7 @@
 
 - name: Assert that Nexus returns a status 200 and page content has expected title
   uri:
-    url: "http://{{ ansible_host }}:{{ nexus_default_port }}/"
+    url: "{{ nexus_base_url }}"
     status_code: 200
     return_content: yes
   register: webpage
@@ -29,3 +29,7 @@
     method: GET
     force_basic_auth: yes
     status_code: 200   # If the password hasn't been changed, we'll get a 404, which'll cause this task to fail.
+
+- name: Test Git LFS.
+  include: test-git-lfs.yml
+  tags: ['test-git-lfs']

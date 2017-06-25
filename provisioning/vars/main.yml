@@ -6,10 +6,6 @@ ntp_timezone: 'America/Denver'
 
 ########################################## ansible-nexus3-oss ##########################################
 
-# User that owns the nexus files and run the service.
-# We're not overriding the default, just re-declaring the variable in a place where it'll be visible to 'testing' role.
-nexus_os_user: 'nexus'
-
 # Where Nexus application data will be stored. Default value: '/var/nexus'
 nexus_data_dir: '/var/opt/nexus'
 
@@ -20,20 +16,11 @@ nexus_backup_dir: '/var/opt/nexus-backups'
 # Accept connections from all IP addresses. Default value: 127.0.0.1
 application_host: 0.0.0.0
 
-# Port that Nexus is listening on.
-# We're not overriding the default, just re-declaring the variable in a place where it'll be visible to 'testing' role.
-nexus_default_port: 8081
-
-# Context path of the Nexus process.
-# We're not overriding the default, just re-declaring the variable in a place where it'll be visible to 'testing' role.
-nexus_default_context_path: '/'
-
+# The password to set for the admin account. The default is 'admin123'.
 nexus_admin_password: 'changeme'
 
 # Delete the repositories that Nexus is configured with by default. This step is only executed on first-time install.
 nexus_delete_default_repos: true
-
-#public_hostname: 'nexus.vm'
 
 # See https://books.sonatype.com/nexus-book/reference3/security.html#anonymous
 nexus_anonymous_access: true
@@ -46,10 +33,6 @@ timestamp: "{{ ansible_date_time.date }}T{{ ansible_date_time.time }} {{ ansible
 # Use the same CSS for our footer that Sonatype uses for its copyright footer. This will cause our message to appear
 # just below the copyright. I used the Chrome developer tools to find the right CSS classes.
 nexus_branding_footer: "<div class='copyright nx-footer'>Last provisioned at {{ timestamp }}.</div>"
-
-# The endpoint for operations against the Nexus REST API.
-# We're not overriding the default, just re-declaring the variable in a place where it'll be visible to 'testing' role.
-rest_api_endpoint: "http://localhost:{{nexus_default_port}}{{nexus_default_context_path}}service/siesta/rest/v1/script"
 
 #httpd_setup_enable: false
 #httpd_ssl_certificate_file: 'files/nexus.vm.crt'
