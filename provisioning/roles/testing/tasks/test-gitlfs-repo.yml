@@ -1,14 +1,4 @@
 ---
-- name: Delete testing directory, if it was created by previous run.
-  file:
-    path: "{{ testing_dir }}"
-    state: absent
-
-- name: Recreate testing directory.
-  file:
-    path: "{{ testing_dir }}"
-    state: directory
-
 - name: Create local bare repo to be used as a remote by Git LFS.
   command: "git init --bare {{ local_remote_repo }}"
 

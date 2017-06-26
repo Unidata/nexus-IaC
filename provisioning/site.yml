@@ -9,9 +9,9 @@
 
   pre_tasks:
     - include: tasks/init.yml
-      tags: [ 'init' ]
+      tags: [ always ]
 
   roles:
-    - { role: ansible-role-ntp,   tags: [ 'ntp'   ] }
-    - { role: oracle-java,        tags: [ 'java'  ] }
-    - { role: ansible-nexus3-oss, tags: [ 'nexus' ] }
+    - { role: ansible-role-ntp,   tags: [ ntp   ] }
+    - { role: oracle-java,        tags: [ java  ] }
+    - { role: ansible-nexus3-oss, tags: [ nexus ] }

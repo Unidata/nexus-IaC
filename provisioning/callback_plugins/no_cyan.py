@@ -75,10 +75,12 @@ class CallbackModule(CallbackModule_default):
 
     def v2_runner_on_skipped(self, result):
         if self._display.verbosity > 0:
+            self.display_task_banner()
             self.super_ref.v2_runner_on_skipped(result)
 
     def v2_playbook_on_include(self, included_file):
         if self._display.verbosity > 0:
+            self.display_task_banner()
             self.super_ref.v2_playbook_on_include(included_file)
 
     def v2_runner_item_on_ok(self, result):
@@ -88,6 +90,7 @@ class CallbackModule(CallbackModule_default):
 
     def v2_runner_item_on_skipped(self, result):
         if self._display.verbosity > 0:
+            self.display_task_banner()
             self.super_ref.v2_runner_item_on_skipped(result)
 
     def v2_runner_item_on_failed(self, result):

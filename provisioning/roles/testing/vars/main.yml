@@ -1,5 +1,11 @@
 ---
+groovy_version: 2.4.12
+groovy_install_dir: /opt
+groovy_home: "{{ groovy_install_dir }}/groovy-{{ groovy_version }}"
+groovy_exe: "{{ groovy_home }}/bin/groovy"
+
 testing_dir: /tmp/nexus-IaC-testing
+
 local_remote_repo: "{{ testing_dir }}/repo.git"
 test_lfs_push_dir: "{{ testing_dir }}/test-lfs-push"
 test_lfs_pull_dir: "{{ testing_dir }}/test-lfs-pull"
@@ -9,3 +15,6 @@ http_creds_prefix: "http://{{ nexus_local_users[0].username }}:{{ nexus_local_us
 lfs_url: "{{ lfs_url_without_creds | replace('http://', http_creds_prefix) }}"
 
 raw_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_raw_hosted[0].name }}"
+
+maven_pull_repo_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
+maven_push_repo_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_maven_hosted[0].name }}"

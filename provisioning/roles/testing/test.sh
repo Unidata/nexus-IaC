@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Ansible test script.
 #
@@ -104,8 +104,8 @@ fi
 
 printf "\n"
 
-# Run functional tests.
-printf ${blue}"Running functional tests against live instance."${neutral}
+# Run integration and functional tests.
+printf ${blue}"Running integration and functional tests against live instance."${neutral}
 docker exec $container_id $color_opts ansible-playbook $container_inventory $container_test_playbook
 
 printf "\n"

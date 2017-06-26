@@ -1,0 +1,28 @@
+---
+- name: Copy 'unit-utils' Gradle project to '{{ testing_dir }}'.
+  synchronize:
+    src: unit-utils
+    dest: "{{ testing_dir }}"
+
+- name: Copy 'gradle.properties', with templating.
+  template:
+    src: gradle.properties
+    dest: "{{ testing_dir }}/unit-utils"
+
+- name: Publish 'unit-utils' Maven artifact to Nexus.
+  command: ./gradlew publish
+  args:
+    chdir: "{{ testing_dir }}/unit-utils"
+
+- name: Copy 'football-field-length.groovy', with templating.
+  template:
+    src: football-field-length.groovy
+    dest: "{{ testing_dir }}"
+
+- name: Run Groovy script, which depends on 'unit-utils'.
+  command: "{{ groovy_exe }} {{ testing_dir }}/football-field-length.groovy"
+  register: script_result
+
+- name: Assert that script printed expected result to STDOUT.
+  assert:
+    that: script_result.stdout == 'One football field is equal to 91.44 meters.'

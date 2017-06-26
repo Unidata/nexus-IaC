@@ -1,0 +1,36 @@
+group = "edu.ucar"
+version = '1.0.0'
+description = 'A trivial Java library that will be published to Nexus in order to test the Maven repository.'
+
+repositories {
+    jcenter()
+    maven {
+        url = pullRepoUrl
+    }
+}
+
+apply plugin: 'java'
+
+dependencies {
+    compile "edu.ucar:udunits:4.6.10"
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url  = pushRepoUrl
+            
+            credentials {
+                username = pushRepoUsername
+                password = pushRepoPassword
+            }
+        }
+    }
+}

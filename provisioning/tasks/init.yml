@@ -1,6 +1,8 @@
 ---
 - name: Update apt cache if needed.
-  apt: update_cache=yes cache_valid_time=86400
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
 
 - name: Install required dependencies.
   apt: "name={{ item }} state=installed"

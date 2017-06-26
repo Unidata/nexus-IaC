@@ -1,0 +1,21 @@
+---
+- name: Install unzip program, for extracting Groovy package.
+  apt: "name=unzip state=installed"
+
+- name: Download and extract Groovy package.
+  unarchive:
+    src: https://bintray.com/artifact/download/groovy/maven/apache-groovy-binary-{{ groovy_version }}.zip
+    dest: "{{ groovy_install_dir }}"
+    creates: "{{ groovy_home }}"
+    validate_certs: yes
+    remote_src: yes
+
+- name: Delete testing directory, if it was created by previous run.
+  file:
+    path: "{{ testing_dir }}"
+    state: absent
+
+- name: Recreate testing directory.
+  file:
+    path: "{{ testing_dir }}"
+    state: directory
