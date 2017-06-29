@@ -32,7 +32,7 @@
     chdir: "{{ test_lfs_push_dir }}"
 
 - name: Commit all files.
-  command: git commit -m "Test commit."
+  command: git commit -m "First commit."
   args:
     chdir: "{{ test_lfs_push_dir }}"
 

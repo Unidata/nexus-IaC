@@ -7,6 +7,8 @@
 #   - container_id: the --name to set for the container (default = timestamp)
 #   - test_idempotence: whether to test playbook's idempotence (default = true)
 #
+# License: MIT
+#
 # This script was derived from Jeff Geerling's Ansible Role Test Shim Script
 # See https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/
 

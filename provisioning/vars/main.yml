@@ -39,7 +39,7 @@ nexus_branding_footer: "<div class='copyright nx-footer'>Last provisioned at {{ 
 #httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 
 # We don't want the 'all-repos-read' privilege added by ansible-nexus3-oss, so set to empty list.
-# Neither do we want to add any privileges of our own; the ones built-in to Nexus are sufficient.
+# Neither do we want to add any privileges of our own; the ones built into Nexus are sufficient.
 nexus_privileges: []
 
 nexus_roles:
@@ -71,7 +71,7 @@ nexus_scheduled_tasks:
     typeId: db.backup
     alertEmail: thredds-dev@unidata.ucar.edu
     taskProperties:
-      location: "{{ nexus_backup_dir }}/"
+      location: "{{ nexus_backup_dir }}"
 
   - name: compact-blobstore
     cron: '0 0 22 * * ?'
@@ -82,7 +82,7 @@ nexus_scheduled_tasks:
 
     # TODO: Create a task to purge old snapshots.
 
-# Using the defaults in '_nexus_repos_pypi_defaults' where appropriate.
+# Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
 nexus_repos_maven_hosted:
   - name: maven-releases
     version_policy: release
@@ -90,7 +90,6 @@ nexus_repos_maven_hosted:
   - name: maven-snapshots
     version_policy: snapshot
 
-# Using the defaults in '_nexus_repos_pypi_defaults' where appropriate.
 nexus_repos_maven_proxy:
   - name: unidata-releases-old
     remote_url: 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/'
@@ -123,6 +122,7 @@ nexus_repos_raw_group: []  # Don't want ansible-nexus3-oss's default raw group r
 
 nexus_config_gitlfs: true  # Configure a gitlfs repository.
 
+# Using the defaults in '_nexus_repos_gitlfs_defaults' where appropriate.
 nexus_repos_gitlfs_hosted:
   - name: cdm-unit-test
 

@@ -79,9 +79,8 @@ It should no longer appear in `docker ps`.
 
 This project contains source code from Jeff Geerling's
 [Ansible Role Test Shim Script](https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/).
-The license for the script is not explicitly stated, but it is likely MIT, as that is the license he uses for all of
-his [GitHub public repositories](https://github.com/geerlingguy?tab=repositories).
-
+It is licensed under the MIT open source license ([reference](
+https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/#gistcomment-2129169)).
 A copy of the MIT license can be found in `/licenses/third-party/geerlingguy/`.
 
 ### Details of use

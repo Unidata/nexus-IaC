@@ -16,7 +16,7 @@ public abstract class UnitUtils {
      * @param fromUnit  the unit of {@code quantity}.
      * @param toUnit    the unit to convert to.
      * @return          the equivalent value.
-     * @throws UnitException  if either of the unit strings are invalid.
+     * @throws UnitException  if either of the unit strings is invalid.
      */
     public static double convert(double quantity, String fromUnit, String toUnit) throws UnitException {
         Unit inputUnit = UnitFormatManager.instance().parse(fromUnit);
