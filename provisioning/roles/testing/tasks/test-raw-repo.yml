@@ -1,7 +1,7 @@
 ---
 - name: Upload web page to raw repo.
   uri:
-    url: "{{ raw_url }}/index.html"
+    url: "{{ docs_base_url }}/index.html"
     user: "{{ nexus_local_users[0].username }}"
     password: "{{ nexus_local_users[0].password }}"
     method: PUT
@@ -10,12 +10,14 @@
       Content-Type: "text/html"
     body: "{{ lookup('file', 'index.html') }}"
     status_code: 201
+    validate_certs: no  # We're using a self-signed cert for testing.
 
 - name: Assert that web page is being served from raw repo and it has the expected content.
   uri:
-    url: "{{ raw_url }}/index.html"
+    url: "{{ docs_base_url }}/index.html"
     status_code: 200
     return_content: yes
+    validate_certs: no  # We're using a self-signed cert for testing.
   register: webpage
 - assert:
     that: "'This is a test page!' in webpage.content"

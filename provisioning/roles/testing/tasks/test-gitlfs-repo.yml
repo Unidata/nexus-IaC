@@ -1,22 +1,21 @@
 ---
 - name: Create local bare repo to be used as a remote by Git LFS.
-  command: "git init --bare {{ local_remote_repo }}"
+  command: git init --bare {{ local_remote_repo }}
 
 - name: Create local repo that will test pushing objects to the Git LFS server.
-  command: "git init {{ test_lfs_push_dir }}"
+  command: git init {{ test_lfs_push_dir }}
 
 - name: Configure git 'user.name'.
   command: git config --global user.name '{{ nexus_local_users[0].first_name }} {{ nexus_local_users[0].last_name }}'
-  args:
-    chdir: "{{ test_lfs_push_dir }}"
 
 - name: Configure git 'user.email'.
   command: git config --global user.email '{{ nexus_local_users[0].username }}@{{ public_hostname }}'
-  args:
-    chdir: "{{ test_lfs_push_dir }}"
+
+- name: Configure git to NOT verify the SSL certificate when fetching or pushing over HTTPS.
+  command: git config --global http.sslVerify false   # We're using a self-signed cert for testing.
 
 - name: Configure Git LFS. Creates '.lfsconfig'.
-  command: "git config -f {{ test_lfs_push_dir }}/.lfsconfig lfs.url {{ lfs_url }}"
+  command: git config -f {{ test_lfs_push_dir }}/.lfsconfig lfs.url {{ lfs_url }}
 
 - name: Track NetCDF files with Git LFS. Creates '.gitattributes'.
   command: git lfs track '*.nc'

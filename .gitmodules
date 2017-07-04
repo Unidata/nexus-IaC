@@ -10,3 +10,9 @@
 [submodule "provisioning/roles/github-git-lfs"]
 	path = provisioning/roles/github-git-lfs
 	url = https://github.com/cwardgar/github-git-lfs.git
+[submodule "provisioning/roles/ansible-role-apache"]
+	path = provisioning/roles/ansible-role-apache
+	url = https://github.com/geerlingguy/ansible-role-apache.git
+[submodule "provisioning/roles/ansible-role-ssl-certs"]
+	path = provisioning/roles/ansible-role-ssl-certs
+	url = https://github.com/jdauphant/ansible-role-ssl-certs.git

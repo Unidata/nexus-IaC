@@ -6,15 +6,31 @@ groovy_exe: "{{ groovy_home }}/bin/groovy"
 
 testing_dir: /tmp/nexus-IaC-testing
 
+# See https://goo.gl/mZzMtw
+jre_truststore: "{{ oracle_java_home }}/jre/lib/security/cacerts"
+jre_truststore_password: changeit
+cert_alias: nexus
+
 local_remote_repo: "{{ testing_dir }}/repo.git"
 test_lfs_push_dir: "{{ testing_dir }}/test-lfs-push"
 test_lfs_pull_dir: "{{ testing_dir }}/test-lfs-pull"
 
-lfs_url_without_creds: "{{ nexus_base_url }}/repository/{{ nexus_repos_gitlfs_hosted[0].name }}/info/lfs"
-http_creds_prefix: "http://{{ nexus_local_users[0].username }}:{{ nexus_local_users[0].password }}@"
-lfs_url: "{{ lfs_url_without_creds | replace('http://', http_creds_prefix) }}"
+# The public base URL of the Nexus server. It is available to all clients. It should NOT include a trailing slash.
+artifacts_base_url: "https://{{ artifacts_hostname }}"
 
-raw_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_raw_hosted[0].name }}"
+lfs_url_without_creds: "{{ artifacts_base_url }}/repository/{{ nexus_repos_gitlfs_hosted[0].name }}/info/lfs"
+http_creds_prefix: "https://{{ nexus_local_users[0].username }}:{{ nexus_local_users[0].password }}@"
+lfs_url: "{{ lfs_url_without_creds | replace('https://', http_creds_prefix) }}"
 
-maven_pull_repo_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
-maven_push_repo_url: "{{ nexus_base_url }}/repository/{{ nexus_repos_maven_hosted[0].name }}"
+# The public base URL of the raw repository where we store our docs. It is mapped to the appropriate Nexus private
+# URL in /provisioning/templates/vhosts.conf.
+docs_base_url: "https://{{ docs_hostname }}"
+
+# Pull from 'maven-public', which is a group repository that includes all other repositories.
+maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
+
+# The Maven repository we're pushing to in "test-maven-repos.yml". The test could be run more than once, and the
+# deployment needs to work each time. To that end, we're going to push a "1.0.0-SNAPSHOT" version of our library
+# to our snapshots repo. That way, a unique version will be generated each time ("1.0.0-" plus a timestamp), and we
+# won't have to worry about collisions with existing artifacts in the repo that have the same Maven coordinates.
+maven_push_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_hosted[1].name }}"

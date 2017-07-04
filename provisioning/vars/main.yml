@@ -4,126 +4,47 @@
 # Set the timezone for the server.
 ntp_timezone: 'America/Denver'
 
-########################################## ansible-nexus3-oss ##########################################
+########################################## ansible-role-ssl-certs ##########################################
 
-# Where Nexus application data will be stored. Default value: '/var/nexus'
-nexus_data_dir: '/var/opt/nexus'
+ssl_certs_country: "US"
+ssl_certs_state: "Colorado"
+ssl_certs_locality: "Boulder"
+ssl_certs_organization: "UCAR"
+ssl_certs_common_name: "{{ artifacts_hostname }}"  # Must match "VirtualHost.ServerName" in Apache vhosts.conf.
 
-# Location where backups of databases and blob stores will go. Default value: '/var/nexus-backup'.
-# '/var/backups' is not an appropriate place. See http://www.pathname.com/fhs/pub/fhs-2.3.html#REQUIREMENTS12
-nexus_backup_dir: '/var/opt/nexus-backups'
+ssl_certs_path: "/etc/ssl/nexus"
 
-# Accept connections from all IP addresses. Default value: 127.0.0.1
-application_host: 0.0.0.0
+########################################## ansible-role-apache ##########################################
 
-# The password to set for the admin account. The default is 'admin123'.
-nexus_admin_password: 'changeme'
+# Use our own VirtualHost configuration template. It's in /provisioning/templates/vhosts.conf.
+apache_vhosts_template: "vhosts.conf"
 
-# Delete the repositories that Nexus is configured with by default. This step is only executed on first-time install.
-nexus_delete_default_repos: true
-
-# See https://books.sonatype.com/nexus-book/reference3/security.html#anonymous
-nexus_anonymous_access: true
-
-# 'ansible_date_time.iso8601' is almost what we want, except that it gives times in UTC, e.g. "2017-06-14T07:23:21Z".
-# We want them in 'ntp_timezone'. So, we need to create our own iso8601-ish timestamp. This will give something like:
-# "2017-06-14T01:23:21 MDT".
-timestamp: "{{ ansible_date_time.date }}T{{ ansible_date_time.time }} {{ ansible_date_time.tz }}"
-
-# Use the same CSS for our footer that Sonatype uses for its copyright footer. This will cause our message to appear
-# just below the copyright. I used the Chrome developer tools to find the right CSS classes.
-nexus_branding_footer: "<div class='copyright nx-footer'>Last provisioned at {{ timestamp }}.</div>"
-
-#httpd_setup_enable: false
-#httpd_ssl_certificate_file: 'files/nexus.vm.crt'
-#httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
-
-# We don't want the 'all-repos-read' privilege added by ansible-nexus3-oss, so set to empty list.
-# Neither do we want to add any privileges of our own; the ones built into Nexus are sufficient.
-nexus_privileges: []
-
-nexus_roles:
-  - id: developer
-    name: developer
-    description: Privileges required to deploy artifacts, plus search capabilities
-    # See https://stackoverflow.com/questions/40966763/
-    privileges:
-      - nx-repository-view-*-*-add
-      - nx-repository-view-*-*-browse
-      - nx-repository-view-*-*-edit
-      - nx-repository-view-*-*-read
-      # No 'delete' privilege.
-      - nx-search-read
-    roles: []
-
-nexus_local_users:
-  - username: developer
-    first_name: Developer
-    last_name: User
-    email: thredds-dev@unidata.ucar.edu
-    password: "changeme"
-    roles:
-      - developer
-
-nexus_scheduled_tasks:
-  - name: db-backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
-    cron: '0 0 21 * * ?'
-    typeId: db.backup
-    alertEmail: thredds-dev@unidata.ucar.edu
-    taskProperties:
-      location: "{{ nexus_backup_dir }}"
-
-  - name: compact-blobstore
-    cron: '0 0 22 * * ?'
-    typeId: blobstore.compact
-    alertEmail: thredds-dev@unidata.ucar.edu
-    taskProperties:
-      blobstoreName: 'default'
-
-    # TODO: Create a task to purge old snapshots.
-
-# Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
-nexus_repos_maven_hosted:
-  - name: maven-releases
-    version_policy: release
-
-  - name: maven-snapshots
-    version_policy: snapshot
-
-nexus_repos_maven_proxy:
-  - name: unidata-releases-old
-    remote_url: 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/'
-    version_policy: release
-
-  - name: unidata-snapshots-old
-    remote_url: 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-snapshots/'
-    version_policy: snapshot
-
-nexus_repos_maven_group:
-  - name: maven-public
-    member_repos:
-      - maven-releases
-      - maven-snapshots
-      - unidata-releases-old
-      - unidata-snapshots-old
-
-
-nexus_config_raw: true  # Configure a raw repository.
-
-# Using the defaults in '_nexus_repos_raw_defaults' where appropriate.
-nexus_repos_raw_hosted:
-  - name: docs
-    write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
-
-nexus_repos_raw_proxy: []  # Don't want ansible-nexus3-oss's default raw proxy repos.
-
-nexus_repos_raw_group: []  # Don't want ansible-nexus3-oss's default raw group repos.
-
-
-nexus_config_gitlfs: true  # Configure a gitlfs repository.
-
-# Using the defaults in '_nexus_repos_gitlfs_defaults' where appropriate.
-nexus_repos_gitlfs_hosted:
-  - name: cdm-unit-test
+# The Apache modules to enable. These are necessary for the directives we use in our vhosts.conf file.
+# vhost.conf can't have comments in it, so we'll have to add them here.
+# Our vhost.conf is a combination of an example found in the Nexus documentation (https://goo.gl/JeauuY) and another
+# at /provisioning/roles/ansible-nexus3-oss/templates/nexus-vhost.conf.
+apache_mods_enabled:
+  - ssl.load      # For SSL* directives.
+  - proxy.load    # For ProxyPass* directives.
+    # For RequestHeader directive. Without this, I get errors when pushing LFS objects to the 'cdm-unit-test' repo:
+    #   LFS: Put <artifact_url>: read /tmp/nexus-IaC-testing/test-lfs-push/.git/lfs/objects/<hash>: file already closed,
+    #   error: failed to push some refs to '/tmp/nexus-IaC-testing/repo.git'
+    # I don't know why the error happens without the directive, but RequestHeader was included in the example
+    # vhosts.conf file provided in the Nexus documentation, so I guess I shouldn't worry too much about it.
+  - headers.load
+    # Without this, I was getting the following in the Apache error.log:
+    #   No protocol handler was valid for the URL /. If you are using a DSO version of mod_proxy, make sure the proxy
+    #   submodules are included in the configuration using LoadModule.
+  - proxy_http.load
 
 ########################################## non-role variables ##########################################
+
+artifacts_hostname: artifacts2.unidata.ucar.edu
+artifacts_apache_logs_dir: /var/log/apache2/{{ artifacts_hostname }}
+
+docs_hostname: docs2.unidata.ucar.edu
+docs_apache_logs_dir: /var/log/apache2/{{ docs_hostname }}
+
+# This will appear in the error page that Apache displays for HTTP 5XX responses.
+# It'll also be where alert emails are sent when something goes wrong with one of our Nexus scheduled tasks.
+admin_email: thredds-dev@unidata.ucar.edu

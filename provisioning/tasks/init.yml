@@ -9,3 +9,11 @@
   with_items:
     - rsync   # For copying default Nexus work dir to proper location.
     - tzdata  # For ansible-role-ntp, temporary.
+
+- name: Ensure Apache log directories exist for the two domains.
+  file:
+    path: "{{ item }}"
+    state: "directory"
+  with_items:
+  - "{{ artifacts_apache_logs_dir }}"
+  - "{{ docs_apache_logs_dir }}"

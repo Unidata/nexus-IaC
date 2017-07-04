@@ -1,5 +1,5 @@
 group = "edu.ucar"
-version = '1.0.0'
+version = '1.0.0-SNAPSHOT'
 description = 'A trivial Java library that will be published to Nexus in order to test the Maven repository.'
 
 repositories {

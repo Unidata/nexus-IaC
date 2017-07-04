@@ -1,0 +1,121 @@
+---
+########################################## ansible-nexus3-oss ##########################################
+
+# Where Nexus application data will be stored. Default value: '/var/nexus'
+nexus_data_dir: '/var/opt/nexus'
+
+# Location where backups of databases and blob stores will go. Default value: '/var/nexus-backup'.
+# '/var/backups' is not an appropriate place. See http://www.pathname.com/fhs/pub/fhs-2.3.html#REQUIREMENTS12
+nexus_backup_dir: '/var/opt/nexus-backups'
+
+# Accept connections from localhost only. Apache is acting as a reverse proxy; only it will talk directly to Nexus.
+application_host: 127.0.0.1
+
+# The password to set for the admin account. The default is 'admin123'.
+nexus_admin_password: 'changeme'
+
+# Delete the repositories that Nexus is configured with by default. This step is only executed on first-time install.
+nexus_delete_default_repos: true
+
+# See https://books.sonatype.com/nexus-book/reference3/security.html#anonymous
+nexus_anonymous_access: true
+
+# 'ansible_date_time.iso8601' is almost what we want, except that it gives times in UTC, e.g. "2017-06-14T07:23:21Z".
+# We want them in 'ntp_timezone'. So, we need to create our own iso8601-ish timestamp. This will give something like:
+# "2017-06-14T01:23:21 MDT".
+timestamp: "{{ ansible_date_time.date }}T{{ ansible_date_time.time }} {{ ansible_date_time.tz }}"
+
+# Use the same CSS for our footer that Sonatype uses for its copyright footer. This will cause our message to appear
+# just below the copyright. I used the Chrome developer tools to find the right CSS classes.
+nexus_branding_footer: "<div class='copyright nx-footer'>Last provisioned at {{ timestamp }}.</div>"
+
+# The fully qualified domain name under which the nexus instance will be accessible to its clients.
+public_hostname: "{{ artifacts_hostname }}"
+
+# We don't want the 'all-repos-read' privilege added by ansible-nexus3-oss, so set to empty list.
+# Neither do we want to add any privileges of our own; the ones built into Nexus are sufficient.
+nexus_privileges: []
+
+nexus_roles:
+  - id: developer
+    name: developer
+    description: Privileges required to deploy artifacts, plus search capabilities
+    # See https://stackoverflow.com/questions/40966763/
+    privileges:
+      - nx-repository-view-*-*-add
+      - nx-repository-view-*-*-browse
+      - nx-repository-view-*-*-edit
+      - nx-repository-view-*-*-read
+      # No 'delete' privilege.
+      - nx-search-read
+    roles: []
+
+nexus_local_users:
+  - username: developer
+    first_name: THREDDS
+    last_name: Developer
+    email: "{{ admin_email }}"
+    password: "changeme"
+    roles:
+      - developer
+
+nexus_scheduled_tasks:
+  - name: db-backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
+    cron: '0 0 21 * * ?'
+    typeId: db.backup
+    alertEmail: "{{ admin_email }}"
+    taskProperties:
+      location: "{{ nexus_backup_dir }}"
+
+  - name: compact-blobstore
+    cron: '0 0 22 * * ?'
+    typeId: blobstore.compact
+    alertEmail: "{{ admin_email }}"
+    taskProperties:
+      blobstoreName: 'default'
+
+    # TODO: Create a task to purge old snapshots.
+
+# Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
+nexus_repos_maven_hosted:
+  - name: maven-releases
+    version_policy: release
+
+  - name: maven-snapshots
+    version_policy: snapshot
+
+nexus_repos_maven_proxy:
+  - name: unidata-releases-old
+    remote_url: 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/'
+    version_policy: release
+
+  - name: unidata-snapshots-old
+    remote_url: 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-snapshots/'
+    version_policy: snapshot
+
+nexus_repos_maven_group:
+  - name: maven-public
+    member_repos:
+      - maven-releases
+      - maven-snapshots
+      - unidata-releases-old
+      - unidata-snapshots-old
+
+
+nexus_config_raw: true  # Configure a raw repository.
+
+# Using the defaults in '_nexus_repos_raw_defaults' where appropriate.
+nexus_repos_raw_hosted:
+  - name: docs
+    write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
+
+nexus_repos_raw_proxy: []  # Don't want ansible-nexus3-oss's default raw proxy repos.
+
+nexus_repos_raw_group: []  # Don't want ansible-nexus3-oss's default raw group repos.
+
+
+nexus_config_gitlfs: true  # Configure a gitlfs repository.
+
+# Using the defaults in '_nexus_repos_gitlfs_defaults' where appropriate.
+nexus_repos_gitlfs_hosted:
+  - name: cdm-unit-test

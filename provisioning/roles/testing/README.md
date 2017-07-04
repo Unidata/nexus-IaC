@@ -11,7 +11,7 @@ Tests can be executed locally in two ways.
 In the provisioning directory, do:
 ```
 ansible-playbook -i inventories/vagrant/hosts test.yml
-ansible-playbook -i inventories/vagrant/hosts -v test.yml --tags "git-lfs"
+ansible-playbook -i inventories/vagrant/hosts -v test.yml --tags "test-gitlfs-repo"
 ```
 
 This will execute only the tests included in the test playbook; Nexus config is assumed to have already been done.

@@ -12,6 +12,7 @@ For the most part, the project follows the alternative directory layout describe
 ```
 ansible all -i inventories/vagrant/hosts -a date
 ansible all -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
+ansible all -i inventories/vagrant/hosts -m service -a 'name=nexus state=restarted'
 ```
 [Reference](http://docs.ansible.com/ansible/intro_adhoc.html)
 

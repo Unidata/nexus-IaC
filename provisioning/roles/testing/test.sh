@@ -73,6 +73,9 @@ DOCKER_RUN_PARAMS+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
 # See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
 DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
+# /etc/hosts is read-only inside the container, so we must add our host mappings here.
+DOCKER_RUN_PARAMS+=(--add-host='artifacts2.unidata.ucar.edu:127.0.0.1')
+DOCKER_RUN_PARAMS+=(--add-host='docs2.unidata.ucar.edu:127.0.0.1')
 # The image to run.
 DOCKER_RUN_PARAMS+=(geerlingguy/docker-$distro-ansible:latest)
 # The name of the system initialization program that will run first in the container.
