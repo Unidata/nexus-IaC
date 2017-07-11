@@ -16,6 +16,9 @@ ssl_certs_path: "/etc/ssl/nexus"
 
 ########################################## ansible-role-apache ##########################################
 
+# Install the latest version of Apache.
+apache_packages_state: latest
+
 # Use our own VirtualHost configuration template. It's in /provisioning/templates/vhosts.conf.
 apache_vhosts_template: "vhosts.conf"
 

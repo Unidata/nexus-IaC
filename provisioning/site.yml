@@ -13,8 +13,12 @@
       tags: [ always ]
 
   roles:
-    - { role: ansible-role-ntp,       tags: [ ntp    ] }
-    - { role: ansible-role-ssl-certs, tags: [ ssl    ] }
-    - { role: ansible-role-apache,    tags: [ apache ] }
-    - { role: oracle-java,            tags: [ java   ] }
-    - { role: ansible-nexus3-oss,     tags: [ nexus  ] }
+    # Upgrades ALL system software, rebooting afterwards if necessary.
+    # This is disabled during development because it's slow.
+#    - { role: ansible-debian-upgrade-reboot, tags: [ upgrade ] }
+
+    - { role: ansible-role-ntp,              tags: [ ntp     ] }
+    - { role: ansible-role-ssl-certs,        tags: [ ssl     ] }
+    - { role: ansible-role-apache,           tags: [ apache  ] }
+    - { role: oracle-java,                   tags: [ java    ] }
+    - { role: ansible-nexus3-oss,            tags: [ nexus   ] }

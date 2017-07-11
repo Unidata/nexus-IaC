@@ -1,6 +1,10 @@
 ---
 ########################################## ansible-nexus3-oss ##########################################
 
+# Try to determine the latest available version and install that.
+# If an older version of Nexus was previously installed, don't do anything. We don't (yet?) support upgrading.
+nexus_version: 'latest'
+
 # Where Nexus application data will be stored. Default value: '/var/nexus'
 nexus_data_dir: '/var/opt/nexus'
 

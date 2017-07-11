@@ -13,7 +13,7 @@
   when: ansible_virtualization_type != 'docker'
 
 - name: Install unzip program, for extracting Groovy package.
-  apt: "name=unzip state=installed"
+  apt: "name=unzip state=latest"
 
 - name: Download and extract Groovy package.
   unarchive:

@@ -3,7 +3,8 @@
 	url = https://github.com/ansiblebit/oracle-java.git
 [submodule "provisioning/roles/ansible-role-ntp"]
 	path = provisioning/roles/ansible-role-ntp
-	url = https://github.com/geerlingguy/ansible-role-ntp.git
+	url = https://github.com/cwardgar/ansible-role-ntp.git
+	branch = no-timezone-module
 [submodule "provisioning/roles/ansible-nexus3-oss"]
 	path = provisioning/roles/ansible-nexus3-oss
 	url = https://github.com/cwardgar/ansible-nexus3-oss.git
@@ -15,4 +16,7 @@
 	url = https://github.com/geerlingguy/ansible-role-apache.git
 [submodule "provisioning/roles/ansible-role-ssl-certs"]
 	path = provisioning/roles/ansible-role-ssl-certs
-	url = https://github.com/jdauphant/ansible-role-ssl-certs.git
+	url = https://github.com/cwardgar/ansible-role-ssl-certs.git
+[submodule "provisioning/roles/ansible-debian-upgrade-reboot"]
+	path = provisioning/roles/ansible-debian-upgrade-reboot
+	url = https://github.com/cwardgar/ansible-debian-upgrade-reboot.git
