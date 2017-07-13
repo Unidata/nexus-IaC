@@ -1,0 +1,27 @@
+---
+# Using best practice for maintaining list of sudoers. See https://stackoverflow.com/a/33362805/3874643.
+
+- name: Create 'wheel' group.
+  group: name=wheel state=present
+
+- name: Allow 'wheel' group to have passwordless sudo.
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: Create users.
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.group }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+  with_items: "{{ users }}"
+
+- name: Set authorized keys for users.
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ lookup('file', item.ssh_key) }}"
+  with_items: "{{ users }}"

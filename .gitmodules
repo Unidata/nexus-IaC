@@ -20,3 +20,6 @@
 [submodule "provisioning/roles/ansible-debian-upgrade-reboot"]
 	path = provisioning/roles/ansible-debian-upgrade-reboot
 	url = https://github.com/cwardgar/ansible-debian-upgrade-reboot.git
+[submodule "provisioning/roles/ansible-role-firewall"]
+	path = provisioning/roles/ansible-role-firewall
+	url = https://github.com/cwardgar/ansible-role-firewall.git

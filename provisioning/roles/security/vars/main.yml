@@ -1,0 +1,6 @@
+---
+users:
+  - name: cwardgar
+    group: wheel
+    shell: /bin/bash
+    ssh_key: id_rsa.pub.cwardgar

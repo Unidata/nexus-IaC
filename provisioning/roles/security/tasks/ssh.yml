@@ -1,0 +1,31 @@
+---
+- name: Ensure ssh is installed.
+  apt: name=ssh state=latest
+
+# See https://github.com/geerlingguy/ansible-role-security/blob/master/tasks/ssh.yml
+# Also see https://linux.die.net/man/5/sshd_config
+- name: Update SSH configuration to be more secure.
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    # Options may already be present in file, but commented out. So, search for optional '#' character at beginning.
+    - regexp: "^#?PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^#?PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^#?Port"
+      line: "Port 22"
+    - regexp: "^#?UseDNS"
+      line: "UseDNS no"
+    - regexp: "^#?PermitEmptyPasswords"
+      line: "PermitEmptyPasswords no"
+    - regexp: "^#?ChallengeResponseAuthentication"
+      line: "ChallengeResponseAuthentication no"
+    - regexp: "^#?GSSAPIAuthentication"
+      line: "GSSAPIAuthentication no"
+    - regexp: "^#?X11Forwarding"
+      line: "X11Forwarding no"
+  notify: restart ssh
