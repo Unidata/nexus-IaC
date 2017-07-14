@@ -17,8 +17,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Ansible provisioner.
-  config.vm.provision :ansible do |ansible|
-    ansible.inventory_path = "provisioning/inventories/vagrant/hosts"
+  config.vm.provision :ansible_local do |ansible|
+    ansible.install = true
+    ansible.inventory_path = "provisioning/inventories/local/hosts"
     ansible.verbose = "v"
     ansible.playbook = "provisioning/site.yml"
     ansible.config_file = "provisioning/ansible.cfg"

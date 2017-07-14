@@ -40,7 +40,7 @@ host_provis_dir="$(dirname "$(dirname $parent_dir_of_this_script)")"
 container_provis_dir="/root/nexus-IaC/provisioning"
 container_site_playbook="$container_provis_dir/site.yml"
 container_test_playbook="$container_provis_dir/test.yml"
-container_inventory="--inventory-file=$container_provis_dir/inventories/docker/hosts"
+container_inventory="--inventory-file=$container_provis_dir/inventories/local/hosts"
 
 # From Ansible for DevOps, version 2017-06-02, page 349:
 #   Why use an init system in Docker? With Docker, it’s preferable to either
