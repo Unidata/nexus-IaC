@@ -63,23 +63,6 @@ nexus_local_users:
     roles:
       - developer
 
-nexus_scheduled_tasks:
-  - name: db-backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
-    cron: '0 0 21 * * ?'
-    typeId: db.backup
-    alertEmail: "{{ admin_email }}"
-    taskProperties:
-      location: "{{ nexus_backup_dir }}"
-
-  - name: compact-blobstore
-    cron: '0 0 22 * * ?'
-    typeId: blobstore.compact
-    alertEmail: "{{ admin_email }}"
-    taskProperties:
-      blobstoreName: 'default'
-
-    # TODO: Create a task to purge old snapshots.
-
 # Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
 nexus_repos_maven_hosted:
   - name: maven-releases
@@ -123,3 +106,38 @@ nexus_config_gitlfs: true  # Configure a gitlfs repository.
 # Using the defaults in '_nexus_repos_gitlfs_defaults' where appropriate.
 nexus_repos_gitlfs_hosted:
   - name: cdm-unit-test
+
+
+nexus_scheduled_tasks:
+  # See org.sonatype.nexus.internal.backup.DatabaseBackupTaskDescriptor
+  - name: db.backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
+    cron: '0 0 3 * * ?'
+    typeId: db.backup
+    alertEmail: "{{ admin_email }}"
+    taskProperties:
+      location: "{{ nexus_backup_dir }}"
+
+  # See org.sonatype.nexus.repository.internal.blobstore.CompactBlobStoreTaskDescriptor
+  - name: blobstore.compact
+    cron: '0 0 4 * * ?'
+    typeId: blobstore.compact
+    alertEmail: "{{ admin_email }}"
+    taskProperties:
+      blobstoreName: 'default'
+
+  # See org.sonatype.nexus.repository.maven.tasks.RemoveSnapshotsTaskDescriptor
+  - name: repository.maven.remove-snapshots
+    cron: '0 0 5 * * ?'
+    typeId: repository.maven.remove-snapshots
+    alertEmail: "{{ admin_email }}"
+    taskProperties:
+      # Maven repository or repository group to remove snapshots from.
+      repositoryName: maven-snapshots
+      # Minimum number of snapshots to keep for one GAV.
+      minimumRetained: 1
+      # Purge all snapshots older than this, provided we still keep the minimum number specified.
+      snapshotRetentionDays: 30
+      # Purge all snapshots that have a corresponding release.
+      removeIfReleased: false
+      # The grace period during which snapshots with an associated release will not be purged.
+      gracePeriodInDays: -1
