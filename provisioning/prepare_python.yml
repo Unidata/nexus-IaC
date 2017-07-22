@@ -1,0 +1,23 @@
+---
+# Some Ansible features depend on Python packages that aren't installed with the default Python distribution.
+# We must install those packages ourselves, and of course we use Ansible for the task. Unfortunately, the Ansible
+# instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Python
+# interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
+# own playbook (this file). This playbook should be run before the main or test playbooks are run.
+- name: Playbook to prepare Python. Install Python packages needed by Ansible itself.
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install pip Python package manager, updating the cache first, if needed.
+      apt:
+        name: python-pip
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
+
+    - name: Install 'jmespath' Python package, which is required by the json_query Jinja2 filter.
+      pip: "name={{ item }} state=latest"
+      with_items:
+        - jmespath

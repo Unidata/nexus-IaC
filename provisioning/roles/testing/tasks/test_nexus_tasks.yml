@@ -1,0 +1,87 @@
+---
+# These tests really ought to live in anisble-nexus3-oss, but it's easier (for now) to just put them here.
+
+- name: "Assert that '{{ nexus_test_task_type_id }}' is among available task types."
+  uri: &uri_anchor
+    url: "{{ rest_api_endpoint }}/tasks/run"
+    user: 'admin'
+    password: "{{ nexus_admin_password }}"
+    headers:
+      Content-Type: "text/plain"
+    method: POST
+    status_code: 200,204
+    force_basic_auth: yes
+    body: "{{ args | to_json }}"
+    return_content: yes
+  vars:
+    args:
+      methodName: readTypes
+  register: webpage
+  failed_when: "nexus_test_task_type_id not in
+                    webpage.json.result | from_json | json_query('response.types[*].id')"  # Extract all task type IDs.
+
+- name: "Create '{{ nexus_test_task_type_id }}' task."
+  uri: *uri_anchor  # Referencing the anchor we set above to avoid duplication. See https://goo.gl/R4mFis
+  vars:
+    args:
+      methodName: create
+      methodArgs:
+        name: "{{ nexus_test_task_type_id }}"
+        typeId: "{{ nexus_test_task_type_id }}"
+        alertEmail: abc@example.com
+        schedule: manual
+  register: webpage
+  failed_when: "'CHANGED' not in webpage.content"
+
+- name: "Update '{{ nexus_test_task_type_id }}' task."
+  uri: *uri_anchor
+  vars:
+    args:
+      methodName: update
+      methodArgs:
+        name: "{{ nexus_test_task_type_id }}"
+        alertEmail: xyz@example.com  # Change alertEmail.
+  register: webpage
+  failed_when: "'CHANGED' not in webpage.content"
+
+- name: "Run '{{ nexus_test_task_type_id }}' task."
+  uri: *uri_anchor
+  vars:
+    args:
+      methodName: run
+      methodArgs:
+        name: "{{ nexus_test_task_type_id }}"
+  register: webpage
+  failed_when: "'CHANGED' not in webpage.content"
+
+- name: "Stop '{{ nexus_test_task_type_id }}' task."
+  uri: *uri_anchor
+  vars:
+    args:
+      methodName: stop
+      methodArgs:
+        name: "{{ nexus_test_task_type_id }}"
+  register: webpage
+  # It's tough to find a task that'll run long enough for us be able to stop it. In fact, most tasks aren't stoppable
+  # to begin with. So, just test failure.
+  failed_when: "'FAILED: Task could not be cancelled, typically because it has already completed normally.'
+                    not in webpage.content"
+
+- name: "Remove '{{ nexus_test_task_type_id }}' task."
+  uri: *uri_anchor
+  vars:
+    args:
+      methodName: remove
+      methodArgs:
+        name: "{{ nexus_test_task_type_id }}"
+  register: webpage
+  failed_when: "'CHANGED' not in webpage.content"
+
+- name: "Assert that '{{ nexus_test_task_type_id }}' is no longer among available tasks."
+  uri: *uri_anchor
+  vars:
+    args:
+      methodName: read
+  register: webpage
+  failed_when: "nexus_test_task_type_id in
+                    webpage.json.result | from_json | json_query('response.tasks[*].name')"  # Extract task names.

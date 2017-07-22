@@ -38,6 +38,7 @@ parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 host_provis_dir="$(dirname "$(dirname $parent_dir_of_this_script)")"
 
 container_provis_dir="/root/nexus-IaC/provisioning"
+container_prepare_python_playbook="$container_provis_dir/prepare_python.yml"
 container_site_playbook="$container_provis_dir/site.yml"
 container_test_playbook="$container_provis_dir/test.yml"
 container_inventory="--inventory-file=$container_provis_dir/inventories/local/hosts"
@@ -85,17 +86,17 @@ docker run "${DOCKER_RUN_PARAMS[@]}"
 
 printf "\n"
 
-# Test Ansible syntax.
+printf ${blue}"Install Python packages needed by Ansible itself."${neutral}
+docker exec $container_id $color_opts ansible-playbook $container_inventory $container_prepare_python_playbook
+
 printf ${blue}"Checking Ansible playbook syntax."${neutral}
-docker exec $container_id ansible-playbook $container_inventory $container_site_playbook --syntax-check
+docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook --syntax-check
 
 printf "\n"
 
-# Run Ansible playbook.
 printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
 docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook
 
-# Run Ansible playbook again, if configured.
 if [ "$test_idempotence" = true ]; then
   printf ${blue}"Running playbook again: idempotence test"${neutral}
   idempotence=$(mktemp)
@@ -109,13 +110,11 @@ fi
 
 printf "\n"
 
-# Run integration and functional tests.
 printf ${blue}"Running integration and functional tests against live instance."${neutral}
 docker exec $container_id $color_opts ansible-playbook $container_inventory $container_test_playbook
 
 printf "\n"
 
-# Remove the Docker container, if configured.
 if [ "$cleanup" = true ]; then
   printf ${blue}"Removing Docker container...\n"${neutral}
   docker rm -f $container_id

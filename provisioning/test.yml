@@ -19,5 +19,7 @@
     - vars/nexus.yml
 
   roles:
-    - { role: github-git-lfs, tags: [ git-lfs ] }
-    - { role: testing,        tags: [ test    ] }
+    - role: github-git-lfs
+      tags: [ git-lfs ]
+    - role: testing
+      tags: [ test ]

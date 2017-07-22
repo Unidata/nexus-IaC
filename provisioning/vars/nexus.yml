@@ -111,26 +111,28 @@ nexus_repos_gitlfs_hosted:
 nexus_scheduled_tasks:
   # See org.sonatype.nexus.internal.backup.DatabaseBackupTaskDescriptor
   - name: db.backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
-    cron: '0 0 3 * * ?'
     typeId: db.backup
     alertEmail: "{{ admin_email }}"
-    taskProperties:
+    schedule: manual
+    properties:
       location: "{{ nexus_backup_dir }}"
 
   # See org.sonatype.nexus.repository.internal.blobstore.CompactBlobStoreTaskDescriptor
   - name: blobstore.compact
-    cron: '0 0 4 * * ?'
     typeId: blobstore.compact
     alertEmail: "{{ admin_email }}"
-    taskProperties:
+    schedule: advanced
+    cronExpression: '0 0 4 * * ?'
+    properties:
       blobstoreName: 'default'
 
   # See org.sonatype.nexus.repository.maven.tasks.RemoveSnapshotsTaskDescriptor
   - name: repository.maven.remove-snapshots
-    cron: '0 0 5 * * ?'
     typeId: repository.maven.remove-snapshots
     alertEmail: "{{ admin_email }}"
-    taskProperties:
+    schedule: advanced
+    cronExpression: '0 0 5 * * ?'
+    properties:
       # Maven repository or repository group to remove snapshots from.
       repositoryName: maven-snapshots
       # Minimum number of snapshots to keep for one GAV.

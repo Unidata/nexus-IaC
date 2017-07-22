@@ -54,5 +54,4 @@
   stat:
     path: "{{ test_lfs_pull_dir }}/jan.nc"
   register: jan_stat
-- assert:
-    that: jan_stat.stat.size == 6580
+  failed_when: jan_stat.stat.size != 6580

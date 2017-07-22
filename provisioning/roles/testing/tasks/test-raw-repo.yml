@@ -19,5 +19,4 @@
     return_content: yes
     validate_certs: no  # We're using a self-signed cert for testing.
   register: webpage
-- assert:
-    that: "'This is a test page!' in webpage.content"
+  failed_when: "'This is a test page!' not in webpage.content"

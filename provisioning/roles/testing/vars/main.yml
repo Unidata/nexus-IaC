@@ -34,3 +34,7 @@ maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_g
 # to our snapshots repo. That way, a unique version will be generated each time ("1.0.0-" plus a timestamp), and we
 # won't have to worry about collisions with existing artifacts in the repo that have the same Maven coordinates.
 maven_push_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_hosted[1].name }}"
+
+# The TaskType ID of the Nexus scheduled task that we will use to test the 'tasks.groovy' script in test_nexus_tasks.yml
+# See org.sonatype.nexus.internal.security.apikey.PurgeApiKeysTaskDescriptor
+nexus_test_task_type_id: security.purge-api-keys

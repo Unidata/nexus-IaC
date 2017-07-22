@@ -18,3 +18,7 @@
 - name: Test Maven repos.
   include: test-maven-repos.yml
   tags: [ test-maven-repos ]
+
+- name: Test Nexus scheduled tasks script.
+  include: test_nexus_tasks.yml
+  tags: [ test_nexus_tasks ]

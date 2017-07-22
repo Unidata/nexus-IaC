@@ -2,8 +2,7 @@
 - name: Assert that timezone has been changed to MDT.
   command: date
   register: date
-- assert:
-    that: "'MDT' in date.stdout"
+  failed_when: "'MDT' not in date.stdout"
 
 - name: Assert that Nexus returns a status 200 and page content has expected title.
   uri:
@@ -12,15 +11,13 @@
     return_content: yes
     validate_certs: no  # We're using a self-signed cert for testing.
   register: webpage
-- assert:
-    that: "'<title>Nexus Repository Manager</title>' in webpage.content"
+  failed_when: "'<title>Nexus Repository Manager</title>' not in webpage.content"
 
 - name: Assert that Nexus process was started by user '{{ nexus_os_user }}'.
   shell: "ps aux | grep org.sonatype.nexus.karaf.NexusMain$"
   register: nexus_proc_info
-- assert:
-    # startswith(s) is a function from the Python standard library
-    that: "nexus_proc_info.stdout.startswith('{{ nexus_os_user }}')"
+  # startswith(s) is a function from the Python standard library
+  failed_when: not nexus_proc_info.stdout.startswith(nexus_os_user)
 
 - name: Assert that admin password was successfully changed to what we want.
   uri:
