@@ -10,5 +10,5 @@
     path: "{{ item }}"
     state: "directory"
   with_items:
-  - "{{ artifacts_apache_logs_dir }}"
-  - "{{ docs_apache_logs_dir }}"
+  - "{{ artifacts_apache_log_dir }}"
+  - "{{ docs_apache_log_dir }}"

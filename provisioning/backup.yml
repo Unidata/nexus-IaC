@@ -10,7 +10,8 @@
   vars_files:
     - roles/ansible-nexus3-oss/defaults/main.yml  # For various Nexus variables.
     - roles/ansible-nexus3-oss/vars/main.yml      # Ditto.
-    - vars/nexus.yml                              # Yep.
+    - vars/main.yml
+    - vars/nexus.yml
     - vars/backup-and-restore.yml
     - vars/vault.yml
 
@@ -43,27 +44,37 @@
       register: webpage
       failed_when: "'CHANGED' not in webpage.content"
 
-    - name: Create directory to be synced to S3.
-      file:
-        path: "{{ sync_folder }}"
-        state: directory
-
-    - name: Create symlinks in '{{ sync_folder }}' to the actual backup data.
-      file:
-        path: "{{ item.path }}"
-        src: "{{ item.src }}"
-        state: link
-      with_items:
-        - { path: "{{ sync_folder }}/db",    src: "{{ nexus_backup_dir }}"     }
-        - { path: "{{ sync_folder }}/blobs", src: "{{ nexus_data_dir }}/blobs" }
-
     # The AWS CLI package (which includes boto) is installed in 'prepare_ansible.yml'. That playbook MUST be run
     # before this one. As stated above, we can't do the installation here even if we wanted to.
 
-    # A module named 's3_sync' exists for this purpose, but it lacks the functionality of the '--delete' flag.
-    # It also may not have the '--follow-symlinks' behavior--I'm not sure.
-    - name: Sync contents of '{{ sync_folder }}' to S3.
-      command: aws s3 sync {{ sync_folder }} s3://unidata-test/nexus-backup --follow-symlinks --delete
+    - name: Backup application data plus Nexus and Apache logs to S3.
+      # A module named 's3_sync' exists for this purpose, but it lacks the functionality of the '--delete' flag.
+      command: aws s3 sync {{ item.local_path }} s3://unidata-test/nexus-backup/{{ item.s3_path }} {{ item.options }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      with_items:
+          # Nexus tasks are run synchronously when they are submitted via the REST API, so we can be sure that the
+          # databse backups are ready to be uploaded at this point.
+        - local_path: "{{ nexus_backup_dir }}"
+          s3_path: db
+          options: --delete
+          # LOOK: Is it safe to backup the blobstore while Nexus is running? Do I need to stop Nexus beforehand?
+        - local_path: "{{ nexus_data_dir }}/blobs"
+          s3_path: blobs
+          options: --delete
+        - local_path: "{{ nexus_data_dir }}/log"
+          s3_path: log
+          options:
+        - local_path: "{{ artifacts_apache_log_dir }}"
+          s3_path: apache-log/{{ artifacts_hostname }}
+          options:
+        - local_path: "{{ docs_apache_log_dir }}"
+          s3_path: apache-log/{{ docs_hostname }}
+          options:
+        # There are some logs in 'apache_log_dir' that we're missing here, but they're not readable by 'nexus_os_user'
+        # and nothing of importance is written there anyway. So skip them.
+
+# TODO: We may want to delete some of the local files after they've been backed up to S3.
+
+# TODO: In the cron job that runs this playbook, be sure to log the run to a file. Probably backup that file too.
