@@ -3,8 +3,8 @@
 # We must install those packages ourselves, and of course we use Ansible for the task. Unfortunately, the Ansible
 # instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Python
 # interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
-# own playbook (this file). This playbook should be run before the main or test playbooks are run.
-- name: Playbook to prepare Python. Install Python packages needed by Ansible itself.
+# own playbook (this file). This playbook should be run before other playbooks that require the packages.
+- name: Playbook to prepare Ansible. Install Python packages needed by Ansible itself.
   hosts: all
   gather_facts: false
   become: true
@@ -17,7 +17,8 @@
         update_cache: yes
         cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
 
-    - name: Install 'jmespath' Python package, which is required by the json_query Jinja2 filter.
+    - name: Install Python packages.
       pip: "name={{ item }} state=latest"
       with_items:
-        - jmespath
+        - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
+        - awscli    # Installs AWS CLI. Includes boto, which the Ansible s3_* modules need. Used in backup.yml playbook.

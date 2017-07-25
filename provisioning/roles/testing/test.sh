@@ -37,11 +37,9 @@ test_idempotence=${test_idempotence:-"true"}
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 host_provis_dir="$(dirname "$(dirname $parent_dir_of_this_script)")"
 
-container_provis_dir="/root/nexus-IaC/provisioning"
-container_prepare_python_playbook="$container_provis_dir/prepare_python.yml"
-container_site_playbook="$container_provis_dir/site.yml"
-container_test_playbook="$container_provis_dir/test.yml"
+container_provis_dir="/usr/local/nexus-IaC/provisioning"
 container_inventory="--inventory-file=$container_provis_dir/inventories/local/hosts"
+container_password_file="--vault-password-file=~/.ansible/vault-password"
 
 # From Ansible for DevOps, version 2017-06-02, page 349:
 #   Why use an init system in Docker? With Docker, it’s preferable to either
@@ -74,6 +72,8 @@ DOCKER_RUN_PARAMS+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
 # See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
 DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
+# Propagates the 'VAULT_PASSWORD' variable I've set in my local environment to the container.
+DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
 DOCKER_RUN_PARAMS+=(--add-host='artifacts2.unidata.ucar.edu:127.0.0.1')
 DOCKER_RUN_PARAMS+=(--add-host='docs2.unidata.ucar.edu:127.0.0.1')
@@ -86,22 +86,25 @@ docker run "${DOCKER_RUN_PARAMS[@]}"
 
 printf "\n"
 
-printf ${blue}"Install Python packages needed by Ansible itself."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_inventory $container_prepare_python_playbook
+printf ${blue}"Provisioning the provisioner."${neutral}
+docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/prepare_ansible.yml
 
 printf ${blue}"Checking Ansible playbook syntax."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook --syntax-check
+docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/site.yml --syntax-check
 
 printf "\n"
 
 printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
-docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook
+docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/site.yml
 
 if [ "$test_idempotence" = true ]; then
   printf ${blue}"Running playbook again: idempotence test"${neutral}
   idempotence=$(mktemp)
-  docker exec $container_id $color_opts ansible-playbook $container_inventory $container_site_playbook \
-                                        | tee -a $idempotence
+  docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/site.yml | tee -a $idempotence
   tail $idempotence \
     | grep -q 'changed=0.*failed=0' \
     && (printf ${green}'Idempotence test: pass'${neutral}"\n") \
@@ -111,9 +114,14 @@ fi
 printf "\n"
 
 printf ${blue}"Running integration and functional tests against live instance."${neutral}
-docker exec $container_id $color_opts ansible-playbook $container_inventory $container_test_playbook
+docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/test.yml
 
 printf "\n"
+
+printf ${blue}"Backing up application data to S3."${neutral}
+docker exec --user nexus $container_id $color_opts \
+        ansible-playbook $container_inventory $container_password_file $container_provis_dir/backup.yml
 
 if [ "$cleanup" = true ]; then
   printf ${blue}"Removing Docker container...\n"${neutral}

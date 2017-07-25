@@ -31,3 +31,11 @@ ansible-playbook -i inventories/vagrant/hosts site.yml --start-at-task="Install 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
 that were set in tasks that aren't set to run. These are often `set_fact` tasks. To include them in the run,
 add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#special-tags).
+
+### Backup Nexus application data to S3
+
+```
+ansible-playbook -i inventories/vagrant/hosts --vault-password-file=~/.ansible/vault-password backup.yml
+```
+
+Obviously, you must have a file at `~/.ansible/vault-password` that contains the Ansible Vault password.

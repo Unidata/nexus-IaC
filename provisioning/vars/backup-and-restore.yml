@@ -1,0 +1,8 @@
+---
+# The directory that we will sync to S3. It won't actually contain any backup data, just symlinks.
+sync_folder: /tmp/sync-to-s3
+
+# AWS credentials are stored encrypted in vault.yml. Using best practices from:
+# http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#best-practices-for-variables-and-vaults
+aws_access_key_id: "{{ vault_aws_access_key_id }}"
+aws_secret_access_key: "{{ vault_aws_secret_access_key }}"
