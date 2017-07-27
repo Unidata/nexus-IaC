@@ -18,8 +18,10 @@
   template:
     src: football-field-length.groovy
     dest: "{{ testing_dir }}"
+  tags: [ test-pull ]
 
 - name: Run Groovy script, which depends on 'unit-utils'.
   command: "{{ groovy_exe }} {{ testing_dir }}/football-field-length.groovy"
   register: script_result
   failed_when: script_result.stdout != 'One football field is equal to 91.44 meters.'
+  tags: [ test-pull ]

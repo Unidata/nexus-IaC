@@ -21,4 +21,4 @@
 
 - name: Test Nexus scheduled tasks script.
   include: test_nexus_tasks.yml
-  tags: [ test_nexus_tasks ]
+  tags: [ test-nexus-tasks ]

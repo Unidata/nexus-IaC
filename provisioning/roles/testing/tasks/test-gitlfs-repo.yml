@@ -45,13 +45,26 @@
   args:
     chdir: "{{ test_lfs_push_dir }}"
 
+- name: "Get status of '{{ local_remote_repo }}' directory."
+  stat: "path={{ local_remote_repo }}"
+  register: local_remote_repo_stat
+  tags: [ test-pull ]
+
 - name: Clone the repo. This will download the large file from Nexus.
   git:
-    repo: "{{ local_remote_repo }}"
+    # If 'local_remote_repo' doesn't exist, use the backup repo instead.
+    # This will occur when the test.yml playbook is re-run with the 'test-pull' tag. See test.sh.
+    repo: "{%- if local_remote_repo_stat.stat.exists -%}
+             {{ local_remote_repo }}
+           {%- else -%}
+             {{ testing_dir }}-old/repo.git
+           {%- endif -%}"
     dest: "{{ test_lfs_pull_dir }}"
+  tags: [ test-pull ]
 
 - name: Assert that the large file was downloaded during the clone, not a pointer file.
   stat:
     path: "{{ test_lfs_pull_dir }}/jan.nc"
   register: jan_stat
   failed_when: jan_stat.stat.size != 6580
+  tags: [ test-pull ]

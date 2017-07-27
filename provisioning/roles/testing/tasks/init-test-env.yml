@@ -23,15 +23,16 @@
     validate_certs: yes
     remote_src: yes
 
-- name: Delete testing directory, if it was created by previous run.
-  file:
-    path: "{{ testing_dir }}"
-    state: absent
+- name: "Delete existing local backup of '{{ testing_dir }}', if it exists."
+  file: "path={{ testing_dir }}-old state=absent"
 
-- name: Recreate testing directory.
-  file:
-    path: "{{ testing_dir }}"
-    state: directory
+- name: "Move '{{ testing_dir }}' to '{{ testing_dir }}-old'."
+  shell: "mv {{ testing_dir }} {{ testing_dir }}-old"
+  args:
+    removes: "{{ testing_dir }}"
+
+- name: "Recreate testing directory."
+  file: "path={{ testing_dir }} state=directory"
 
 # In test-maven-repos.yml, we want to push to and pull from the Maven repos using HTTPS endpoints. However, Nexus is
 # secured by a self-signed SSL certificate, and there's no easy way in Gradle or Grape to disable cert verification.

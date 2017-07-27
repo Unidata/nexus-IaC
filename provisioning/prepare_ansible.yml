@@ -21,4 +21,5 @@
       pip: "name={{ item }} state=latest"
       with_items:
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
-        - awscli    # Installs AWS CLI. Includes boto, which the Ansible s3_* modules need. Used in backup.yml playbook.
+        - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
+        - awscli    # Installs AWS CLI. Used in backup.yml and restore.yml playbooks.

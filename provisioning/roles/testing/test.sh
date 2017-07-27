@@ -123,6 +123,18 @@ printf ${blue}"Backing up application data to S3."${neutral}
 docker exec --user nexus $container_id $color_opts \
         ansible-playbook $container_inventory $container_password_file $container_provis_dir/backup.yml
 
+printf "\n"
+
+printf ${blue}"Restoring application data from S3."${neutral}
+docker exec --user nexus $container_id $color_opts \
+        ansible-playbook $container_inventory $container_password_file $container_provis_dir/restore.yml
+
+printf "\n"
+
+printf ${blue}"Re-running tests that pull artifacts against the restored Nexus server."${neutral}
+docker exec $container_id $color_opts \
+        ansible-playbook $container_inventory $container_provis_dir/test.yml --tags "test-pull"
+
 if [ "$cleanup" = true ]; then
   printf ${blue}"Removing Docker container...\n"${neutral}
   docker rm -f $container_id

@@ -20,3 +20,4 @@
     validate_certs: no  # We're using a self-signed cert for testing.
   register: webpage
   failed_when: "'This is a test page!' not in webpage.content"
+  tags: [ test-pull ]

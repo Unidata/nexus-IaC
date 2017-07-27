@@ -44,12 +44,18 @@
       register: webpage
       failed_when: "'CHANGED' not in webpage.content"
 
-    # The AWS CLI package (which includes boto) is installed in 'prepare_ansible.yml'. That playbook MUST be run
-    # before this one. As stated above, we can't do the installation here even if we wanted to.
+    # Needs 'boto' Python package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
+    - name: Create S3 bucket to store our backups.
+      s3_bucket:
+        name: "{{ backup_s3_bucket }}"
+        versioning: yes
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
 
+    # Needs AWS CLI package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
     - name: Backup application data plus Nexus and Apache logs to S3.
       # A module named 's3_sync' exists for this purpose, but it lacks the functionality of the '--delete' flag.
-      command: aws s3 sync {{ item.local_path }} s3://unidata-test/nexus-backup/{{ item.s3_path }} {{ item.options }}
+      command: aws s3 sync {{ item.local_path }} {{ backup_s3_url }}/{{ item.s3_path }} {{ item.options }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"

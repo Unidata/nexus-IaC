@@ -1,0 +1,88 @@
+---
+- name: Playbook to restore databases and blobstore from Amazon S3.
+  hosts: all
+  gather_facts: false
+  # Run playbook as 'nexus_os_user', which is NOT a member of the privileged 'wheel' group. This is intentional for
+  # security purposes, but a consequence is that we cannot install any software packages via apt in this playbook.
+  become: yes
+  become_user: "{{ nexus_os_user }}"
+
+  vars_files:
+    - roles/ansible-nexus3-oss/defaults/main.yml  # For various Nexus variables.
+    - roles/ansible-nexus3-oss/vars/main.yml      # Ditto.
+    - vars/main.yml
+    - vars/nexus.yml
+    - vars/backup-and-restore.yml
+    - vars/vault.yml
+
+  tasks:
+    # We want to stop the Nexus service as the unprivileged 'nexus_os_user', not root. To that end, users-and-groups.yml
+    # modifies /etc/sudoers to permit 'nexus_os_user' to stop, start, and restart ONLY the Nexus service. To use the
+    # capability, we need sudo.
+    #
+    # You'd think that the 'become' and 'become_user' directives at the top of the playbook would already do what we
+    # need, especially since 'become_method' is 'sudo' by default. Instead, we get an "Interactive authentication
+    # required" error. Running the 'systemctl' command directly with sudo (instead of using the 'service' module) seems
+    # to be the only solution. See https://groups.google.com/forum/#!topic/ansible-project/NHM3zEiRWxU
+    - name: Stop Nexus service.
+      command: sudo systemctl stop nexus.service
+      args:
+        # Without this, Ansible will warn: "Consider using 'become', 'become_method', and 'become_user' rather than
+        # running sudo". However, those directives do nothing here; we need 'sudo systemctl'.
+        warn: false
+
+    # LOOK: Should I be waiting for the service to stop? How would I do that?
+
+    - name: Get status of 'db' directory.
+      stat: path={{ nexus_data_dir }}/db
+      register: db_stat
+
+    - block:
+        - name: Delete existing local backup of 'db', if it exists.
+          file: path={{ nexus_data_dir }}/db-old state=absent
+
+        - name: Move 'db' to 'db-old'.
+          shell: mv {{ nexus_data_dir }}/db {{ nexus_data_dir }}/db-old
+      when: db_stat.stat.exists  # 'db' directory exists.
+
+    # Below we're repeating the last three tasks, but replacing the string 'db' with 'blobs'.
+    # That sounds ripe for a block/with_items construct, but it turns out that Ansible lacks that feature.
+    # So, we must repeat ourselves. See https://github.com/ansible/ansible/issues/13262.
+
+    - name: Get status of 'blobs' directory.
+      stat: path={{ nexus_data_dir }}/blobs
+      register: blobs_stat
+
+    - block:
+        - name: Delete existing local backup of 'blobs', if it exists.
+          file: path={{ nexus_data_dir }}/blobs-old state=absent
+
+        - name: Move 'blobs' to 'blobs-old'.
+          shell: mv {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
+      when: blobs_stat.stat.exists  # 'blobs' directory exists.
+
+
+    - name: Delete Nexus backup directory.
+      file: path={{ nexus_data_dir }}/backup state=absent  # Contains files that were part of a previous restoration.
+
+
+    # Needs AWS CLI package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
+    - name: Restore Nexus application data from S3.
+      command: aws s3 sync {{ backup_s3_url }}/{{ item.s3_path }} {{ item.local_path }}
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      with_items:
+        - s3_path: db
+          local_path: "{{ nexus_data_dir }}/backup"
+        - s3_path: blobs
+          local_path: "{{ nexus_data_dir }}/blobs"
+
+
+    - name: Start Nexus service.
+      command: sudo systemctl start nexus.service
+      args:
+        warn: false
+
+    - name: Wait for Nexus to be ready. Could take over a minute on Docker.
+      wait_for: "port={{ nexus_default_port }}"
