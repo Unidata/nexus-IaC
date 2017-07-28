@@ -1,0 +1,19 @@
+---
+- name: Copy backup script.
+  template:
+    src: nexus-backup.sh
+    dest: "{{ backup_script }}"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+    mode: 0544
+
+- name: "Create a cron job to backup Nexus."
+  cron:
+    name: "Backup Nexus"
+    state: present
+    user: "{{ nexus_os_user }}"
+    hour: "2"  # Run job every day at 2:00 AM.
+    # In cron jobs, we must escape '%' characters with '\'. See https://unix.stackexchange.com/a/29582
+    # Also, we must make sure to use a single-quoted string here instead of double-quoted, to prevent YAML from
+    # processing the backslashes as escape characters first. See http://yaml.org/spec/1.2/spec.html#id2787109
+    job: '{{ backup_script }} >> {{ nexus_data_dir }}/log/backup-$(date +\%Y-\%m-\%d).log 2>&1'

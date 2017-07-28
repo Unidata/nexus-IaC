@@ -1,0 +1,2 @@
+# The location that the backup script will reside on the target machine.
+backup_script: "/usr/local/bin/nexus-backup.sh"

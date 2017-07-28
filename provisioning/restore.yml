@@ -12,7 +12,7 @@
     - roles/ansible-nexus3-oss/vars/main.yml      # Ditto.
     - vars/main.yml
     - vars/nexus.yml
-    - vars/backup-and-restore.yml
+    - vars/aws.yml
     - vars/vault.yml
 
   tasks:

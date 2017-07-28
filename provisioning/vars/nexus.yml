@@ -131,7 +131,7 @@ nexus_scheduled_tasks:
     typeId: repository.maven.remove-snapshots
     alertEmail: "{{ admin_email }}"
     schedule: advanced
-    cronExpression: '0 0 5 * * ?'
+    cronExpression: '0 0 3 * * ?'
     properties:
       # Maven repository or repository group to remove snapshots from.
       repositoryName: maven-snapshots

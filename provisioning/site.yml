@@ -36,3 +36,5 @@
       tags: [ nexus ]
     - role: vault
       tags: [ vault ]
+    - role: cron
+      tags: [ cron ]
