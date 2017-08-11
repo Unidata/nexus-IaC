@@ -12,3 +12,7 @@
 .gradle/
 # Ignore the output that Gradle generates in the "build/" directories...
 build/
+
+# Terraform files.
+*.tfstate.backup
+.terraform/
