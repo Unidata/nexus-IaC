@@ -1,23 +1,23 @@
 ---
   # Edit /etc/hosts so that we can resolve these hostnames in our tests. In production, DNS will do the mapping.
-- name: Map '{{ artifacts_hostname }}' and '{{ docs_hostname }}' to 127.0.0.1 in '/etc/hosts'.
+- name: Map '{{ artifacts_hostname }}' and '{{ docs_hostname }}' to '{{ application_host }}' in '/etc/hosts'.
   lineinfile:
     path: "/etc/hosts"
-    line: "127.0.0.1 {{ item }}"
+    line: "{{ application_host }} {{ item }}"
     state: present
   with_items:
     - "{{ artifacts_hostname }}"
     - "{{ docs_hostname }}"
   # Don't run this task on Docker because /etc/hosts is read-only within the container.
   # Instead, we're adding our mapping in the docker run command using the "--add-host" flag. See test.sh.
-  when: ansible_virtualization_type != 'docker'
+  when: target_type != 'local'
 
 - name: Install unzip program, for extracting Groovy package.
   apt: "name=unzip state=latest"
 
 - name: Download and extract Groovy package.
   unarchive:
-    src: https://bintray.com/artifact/download/groovy/maven/apache-groovy-binary-{{ groovy_version }}.zip
+    src: https://dl.bintray.com/groovy/maven/apache-groovy-binary-{{ groovy_version }}.zip
     dest: "{{ groovy_install_dir }}"
     creates: "{{ groovy_home }}"
     validate_certs: yes

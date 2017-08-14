@@ -14,7 +14,7 @@
     # FIXME: This will lead to differences between the test environment and production. Could be a problem.
     - role: ansible-debian-upgrade-reboot
       tags: [ upgrade ]
-      when: ansible_virtualization_type != 'docker'
+      when: target_type != 'local'
 
     - role: security
       tags: [ security ]
