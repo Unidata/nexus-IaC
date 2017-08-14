@@ -1,0 +1,9 @@
+---
+# By default, all outbound traffic from the server is permitted.
+# Inbound traffic is limited to these ports.
+firewall_allowed_tcp_ports:
+  - 22  # SSH
+  - 80  # HTTP
+  - 443 # HTTPS
+
+# NTP traffic on port 123 over UDP is already permitted in role's firewall.bash.j2.

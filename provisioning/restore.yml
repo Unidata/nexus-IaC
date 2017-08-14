@@ -7,14 +7,6 @@
   become: yes
   become_user: "{{ nexus_os_user }}"
 
-  vars_files:
-    - roles/ansible-nexus3-oss/defaults/main.yml  # For various Nexus variables.
-    - roles/ansible-nexus3-oss/vars/main.yml      # Ditto.
-    - vars/main.yml
-    - vars/nexus.yml
-    - vars/aws.yml
-    - vars/vault.yml
-
   tasks:
     # We want to stop the Nexus service as the unprivileged 'nexus_os_user', not root. To that end, users-and-groups.yml
     # modifies /etc/sudoers to permit 'nexus_os_user' to stop, start, and restart ONLY the Nexus service. To use the
@@ -68,6 +60,7 @@
 
     # Needs AWS CLI package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
     - name: Restore Nexus application data from S3.
+      # FIXME: Install AWS CLI on target.
       command: aws s3 sync {{ backup_s3_url }}/{{ item.s3_path }} {{ item.local_path }}
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"

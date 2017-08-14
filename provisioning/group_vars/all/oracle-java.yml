@@ -1,0 +1,6 @@
+---
+# Values for the variables below are NOT CHANGED from the role defaults.
+# However, the variables need to be redefined here so that they're visible to playbooks that don't include the role.
+
+oracle_java_version: 8
+oracle_java_home: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle"

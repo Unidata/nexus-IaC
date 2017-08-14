@@ -1,0 +1,24 @@
+---
+# Install the latest version of Apache.
+apache_packages_state: latest
+
+# Use our own VirtualHost configuration template. It's in /provisioning/templates/vhosts.conf.
+apache_vhosts_template: "vhosts.conf"
+
+# The Apache modules to enable. These are necessary for the directives we use in our vhosts.conf file.
+# vhost.conf can't have comments in it, so we'll have to add them here.
+# Our vhost.conf is a combination of an example found in the Nexus documentation (https://goo.gl/JeauuY) and another
+# at /provisioning/roles/ansible-nexus3-oss/templates/nexus-vhost.conf.
+apache_mods_enabled:
+  - ssl.load      # For SSL* directives.
+  - proxy.load    # For ProxyPass* directives.
+    # For RequestHeader directive. Without this, I get errors when pushing LFS objects to the 'cdm-unit-test' repo:
+    #   LFS: Put <artifact_url>: read /tmp/nexus-IaC-testing/test-lfs-push/.git/lfs/objects/<hash>: file already closed,
+    #   error: failed to push some refs to '/tmp/nexus-IaC-testing/repo.git'
+    # I don't know why the error happens without the directive, but RequestHeader was included in the example
+    # vhosts.conf file provided in the Nexus documentation, so I guess I shouldn't worry too much about it.
+  - headers.load
+    # Without this, I was getting the following in the Apache error.log:
+    #   No protocol handler was valid for the URL /. If you are using a DSO version of mod_proxy, make sure the proxy
+    #   submodules are included in the configuration using LoadModule.
+  - proxy_http.load

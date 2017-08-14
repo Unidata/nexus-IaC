@@ -1,6 +1,4 @@
 ---
-########################################## ansible-nexus3-oss ##########################################
-
 # Try to determine the latest available version and install that.
 # If an older version of Nexus was previously installed, don't do anything. We don't (yet?) support upgrading.
 nexus_version: 'latest'
@@ -143,3 +141,13 @@ nexus_scheduled_tasks:
       removeIfReleased: false
       # The grace period during which snapshots with an associated release will not be purged.
       gracePeriodInDays: -1
+
+
+# Values for the variables below are NOT CHANGED from the role defaults.
+# However, the variables need to be redefined here so that they're visible to playbooks that don't include the role.
+
+nexus_os_user: 'nexus'
+nexus_default_port: 8081
+nexus_default_context_path: ''
+nexus_private_base_url: "http://{{ application_host }}:{{ nexus_default_port }}{{ nexus_default_context_path }}"
+rest_api_endpoint: "{{ nexus_private_base_url }}/service/siesta/rest/v1/script"

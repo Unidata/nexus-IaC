@@ -1,0 +1,3 @@
+---
+# Set the timezone for the server.
+ntp_timezone: 'America/Denver'

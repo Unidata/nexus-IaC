@@ -7,14 +7,6 @@
   become: yes
   become_user: "{{ nexus_os_user }}"
 
-  vars_files:
-    - roles/ansible-nexus3-oss/defaults/main.yml  # For various Nexus variables.
-    - roles/ansible-nexus3-oss/vars/main.yml      # Ditto.
-    - vars/main.yml
-    - vars/nexus.yml
-    - vars/aws.yml
-    - vars/vault.yml
-
   tasks:
     # Ansible doesn't have a good way to delete all of the files in a directory, because 'with_fileglob' operates on
     # the controller, NOT the target. And deleting/recreating 'nexus_backup_dir' is not an option because permissions

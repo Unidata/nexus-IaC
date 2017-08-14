@@ -4,10 +4,6 @@
   gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
   become: yes        # Need this for starting nexus service.
 
-  vars_files:
-    - vars/main.yml
-    - vars/nexus.yml
-
   pre_tasks:
     - include: tasks/init.yml
       tags: [ always ]

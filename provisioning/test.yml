@@ -4,20 +4,6 @@
   gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
   become: yes        # For installing software needed by tests.
 
-  vars_files:
-    # Grab role variables that we need for testing. Order is important here: if a variable is defined in more than one
-    # file, the file appearing later in this list will have precedence. For example, both
-    # 'roles/ansible-nexus3-oss/defaults/main.yml' and 'vars/nexus.yml' define 'nexus_data_dir', but the value in
-    # 'vars/nexus.yml' wins because the file appears last in this list.
-    # FIXME: Is there an easier way to include role variables without also including all of the role's tasks?
-    - roles/ansible-nexus3-oss/defaults/main.yml      # For various Nexus variables.
-    - roles/ansible-nexus3-oss/vars/main.yml          # Ditto.
-    - roles/oracle-java/defaults/main.yml             # For 'oracle_java_version'
-    - roles/oracle-java/defaults/debian.yml           # For 'oracle_java_home'
-    - roles/ansible-role-ssl-certs/defaults/main.yml  # For 'ssl_certs_cert_path'.
-    - vars/main.yml
-    - vars/nexus.yml
-
   roles:
     - role: github-git-lfs
       tags: [ git-lfs ]
