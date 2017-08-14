@@ -1,3 +1,15 @@
 ---
+ansible_user: ubuntu
+
 # The type of host that we're targeting. There are places where we will do different config based on this value.
 target_type: openstack
+
+# The directory to which the Cinder volume's partition will be mounted.
+data_partition_mount_dir: /data
+
+# These definitions override the ones in group_vars/all/nexus.yml. We're exploiting the fact that inventory variables
+# defined in a "group_vars/*" file (such as this one) have higher precedence than playbook variables defined in
+# "group_vars/all".
+# See http://docs.ansible.com/ansible/latest/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+nexus_data_dir: "{{ data_partition_mount_dir }}/nexus"
+nexus_backup_dir: "{{ data_partition_mount_dir }}/nexus-backup"

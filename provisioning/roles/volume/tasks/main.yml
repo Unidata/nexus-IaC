@@ -1,0 +1,27 @@
+---
+- name: "Install 'parted' package, which is needed by the 'parted' module."
+  apt: "name=parted state=latest"
+
+- name: "Create primary partition on volume."
+  parted:
+    device: "{{ volume_device_name }}"
+    number: "{{ data_partition_number }}"
+    state: "present"
+
+- name: "Create an ext4 file system on new partition."
+  filesystem:
+    fstype: "{{ filesystem_type }}"
+    dev: "{{ data_partition_name }}"
+
+- name: "Ensure the mount directory exists."
+  file:
+    path: "{{ data_partition_mount_dir }}"  # Defined in inventories/openstack/group_vars/nexus.yml
+    state: "directory"
+    # We change permissions of this directory later in the ansible-nexus3-oss role.
+
+- name: "Mount partition to directory and update /etc/fstab."
+  mount:
+    path: "{{ data_partition_mount_dir }}"
+    fstype: "{{ filesystem_type }}"
+    src: "{{ data_partition_name }}"
+    state: "mounted"

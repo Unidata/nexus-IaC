@@ -1,0 +1,13 @@
+---
+# The device name that Linux assigns to the Cinder volume when it is attached to the instance.
+# This seems to be reliable, albeit perhaps only because "/dev/sda" is always the instance's OS drive, and
+# "/dev/sdb" comes next alphabetically.
+volume_device_name: /dev/sdb
+
+# A partition name is a device name followed by a partition number.
+# For example, /dev/sda1 is the first partition on the first hard disk in the system.
+data_partition_number: 1
+data_partition_name: "{{ volume_device_name }}{{ data_partition_number }}"
+
+# The type of filesystem to create on the data partition.
+filesystem_type: ext4

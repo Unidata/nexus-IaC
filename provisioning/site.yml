@@ -16,6 +16,10 @@
       tags: [ upgrade ]
       when: target_type != 'local'
 
+    - role: volume
+      tags: [ volume ]
+      when: target_type == 'openstack'  # OpenStack is the only target where we're mounting a volume.
+
     - role: security
       tags: [ security ]
     - role: ansible-role-firewall
