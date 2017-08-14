@@ -7,6 +7,13 @@ We use [Ansible](ansible.com) to provision our machines.
 For the most part, the project follows the alternative directory layout described in
 [Ansible Best Practices](http://docs.ansible.com/ansible/playbooks_best_practices.html#alternative-directory-layout).
 
+## Ansible Vault
+
+Sensitive data such as passwords and keys are stored in encrypted files using [Ansible Vault](
+http://docs.ansible.com/ansible/latest/playbooks_vault.html), rather than as plaintext in the playbooks.
+So, in order to run any of the playbooks, you'll need to have the Vault password (ask Christian for it).
+Store the password in a plain-text file at `~/.ansible/vault-password`.
+
 ## Execute ad-hoc commands on Vagrant VM
 
 ```
@@ -35,7 +42,11 @@ add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#speci
 ### Backup Nexus application data to S3
 
 ```
-ansible-playbook -i inventories/vagrant/hosts --vault-password-file=~/.ansible/vault-password backup.yml
+ansible-playbook -i inventories/vagrant/hosts backup.yml
 ```
 
-Obviously, you must have a file at `~/.ansible/vault-password` that contains the Ansible Vault password.
+### Restore Nexus application data from S3
+
+```
+ansible-playbook -i inventories/vagrant/hosts restore.yml
+```

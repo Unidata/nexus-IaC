@@ -39,7 +39,6 @@ host_provis_dir="$(dirname "$(dirname $parent_dir_of_this_script)")"
 
 container_provis_dir="/usr/local/nexus-IaC/provisioning"
 container_inventory="--inventory-file=$container_provis_dir/inventories/local/hosts"
-container_password_file="--vault-password-file=~/.ansible/vault-password"
 
 # From Ansible for DevOps, version 2017-06-02, page 349:
 #   Why use an init system in Docker? With Docker, it’s preferable to either
@@ -72,6 +71,9 @@ DOCKER_RUN_PARAMS+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
 # See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
 DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
+# Set an environment variable to allow ansible-playbook to find the Vault password file.
+# See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
+DOCKER_RUN_PARAMS+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/roles/vault/files/vault-password)
 # Propagates the 'VAULT_PASSWORD' variable I've set in my local environment to the container.
 DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
@@ -121,13 +123,13 @@ printf "\n"
 
 printf ${blue}"Backing up application data to S3."${neutral}
 docker exec --user nexus $container_id $color_opts \
-        ansible-playbook $container_inventory $container_password_file $container_provis_dir/backup.yml
+        ansible-playbook $container_inventory $container_provis_dir/backup.yml
 
 printf "\n"
 
 printf ${blue}"Restoring application data from S3."${neutral}
 docker exec --user nexus $container_id $color_opts \
-        ansible-playbook $container_inventory $container_password_file $container_provis_dir/restore.yml
+        ansible-playbook $container_inventory $container_provis_dir/restore.yml
 
 printf "\n"
 
