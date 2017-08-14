@@ -6,9 +6,14 @@ resource "openstack_networking_floatingip_v2" "nexus" {
   pool = "${var.external_gateway_network["name"]}"
 }
 
+resource "openstack_compute_floatingip_associate_v2" "nexus" {
+  instance_id = "${openstack_compute_instance_v2.nexus.id}"
+  floating_ip = "${openstack_networking_floatingip_v2.nexus.address}"
+}
+
+
 resource "openstack_networking_network_v2" "nexus" {
   name           = "nexus-network"
-  admin_state_up = true   // Whether the resource is "ON" or not.
 }
 
 resource "openstack_networking_subnet_v2" "nexus" {

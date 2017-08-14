@@ -5,7 +5,7 @@ variable "image" {
 
 variable "flavor" {
   // See available flavors with: openstack flavor list
-  default = "m1.small"
+  default = "m1.medium"
 }
 
 // We cannot ourselves create a gateway to the public internet; instead, we must use the network that the Jetstream
@@ -16,6 +16,10 @@ variable "external_gateway_network" {
     name  = "public"
     id    = "865ff018-8894-40c2-99b7-d9f8701ddb0b"
   }
+}
+
+variable "volume_size" {  // In gigabytes.
+  default = 300
 }
 
 // This is only temporary; the images we build with Packer will be provisioned by Ansible, which will bake the

@@ -39,8 +39,3 @@ resource "openstack_compute_instance_v2" "nexus" {
     name = "${openstack_networking_network_v2.nexus.name}"
   }
 }
-
-resource "openstack_compute_floatingip_associate_v2" "nexus" {
-  floating_ip = "${openstack_networking_floatingip_v2.nexus.address}"
-  instance_id = "${openstack_compute_instance_v2.nexus.id}"
-}
