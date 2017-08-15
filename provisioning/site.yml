@@ -34,7 +34,3 @@
       tags: [ java ]
     - role: ansible-nexus3-oss
       tags: [ nexus ]
-    - role: vault
-      tags: [ vault ]
-    - role: cron
-      tags: [ cron ]

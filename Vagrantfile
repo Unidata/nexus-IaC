@@ -16,24 +16,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 2048
   end
 
-  # Copy Vault password file to a temporary location on target machine. We'll move it in the main playbook.
-  config.vm.provision "file", source: "~/.ansible/vault-password", destination: "/tmp/vault-password"
-
-  # Install Python packages needed by Ansible itself.
-  config.vm.provision :ansible_local do |ansible|
-    ansible.install = true
-    ansible.install_mode = "pip"  # We need to install pip anyways in prepare_ansible.yml.
-    ansible.inventory_path = "provisioning/inventories/local/hosts"
-    ansible.verbose = false
-    ansible.playbook = "provisioning/prepare_ansible.yml"
-    ansible.config_file = "provisioning/ansible.cfg"
-    ansible.limit = "all"  # Do not limit the hosts here; do it in the playbook instead.
-  end
-
   # Provision VM using the main Ansible playbook.
-  config.vm.provision :ansible_local do |ansible|
-    ansible.install = false
-    ansible.inventory_path = "provisioning/inventories/local/hosts"
+  config.vm.provision :ansible do |ansible|
+    ansible.inventory_path = "provisioning/inventories/vagrant/hosts"
     ansible.verbose = "v"
     ansible.playbook = "provisioning/site.yml"
     ansible.config_file = "provisioning/ansible.cfg"

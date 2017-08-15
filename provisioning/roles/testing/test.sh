@@ -73,7 +73,7 @@ DOCKER_RUN_PARAMS+=($init_opts)
 DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
 # Set an environment variable to allow ansible-playbook to find the Vault password file.
 # See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
-DOCKER_RUN_PARAMS+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/roles/vault/files/vault-password)
+DOCKER_RUN_PARAMS+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/files/vault-password)
 # Propagates the 'VAULT_PASSWORD' variable I've set in my local environment to the container.
 DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.

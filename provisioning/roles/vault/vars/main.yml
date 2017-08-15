@@ -1,3 +1,0 @@
----
-temporary_vault_password_file: /tmp/vault-password
-permanent_vault_password_file: /home/{{ nexus_os_user }}/.ansible/vault-password
