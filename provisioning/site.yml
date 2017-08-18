@@ -4,11 +4,10 @@
   gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
   become: yes        # Need this for starting nexus service.
 
-  pre_tasks:
-    - include: tasks/init.yml
+  roles:
+    - role: init
       tags: [ always ]
 
-  roles:
     # Upgrades ALL system software, rebooting afterwards if necessary.
     # We're not running this on Docker because a) it's slow, and b) you cannot reboot the host from within a container.
     # FIXME: This will lead to differences between the test environment and production. Could be a problem.

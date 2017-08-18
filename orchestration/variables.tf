@@ -22,9 +22,8 @@ variable "volume_size" {  // In gigabytes.
   default = 300
 }
 
-// This is only temporary; the images we build with Packer will be provisioned by Ansible, which will bake the
-// required SSH keys right in.
+// The path to the public SSH key, relative to the Terraform root module (i.e. the 'orchestration' directory).
 variable "public_key_path" {
   description = "The path of the ssh pub key"
-  default = "~/.ssh/id_rsa.pub"
+  default = "../provisioning/files/unidata_provisioner_id_rsa.pub"
 }

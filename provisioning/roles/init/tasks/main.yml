@@ -1,0 +1,30 @@
+---
+# See https://askubuntu.com/questions/59458/error-message-when-i-run-sudo-unable-to-resolve-host-none
+- name: Add '{{ ansible_hostname }}' to /etc/hosts, to avoid sudo error.
+  lineinfile:
+    path: "/etc/hosts"
+    line: "127.0.0.1 {{ ansible_hostname }}"
+    state: present
+  when: target_type == 'openstack'
+
+# To update the Apt cache below, we need exclusive access to /var/lib/dpkg/lock.
+# However, when an Ubuntu 16 system is first booted, a series of update processes will hold the lock
+# (see https://github.com/chef/bento/issues/609#issuecomment-226043057).
+# So, we call this script, which waits for /var/lib/dpkg/lock to be free.
+- name: Wait for automatic system updates to finish.
+  script: wait-for-system-updates.sh
+  changed_when: false  # Task merely waits for a lock to be released; it doesn't change anything.
+
+# Roles may install packages without updating the Apt cache beforehand, such as ansible-role-ntp.
+- name: Update apt cache if needed.
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
+
+- name: Ensure Apache log directories exist for the two domains.
+  file:
+    path: "{{ item }}"
+    state: "directory"
+  with_items:
+  - "{{ artifacts_apache_log_dir }}"
+  - "{{ docs_apache_log_dir }}"
