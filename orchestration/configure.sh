@@ -15,8 +15,13 @@ provis_dir="$(dirname $parent_dir_of_this_script)/provisioning"
 # Change to provisioning directory.
 cd $provis_dir
 
+# Use 'local' inventory.
+ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
+# Verbose mode.
+ANSIBLE_OPTIONS+=(--verbose)
+
 # Wait for target's sshd to accept our connection.
-ansible nexus -i inventories/openstack/hosts -m wait_for_connection -a 'timeout=120'
+ansible nexus "${ANSIBLE_OPTIONS[@]}" --module-name=wait_for_connection --args='timeout=120'
 
 # Run main playbook.
-ansible-playbook -i inventories/openstack/hosts -v site.yml
+ansible-playbook "${ANSIBLE_OPTIONS[@]}" site.yml

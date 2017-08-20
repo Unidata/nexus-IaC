@@ -1,3 +1,3 @@
 [nexus]
-# We're doing config by running Ansible from within the Docker container. Controller and target are the same machine.
+# Controller and target are the same machine.
 localhost

@@ -4,10 +4,9 @@
 # instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Python
 # interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
 # own playbook (this file). This playbook should be run before other playbooks that require the packages.
-- name: Playbook to prepare Ansible. Install Python packages needed by Ansible itself.
+- name: Prepare Ansible to run main playbook on OpenStack target.
   hosts: all
   gather_facts: false
-  become: true
 
   tasks:
     - name: Install pip Python package manager, updating the cache first, if needed.
@@ -16,6 +15,7 @@
         state: latest
         update_cache: yes
         cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
+      become: true
 
     # FIXME: Do we actually need to install any of this? Probably 'jmespath', but that could be it.
     # boto and awscli can be installed in backup.yml and resore.yml, I think.
@@ -26,14 +26,16 @@
         - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
         - awscli    # Installs AWS CLI. Used in backup.yml and restore.yml playbooks.
 
-    - name: Ensure ~/.ssh/ directory exists.
+    - name: Ensure home directory for SSH exists.
       file: path=~/.ssh state=directory
 
-    # FIXME: Limit this to "target_type == 'openstack'" ?
-    - name: Decrypt OpenStack SSH private key and copy it to ~/.ssh/
+    - name: Decrypt OpenStack SSH private key and copy it to home directory.
       copy:
         src: unidata_provisioner_id_rsa.enc
         dest: ~/.ssh/unidata_provisioner_id_rsa
         mode: 0400
+      # When this playbook is run on Docker as part of our test suite, it does NOT interact with OpenStack at all.
+      # So, don't needlessly decrypt the SSH key.
+      when: target_type != 'docker'
 
   # TODO: Could these tasks--and the stuff in provisioning/files--be moved to a 'prepare' role?

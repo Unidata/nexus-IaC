@@ -1,8 +1,7 @@
 ---
-- name: Playbook to prepare Terraform. Install binary and source credentials.
+- name: Prepare Terraform to provision resources on OpenStack.
   hosts: all
   gather_facts: false
-  become: true
 
   vars:
     releases_url: https://releases.hashicorp.com/index.json
@@ -12,6 +11,7 @@
   tasks:
     - name: Install 'jq', for parsing JSON.
       apt: "name=jq state=latest update_cache=yes cache_valid_time=3600"
+      become: true
 
     - name: Download Terraform releases index.
       get_url:
@@ -30,8 +30,20 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/terraform"
         remote_src: yes
+      become: true
 
-    - name: Decrypt OpenStack credentials script and copy them to /etc/profile.d/
+    - name: Ensure home directories for OpenStack and AWS exist.
+      file: path={{ item }} state=directory
+      with_items: [ '~/.openstack', '~/.aws' ]
+
+    - name: Decrypt OpenStack credentials script and copy it to home directory.
       copy:
         src: openrc.sh.enc
-        dest: /etc/profile.d/openrc.sh
+        dest: ~/.openstack/openrc.sh
+        mode: 0400
+
+    - name: Decrypt AWS credentials file and copy it to home directory.
+      copy:
+        src: aws_credentials.enc
+        dest: ~/.aws/credentials
+        mode: 0400
