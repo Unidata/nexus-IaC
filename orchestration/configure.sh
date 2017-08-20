@@ -18,4 +18,5 @@ cd $provis_dir
 # Wait for target's sshd to accept our connection.
 ansible nexus -i inventories/openstack/hosts -m wait_for_connection -a 'timeout=120'
 
+# Run main playbook.
 ansible-playbook -i inventories/openstack/hosts -v site.yml

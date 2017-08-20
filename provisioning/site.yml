@@ -11,25 +11,25 @@
     # Upgrades ALL system software, rebooting afterwards if necessary.
     # We're not running this on Docker because a) it's slow, and b) you cannot reboot the host from within a container.
     # FIXME: This will lead to differences between the test environment and production. Could be a problem.
-    - role: ansible-debian-upgrade-reboot
-      tags: [ upgrade ]
-      when: target_type != 'local'
-
-    - role: volume
-      tags: [ volume ]
-      when: target_type == 'openstack'  # OpenStack is the only target where we're mounting a volume.
-
-    - role: security
-      tags: [ security ]
-    - role: ansible-role-firewall
-      tags: [ firewall ]
-    - role: ansible-role-ntp
-      tags: [ ntp ]
-    - role: ansible-role-ssl-certs
-      tags: [ ssl ]
-    - role: ansible-role-apache
-      tags: [ apache ]
-    - role: oracle-java
-      tags: [ java ]
-    - role: ansible-nexus3-oss
-      tags: [ nexus ]
+#    - role: ansible-debian-upgrade-reboot
+#      tags: [ upgrade ]
+#      when: target_type != 'local'
+#
+#    - role: volume
+#      tags: [ volume ]
+#      when: target_type == 'openstack'  # OpenStack is the only target where we're mounting a volume.
+#
+#    - role: security
+#      tags: [ security ]
+#    - role: ansible-role-firewall
+#      tags: [ firewall ]
+#    - role: ansible-role-ntp
+#      tags: [ ntp ]
+#    - role: ansible-role-ssl-certs
+#      tags: [ ssl ]
+#    - role: ansible-role-apache
+#      tags: [ apache ]
+#    - role: oracle-java
+#      tags: [ java ]
+#    - role: ansible-nexus3-oss
+#      tags: [ nexus ]

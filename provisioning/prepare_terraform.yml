@@ -1,0 +1,37 @@
+---
+- name: Playbook to prepare Terraform. Install binary and source credentials.
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars:
+    releases_url: https://releases.hashicorp.com/index.json
+    releases_dest: /tmp/index.json
+    install_dir: /usr/local/bin
+
+  tasks:
+    - name: Install 'jq', for parsing JSON.
+      apt: "name=jq state=latest update_cache=yes cache_valid_time=3600"
+
+    - name: Download Terraform releases index.
+      get_url:
+        url: "{{ releases_url }}"
+        dest: "{{ releases_dest }}"
+
+    - name: Extract latest Terraform release URL from index.
+      shell: >
+          cat {{ releases_dest }} | jq '{terraform}' | egrep 'linux.*amd64' |
+          sort --version-sort -r | head -1 | awk -F[\"] '{print $4}'
+      register: latest_terraform_url
+
+    - name: Download and unpack Terraform.
+      unarchive:
+        src: "{{ latest_terraform_url.stdout }}"
+        dest: "{{ install_dir }}"
+        creates: "{{ install_dir }}/terraform"
+        remote_src: yes
+
+    - name: Decrypt OpenStack credentials script and copy them to /etc/profile.d/
+      copy:
+        src: openrc.sh.enc
+        dest: /etc/profile.d/openrc.sh

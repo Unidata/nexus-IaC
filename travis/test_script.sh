@@ -2,7 +2,7 @@
 #
 # Ansible test script.
 #
-# Usage: [OPTIONS] ./tests/test.sh
+# Usage: [OPTIONS] ./travis/test_script.sh
 #   - cleanup: whether to remove the Docker container after tests (default = true)
 #   - container_id: the --name to set for the container (default = timestamp)
 #   - test_idempotence: whether to test playbook's idempotence (default = true)

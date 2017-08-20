@@ -55,6 +55,6 @@ resource "null_resource" "dummy" {
   depends_on = ["openstack_compute_floatingip_associate_v2.nexus"]
 
   provisioner "local-exec" {
-    command = "./provision.sh"
+    command = "./configure.sh"
   }
 }
