@@ -31,7 +31,10 @@ Once you have Vagrant, VirtualBox, and Ansible installed, simply do:
 vagrant up
 ```
 
-The Nexus site will then be available at `http://192.168.22.22:8081/`.
+The Nexus site will then be available at `https://192.168.22.22/`.
+
+TODO: They will be asked for Vault password. Talk about that here or in provisioning/README.md?
+Can I hyperlink to that file?
 
 ## Licensing
 
