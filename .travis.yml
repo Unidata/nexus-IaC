@@ -16,6 +16,6 @@ jobs:
     - stage: test
       script: $TRAVIS_BUILD_DIR/travis/test_script.sh
 
-    - stage: provision
-      install: $TRAVIS_BUILD_DIR/travis/provision_install.sh
-      script: $TRAVIS_BUILD_DIR/travis/provision_script.sh
+#    - stage: provision
+#      install: $TRAVIS_BUILD_DIR/travis/provision_install.sh
+#      script: $TRAVIS_BUILD_DIR/travis/provision_script.sh

@@ -1,7 +1,5 @@
 # TODO
 
-1. On Travis, use Vault password file. However, when user runs, ask for password interactively.
-Storing passwords in plain text is bad!
 1. Currently, all playbooks require the vault password in order to run. Can we do better? If so, update the docs too.
 1. In Terraform, dynamically generate provisioning/inventories/openstack/hosts using the value of
 `"${openstack_networking_floatingip_v2.nexus.address}"`.

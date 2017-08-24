@@ -12,9 +12,10 @@ For the most part, the project follows the alternative directory layout describe
 Sensitive data such as passwords and keys are stored in encrypted files using [Ansible Vault](
 http://docs.ansible.com/ansible/latest/playbooks_vault.html), rather than as plaintext in the playbooks.
 So, in order to run any of the playbooks, you'll need to have the Vault password (ask Christian for it).
-Store the password in a plain-text file at `~/.ansible/vault-password`.
 
 ## Execute ad-hoc commands on Vagrant VM
+
+Once you've [launched the Vagrant VM](../README.md#launching-nexus-server-in-a-vagrant-vm), you can do:
 
 ```
 ansible all -i inventories/vagrant/hosts -a date
@@ -30,9 +31,9 @@ ansible all -i inventories/vagrant/hosts -m service -a 'name=nexus state=restart
 [Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
 
 ```
-ansible-playbook -i inventories/vagrant/hosts site.yml
-ansible-playbook -i inventories/vagrant/hosts site.yml --tags "nexus"
-ansible-playbook -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml --tags "nexus"
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
@@ -42,11 +43,11 @@ add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#speci
 ### Backup Nexus application data to S3
 
 ```
-ansible-playbook -i inventories/vagrant/hosts backup.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts backup.yml
 ```
 
 ### Restore Nexus application data from S3
 
 ```
-ansible-playbook -i inventories/vagrant/hosts restore.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts restore.yml
 ```

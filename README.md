@@ -26,15 +26,17 @@ If working with submodules proves too cumbersome or error-prone, give
 
 ## Launching Nexus server in a Vagrant VM
 
-Once you have Vagrant, VirtualBox, and Ansible installed, simply do:
+Once you've installed [Vagrant](https://www.vagrantup.com/downloads.html), [VirtualBox](
+https://www.virtualbox.org/wiki/Downloads), and [Ansible](
+ http://docs.ansible.com/ansible/latest/intro_installation.html#installing-the-control-machine), simply do:
+
 ```
 vagrant up
 ```
 
-The Nexus site will then be available at `https://192.168.22.22/`.
-
-TODO: They will be asked for Vault password. Talk about that here or in provisioning/README.md?
-Can I hyperlink to that file?
+You'll be asked for the [Vault password](provisioning/README.md#ansible-vault). Once provided, Ansible will provision
+the VM, and when it's done, the Nexus Repository manager will be available at `https://192.168.22.22/`.
+The default username is `admin` and the default password is `changeme`.
 
 ## Licensing
 
