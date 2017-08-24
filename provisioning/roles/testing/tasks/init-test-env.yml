@@ -13,7 +13,7 @@
   when: target_type != 'docker'
 
 - name: Install unzip program, for extracting Groovy package.
-  apt: "name=unzip state=latest"
+  package: "name=unzip state=latest"
 
 - name: Download and extract Groovy package.
   unarchive:

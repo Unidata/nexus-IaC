@@ -1,6 +1,6 @@
 ---
 - name: Ensure ssh is installed.
-  apt: name=ssh state=latest
+  package: name=ssh state=latest
 
 # See https://github.com/geerlingguy/ansible-role-security/blob/master/tasks/ssh.yml
 # Also see https://linux.die.net/man/5/sshd_config

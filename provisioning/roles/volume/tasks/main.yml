@@ -1,6 +1,6 @@
 ---
 - name: "Install 'parted' package, which is needed by the 'parted' module."
-  apt: "name=parted state=latest"
+  package: "name=parted state=latest"
 
 - name: "Create primary partition on volume."
   parted:

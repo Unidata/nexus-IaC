@@ -16,6 +16,10 @@
   changed_when: false  # Task merely waits for a lock to be released; it doesn't change anything.
 
 # Roles may install packages without updating the Apt cache beforehand, such as ansible-role-ntp.
+
+# Tasks in this file are tagged with 'always', so we can be certain that this one will run.
+# As a result, we don't need to update the cache again anywhere in our code. Also, we don't have to worry about
+# whether third-party roles are updating the cache before they install dependencies.
 - name: Update apt cache if needed.
   apt:
     update_cache: yes

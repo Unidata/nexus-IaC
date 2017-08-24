@@ -9,9 +9,10 @@
     install_dir: /usr/local/bin
 
   tasks:
-    - name: Install 'jq', for parsing JSON.
-      apt: "name=jq state=latest update_cache=yes cache_valid_time=3600"
+    - name: Install 'jq' for parsing JSON and 'unzip' for extracting Terraform archive.
+      package: "name={{ item }} state=latest"
       become: true
+      with_items: [ 'jq', 'unzip' ]
 
     - name: Download Terraform releases index.
       get_url:
