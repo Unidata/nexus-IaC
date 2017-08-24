@@ -23,5 +23,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.playbook = "provisioning/site.yml"
     ansible.config_file = "provisioning/ansible.cfg"
     ansible.limit = "all"  # Do not limit the hosts here; do it in the playbook instead.
+    ansible.ask_vault_pass = true
   end
 end

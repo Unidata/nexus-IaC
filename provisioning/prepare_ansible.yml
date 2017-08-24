@@ -48,3 +48,17 @@
       when: inventory_dir.endswith("openstack")
 
   # TODO: Could these tasks--and the stuff in provisioning/files--be moved to a 'prepare' role?
+
+- name: Install Python on target, if necessary. Ansible requires target to have Python.
+  hosts: nexus
+  gather_facts: false
+
+  tasks:
+    # See https://gist.github.com/gwillem/4ba393dceb55e5ae276a87300f6b8e6f.
+    - name: Install python2 for Ansible.
+      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+      register: output
+      changed_when:
+        - output.stdout != ""
+        - output.stdout != "\r\n"
+      become: true
