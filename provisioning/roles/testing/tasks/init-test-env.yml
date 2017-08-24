@@ -10,7 +10,7 @@
     - "{{ docs_hostname }}"
   # Don't run this task on Docker because /etc/hosts is read-only within the container.
   # Instead, we're adding our mapping in the docker run command using the "--add-host" flag. See test.sh.
-  when: target_type != 'docker'
+  when: not inventory_dir.endswith("docker")
 
 - name: Install unzip program, for extracting Groovy package.
   package: "name=unzip state=latest"

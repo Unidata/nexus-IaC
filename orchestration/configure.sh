@@ -15,7 +15,7 @@ provis_dir="$(dirname $parent_dir_of_this_script)/provisioning"
 # Change to provisioning directory.
 cd $provis_dir
 
-# Use 'local' inventory.
+# Use 'openstack' inventory.
 ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
 # Verbose mode.
 ANSIBLE_OPTIONS+=(--verbose)

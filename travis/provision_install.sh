@@ -17,8 +17,8 @@ sudo apt-get install -y ansible
 
 cd $TRAVIS_BUILD_DIR/provisioning
 
-# Use 'local' inventory.
-ANSIBLE_OPTIONS=(--inventory-file=inventories/local/hosts)
+# Use 'openstack' inventory.
+ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
 # Verbose mode.
 ANSIBLE_OPTIONS+=(--verbose)
 

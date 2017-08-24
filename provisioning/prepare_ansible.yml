@@ -26,16 +26,24 @@
         - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
         - awscli    # Installs AWS CLI. Used in backup.yml and restore.yml playbooks.
 
-    - name: Ensure home directory for SSH exists.
-      file: path=~/.ssh state=directory
+    - block:
+      - name: Ensure home directory for SSH exists.
+        file: path=~/.ssh state=directory
 
-    - name: Decrypt OpenStack SSH private key and copy it to home directory.
-      copy:
-        src: unidata_provisioner_id_rsa.enc
-        dest: ~/.ssh/unidata_provisioner_id_rsa
-        mode: 0400
-      # When this playbook is run on Docker as part of our test suite, it does NOT interact with OpenStack at all.
-      # So, don't needlessly decrypt the SSH key.
-      when: target_type != 'docker'
+      - name: Decrypt OpenStack SSH private key and copy it to home directory.
+        copy:
+          src: unidata_provisioner_id_rsa.enc
+          dest: ~/.ssh/unidata_provisioner_id_rsa
+          mode: 0400
+
+      # We only need the secret key if we're provisioning an OpenStack host; don't bother decrypting it otherwise,
+      # as that's a potential security vulnerability.
+      #
+      # 'inventory_dir' is the pathname of the directory holding Ansible’s inventory host file.
+      # We usually specify it on the command-line to ansible-playbook ('-i' option), but this test will be safe even
+      # if we don't, as it'll assume the default value ("/etc/ansible").
+      #
+      # 'endswith' is a Python String method. See https://www.tutorialspoint.com/python/string_endswith.htm
+      when: inventory_dir.endswith("openstack")
 
   # TODO: Could these tasks--and the stuff in provisioning/files--be moved to a 'prepare' role?

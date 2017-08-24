@@ -1,5 +1,0 @@
----
-ansible_connection: local
-
-# The type of host that we're targeting. There are places where we will do different config based on this value.
-target_type: local

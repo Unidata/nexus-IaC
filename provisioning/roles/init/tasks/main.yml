@@ -5,7 +5,7 @@
     path: "/etc/hosts"
     line: "127.0.0.1 {{ ansible_hostname }}"
     state: present
-  when: target_type == 'openstack'
+  when: inventory_dir.endswith("openstack")
 
 # To update the Apt cache below, we need exclusive access to /var/lib/dpkg/lock.
 # However, when an Ubuntu 16 system is first booted, a series of update processes will hold the lock
@@ -30,5 +30,6 @@
     path: "{{ item }}"
     state: "directory"
   with_items:
-  - "{{ artifacts_apache_log_dir }}"
-  - "{{ docs_apache_log_dir }}"
+    # Defined in provisioning/group_vars/all/other.yml
+    - "{{ artifacts_apache_log_dir }}"
+    - "{{ docs_apache_log_dir }}"
