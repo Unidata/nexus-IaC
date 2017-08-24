@@ -1,8 +1,8 @@
 ---
 - name: Master playbook. Provision Nexus and all supporting services.
-  hosts: all
+  hosts: nexus
   gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
-  become: yes        # Need this for starting nexus service.
+  become: yes        # Need this for installing packages and starting Nexus service.
 
   roles:
     - role: init

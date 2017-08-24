@@ -5,7 +5,7 @@
 # interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
 # own playbook (this file). This playbook should be run before other playbooks that require the packages.
 - name: Prepare Ansible to run main playbook on OpenStack target.
-  hosts: all
+  hosts: localhost
   gather_facts: false
 
   tasks:
@@ -25,6 +25,7 @@
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
         - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
         - awscli    # Installs AWS CLI. Used in backup.yml and restore.yml playbooks.
+      become: true
 
     - block:
       - name: Ensure home directory for SSH exists.

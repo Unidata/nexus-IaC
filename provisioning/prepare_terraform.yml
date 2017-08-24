@@ -1,6 +1,6 @@
 ---
 - name: Prepare Terraform to provision resources on OpenStack.
-  hosts: all
+  hosts: localhost
   gather_facts: false
 
   vars:

@@ -1,6 +1,6 @@
 ---
 - name: Playbook to backup databases and blobstore to Amazon S3.
-  hosts: all
+  hosts: nexus
   gather_facts: false
   # Run playbook as 'nexus_os_user', which is NOT a member of the privileged 'wheel' group. This is intentional for
   # security purposes, but a consequence is that we cannot install any software packages via apt in this playbook.
