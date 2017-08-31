@@ -12,16 +12,6 @@
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: visudo -cf %s
 
-# See https://unix.stackexchange.com/a/307547
-- name: Allow 'nexus_os_user' to start, stop, and restart the Nexus service only.
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%{{ nexus_os_user }}.*\b{{ item }}\b'
-    line: '%{{ nexus_os_user }} ALL= NOPASSWD: /bin/systemctl {{ item }} nexus.service'
-    validate: visudo -cf %s
-  with_items: [ start, stop, restart ]
-
 - name: Create users.
   user:
     name: "{{ item.name }}"

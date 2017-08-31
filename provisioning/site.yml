@@ -1,8 +1,8 @@
 ---
 - name: Master playbook. Provision Nexus and all supporting services.
   hosts: nexus
-  gather_facts: yes  # Needed for all the "ansible_*" facts that we use.
-  become: yes        # Need this for installing packages and starting Nexus service.
+  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
+  become: yes         # Need this for installing packages and starting Nexus service.
 
   roles:
     - role: init
@@ -13,11 +13,11 @@
     # FIXME: This will lead to differences between the test environment and production. Could be a problem.
 #    - role: ansible-debian-upgrade-reboot
 #      tags: [ upgrade ]
-#      when: not inventory_dir.endswith("docker")
+#      when: ansible_hostname != 'nexus-test'
 
     - role: volume
       tags: [ volume ]
-      when: inventory_dir.endswith("openstack")  # OpenStack is the only target where we're mounting a volume.
+      when: ansible_hostname == 'nexus-prod'  # OpenStack is the only target where we're mounting a volume.
 
     - role: security
       tags: [ security ]

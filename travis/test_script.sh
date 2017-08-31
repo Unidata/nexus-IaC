@@ -79,6 +79,9 @@ DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
 DOCKER_RUN_PARAMS+=(--add-host='artifacts2.unidata.ucar.edu:127.0.0.1')
 DOCKER_RUN_PARAMS+=(--add-host='docs2.unidata.ucar.edu:127.0.0.1')
+# Set a consistent hostname. Otherwise, it'll be the container ID, which is different every time.
+# Duplicity gets mad if you try to make an incremental backup and you have a different hostname than before.
+DOCKER_RUN_PARAMS+=(--hostname='nexus-test')
 # The image to run.
 DOCKER_RUN_PARAMS+=(geerlingguy/docker-$distro-ansible:latest)
 # The name of the system initialization program that will run first in the container.
@@ -122,13 +125,13 @@ docker exec $container_id $color_opts \
 printf "\n"
 
 printf ${blue}"Backing up application data to S3."${neutral}
-docker exec --user nexus $container_id $color_opts \
+docker exec $container_id $color_opts \
         ansible-playbook $container_inventory $container_provis_dir/backup.yml
 
 printf "\n"
 
 printf ${blue}"Restoring application data from S3."${neutral}
-docker exec --user nexus $container_id $color_opts \
+docker exec $container_id $color_opts \
         ansible-playbook $container_inventory $container_provis_dir/restore.yml
 
 printf "\n"

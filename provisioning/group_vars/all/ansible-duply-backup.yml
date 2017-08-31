@@ -1,0 +1,22 @@
+---
+duply_backup_profiles:
+  nexus:
+    # WARNING: Changing any of these profile settings could make duply unable to interact with existing backups
+    # that were created with different settings.
+    conf:
+      target: s3+http://{{ nexus_s3_bucket }}/backup/{{ ansible_hostname }}
+      source: /
+
+      max_age: 1Y          # Delete backups when they are more than a year old.
+      max_fullbkp_age: 2M  # Do a full backup (instead of incremental) if the last full was done more than 2 months ago.
+
+      # Although we could encrypt the archive, we've decided not to bother because our data is being stored in a
+      # private S3 bucket. Moreover, none of the data is sensitive anyway.
+
+    excludes:  # Misleading key name; we can also specify includes.
+      # Items beginning with a '+' are included. Items beginning with a '-' are excluded.
+      # Paths are relative to 'source' (i.e. the root directory).
+      - '+ {{ nexus_backup_dir }}'
+      - '+ {{ nexus_data_dir }}/blobs'
+      - '+ {{ apache_log_dir }}'
+      - '- **'          # Exclude every other path that we haven't specifically included above.

@@ -6,7 +6,7 @@
 # own playbook (this file). This playbook should be run before other playbooks that require the packages.
 - name: Prepare Ansible to run main playbook on OpenStack target.
   hosts: localhost
-  gather_facts: false
+  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
 
   tasks:
     - name: Install pip Python package manager, updating the cache first, if needed.
@@ -18,13 +18,12 @@
       become: true
 
     # FIXME: Do we actually need to install any of this? Probably 'jmespath', but that could be it.
-    # boto and awscli can be installed in backup.yml and resore.yml, I think.
+    # boto and awscli can be installed in backup.yml and restore.yml, I think.
     - name: Install Python packages.
       pip: "name={{ item }} state=latest"
       with_items:
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
         - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
-        - awscli    # Installs AWS CLI. Used in backup.yml and restore.yml playbooks.
       become: true
 
     - block:
@@ -39,12 +38,6 @@
 
       # We only need the secret key if we're provisioning an OpenStack host; don't bother decrypting it otherwise,
       # as that's a potential security vulnerability.
-      #
-      # 'inventory_dir' is the pathname of the directory holding Ansible’s inventory host file.
-      # We usually specify it on the command-line to ansible-playbook ('-i' option), but this test will be safe even
-      # if we don't, as it'll assume the default value ("/etc/ansible").
-      #
-      # 'endswith' is a Python String method. See https://www.tutorialspoint.com/python/string_endswith.htm
-      when: inventory_dir.endswith("openstack")
+      when: ansible_hostname == 'nexus-prod'
 
   # TODO: Could these tasks--and the stuff in provisioning/files--be moved to a 'prepare' role?

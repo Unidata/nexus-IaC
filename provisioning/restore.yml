@@ -1,29 +1,49 @@
 ---
 - name: Playbook to restore databases and blobstore from Amazon S3.
   hosts: nexus
-  gather_facts: false
-  # Run playbook as 'nexus_os_user', which is NOT a member of the privileged 'wheel' group. This is intentional for
-  # security purposes, but a consequence is that we cannot install any software packages via apt in this playbook.
-  become: yes
-  become_user: "{{ nexus_os_user }}"
+  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
+  become: true
+
+  vars:
+    wanted_pattern: "NexusLifecycleManager - Stop KERNEL"
+
+  roles:
+    - role: ansible-duply-backup
+      tags: [ duply ]
 
   tasks:
-    # We want to stop the Nexus service as the unprivileged 'nexus_os_user', not root. To that end, users-and-groups.yml
-    # modifies /etc/sudoers to permit 'nexus_os_user' to stop, start, and restart ONLY the Nexus service. To use the
-    # capability, we need sudo.
-    #
-    # You'd think that the 'become' and 'become_user' directives at the top of the playbook would already do what we
-    # need, especially since 'become_method' is 'sudo' by default. Instead, we get an "Interactive authentication
-    # required" error. Running the 'systemctl' command directly with sudo (instead of using the 'service' module) seems
-    # to be the only solution. See https://groups.google.com/forum/#!topic/ansible-project/NHM3zEiRWxU
-    - name: Stop Nexus service.
-      command: sudo systemctl stop nexus.service
-      args:
-        # Without this, Ansible will warn: "Consider using 'become', 'become_method', and 'become_user' rather than
-        # running sudo". However, those directives do nothing here; we need 'sudo systemctl'.
-        warn: false
+    - name: Install pip Python package manager, updating the cache first, if needed.
+      apt:
+        name: python-pip
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
 
-    # LOOK: Should I be waiting for the service to stop? How would I do that?
+    - name: Install 'boto' Python package, which is needed by duplicity's S3 backend.
+      pip: "name=boto state=latest"
+
+
+    # See https://stackoverflow.com/a/41209087/3874643
+    - name: Retrieve the last line in '{{ nexus_log }}'.
+      command: tail -n 1 {{ nexus_log }}
+      register: tail_output
+
+    - name: Escape the log's last line and our wanted pattern so that they are suitable for use in a regular expression.
+      set_fact:
+        last_line_escaped: "{{ tail_output.stdout | regex_escape() }}"
+        wanted_pattern_escaped: "{{ wanted_pattern | regex_escape() }}"
+
+    - name: Stop Nexus service.
+      service: name=nexus state=stopped
+      register: service_result
+
+    - name: Wait for Nexus service to stop.
+      wait_for:
+        path: "{{ nexus_log }}"
+        search_regex: "{{ last_line_escaped }}\n(.*\n)*.*{{ wanted_pattern_escaped }}"
+        timeout: 30
+      when: service_result.changed  # Only wait for service to stop if it's not already stopped.
+
 
     - name: Get status of 'db' directory.
       stat: path={{ nexus_data_dir }}/db
@@ -34,7 +54,7 @@
           file: path={{ nexus_data_dir }}/db-old state=absent
 
         - name: Move 'db' to 'db-old'.
-          shell: mv {{ nexus_data_dir }}/db {{ nexus_data_dir }}/db-old
+          command: mv {{ nexus_data_dir }}/db {{ nexus_data_dir }}/db-old
       when: db_stat.stat.exists  # 'db' directory exists.
 
     # Below we're repeating the last three tasks, but replacing the string 'db' with 'blobs'.
@@ -50,32 +70,30 @@
           file: path={{ nexus_data_dir }}/blobs-old state=absent
 
         - name: Move 'blobs' to 'blobs-old'.
-          shell: mv {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
+          command: mv {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
       when: blobs_stat.stat.exists  # 'blobs' directory exists.
 
 
-    - name: Delete Nexus backup directory.
-      file: path={{ nexus_data_dir }}/backup state=absent  # Contains files that were part of a previous restoration.
-
-
-    # Needs AWS CLI package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
-    - name: Restore Nexus application data from S3.
-      # FIXME: Install AWS CLI on target.
-      command: aws s3 sync {{ backup_s3_url }}/{{ item.s3_path }} {{ item.local_path }}
+    - name: Restore Nexus application data from S3 backup.
+      command: duply nexus restore {{ duply_backup_profiles.nexus.conf.source }} --force
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-      with_items:
-        - s3_path: db
-          local_path: "{{ nexus_data_dir }}/backup"
-        - s3_path: blobs
-          local_path: "{{ nexus_data_dir }}/blobs"
 
+    - name: Ensure '{{ nexus_data_dir }}/backup' exists and is empty.
+      file:
+        path: "{{ nexus_data_dir }}/backup"
+        owner: "{{ nexus_os_user }}"
+        group: "{{ nexus_os_group }}"
+        mode: 0755
+        state: "{{ item }}"
+      with_items: [ absent, directory ]  # Will delete any files that were part of a previous restoration.
+
+    - name: Move db backup files from '{{ nexus_backup_dir }}' to '{{ nexus_data_dir }}/backup'.
+      shell: mv {{ nexus_backup_dir }}/* {{ nexus_data_dir }}/backup
 
     - name: Start Nexus service.
-      command: sudo systemctl start nexus.service
-      args:
-        warn: false
+      service: name=nexus state=started
 
     - name: Wait for Nexus to be ready. Could take over a minute on Docker.
-      wait_for: "port={{ nexus_default_port }}"
+      wait_for: "port={{ nexus_default_port }} timeout=120"

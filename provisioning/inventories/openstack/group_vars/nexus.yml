@@ -11,3 +11,7 @@ data_partition_mount_dir: /data
 # See http://docs.ansible.com/ansible/latest/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
 nexus_data_dir: "{{ data_partition_mount_dir }}/nexus"
 nexus_backup_dir: "{{ data_partition_mount_dir }}/nexus-backup"
+
+# Overrides definition in group_vars/all/other.yml.
+# On OpenStack, we want for all data that will be backed up to live on the Cinder volume.
+apache_log_dir: "{{ data_partition_mount_dir }}/apache2-log"

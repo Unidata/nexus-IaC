@@ -1,20 +1,46 @@
 ---
 - name: Playbook to backup databases and blobstore to Amazon S3.
   hosts: nexus
-  gather_facts: false
-  # Run playbook as 'nexus_os_user', which is NOT a member of the privileged 'wheel' group. This is intentional for
-  # security purposes, but a consequence is that we cannot install any software packages via apt in this playbook.
-  become: yes
-  become_user: "{{ nexus_os_user }}"
+  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
+  become: true
+
+  vars:
+    wanted_pattern: "Task 'db.backup' [db.backup] state change RUNNING -> WAITING (OK)"
+
+  roles:
+    - role: ansible-duply-backup
+      tags: [ duply ]
 
   tasks:
-    # Ansible doesn't have a good way to delete all of the files in a directory, because 'with_fileglob' operates on
-    # the controller, NOT the target. And deleting/recreating 'nexus_backup_dir' is not an option because permissions
-    # of the parent directory forbid it. So we must resort to shell commands. We're using 'find' instead of 'rm'
-    # because the command 'rm {{ nexus_backup_dir }}/*' fails when the directory is empty.
-    # See https://stackoverflow.com/questions/820760
-    - name: Delete old database backups.
-      command: find {{ nexus_backup_dir }} -mindepth 1 -delete
+    - name: Install pip Python package manager, updating the cache first, if needed.
+      apt:
+        name: python-pip
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
+
+    - name: Install 'boto' Python package, which is needed by duplicity's S3 backend.
+      pip: "name=boto state=latest"
+
+    - name: Ensure '{{ nexus_backup_dir }}' exists and is empty.
+      file:
+        path: "{{ nexus_backup_dir }}"
+        owner: "{{ nexus_os_user }}"
+        group: "{{ nexus_os_group }}"
+        mode: 0755
+        state: "{{ item }}"
+      with_items: [ absent, directory ]  # Will delete old backups, if they exist.
+
+
+    # See https://stackoverflow.com/a/41209087/3874643
+    - name: Retrieve the last line in '{{ nexus_log }}'.
+      command: tail -n 1 {{ nexus_log }}
+      register: tail_output
+
+    - name: Escape the log's last line and our wanted pattern so that they are suitable for use in a regular expression.
+      set_fact:
+        last_line_escaped: "{{ tail_output.stdout | regex_escape() }}"
+        wanted_pattern_escaped: "{{ wanted_pattern | regex_escape() }}"
 
     - name: Run database backup task.  # Backup files will be written to 'nexus_backup_dir'.
       uri:
@@ -35,44 +61,26 @@
             name: db.backup
       register: webpage
       failed_when: "'CHANGED' not in webpage.content"
+      changed_when: true  # Always creates new files in 'nexus_backup_dir'.
 
-    # Needs 'boto' Python package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
-    - name: Create S3 bucket to store our backups.
-      s3_bucket:
-        name: "{{ backup_s3_bucket }}"
-        versioning: yes
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
+    - name: Wait for database backup task to finish.
+      wait_for:
+        path: "{{ nexus_log }}"
+        search_regex: "{{ last_line_escaped }}\n(.*\n)*.*{{ wanted_pattern_escaped }}"
+        timeout: 30
 
-    # TODO: Use 's3_lifecycle' to setup an expiration time for Nexus logs. Apache logs should never expire.
 
-    # Needs AWS CLI package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
-    - name: Backup application data plus Nexus and Apache logs to S3.
-      # A module named 's3_sync' exists for this purpose, but it lacks the functionality of the '--delete' flag.
-      command: aws s3 sync {{ item.local_path }} {{ backup_s3_url }}/{{ item.s3_path }} {{ item.options }}
+#    # Needs 'boto' Python package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
+#    - name: Create S3 bucket to store our backups.
+#      s3_bucket:
+#        name: "{{ nexus_s3_bucket }}"
+#        versioning: yes
+#        aws_access_key: "{{ aws_access_key_id }}"
+#        aws_secret_key: "{{ aws_secret_access_key }}"
+
+    - name: Create new backup in S3 and purge any existing backups that are too old.
+      command: duply nexus backup_purge
+      changed_when: false  # Task backs up to S3; it doesn't modify anything on the target.
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-      with_items:
-          # Nexus tasks are run synchronously when they are submitted via the REST API, so we can be sure that the
-          # databse backups are ready to be uploaded at this point.
-        - local_path: "{{ nexus_backup_dir }}"
-          s3_path: db
-          options: --delete
-          # LOOK: Is it safe to backup the blobstore while Nexus is running? Do I need to stop Nexus beforehand?
-        - local_path: "{{ nexus_data_dir }}/blobs"
-          s3_path: blobs
-          options: --delete
-        - local_path: "{{ nexus_data_dir }}/log"
-          s3_path: log
-          options:
-        - local_path: "{{ artifacts_apache_log_dir }}"
-          s3_path: apache-log/{{ artifacts_hostname }}
-          options:
-        - local_path: "{{ docs_apache_log_dir }}"
-          s3_path: apache-log/{{ docs_hostname }}
-          options:
-        # There are some logs in 'apache_log_dir' that we're missing here, but they're not readable by 'nexus_os_user'
-        # and nothing of importance is written there anyway. So skip them.
-
-    # TODO: We may want to delete some of the local files after they've been backed up to S3.

@@ -29,7 +29,7 @@ resource "openstack_compute_secgroup_v2" "nexus" {
 }
 
 resource "openstack_compute_instance_v2" "nexus" {
-  name = "nexus-instance"
+  name = "nexus-prod"   // Will become hostname of VM.
   image_name = "${var.image}"
   flavor_name = "${var.flavor}"
   key_pair = "${openstack_compute_keypair_v2.nexus.name}"

@@ -1,7 +1,7 @@
 ---
 - name: Prepare Terraform to provision resources on OpenStack.
   hosts: localhost
-  gather_facts: false
+  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
 
   vars:
     releases_url: https://releases.hashicorp.com/index.json

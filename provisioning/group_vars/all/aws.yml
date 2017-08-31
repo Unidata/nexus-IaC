@@ -4,5 +4,4 @@
 aws_access_key_id: "{{ vault_aws_access_key_id }}"
 aws_secret_access_key: "{{ vault_aws_secret_access_key }}"
 
-backup_s3_bucket: unidata-test
-backup_s3_url: s3://{{ backup_s3_bucket }}/nexus-backup
+nexus_s3_bucket: unidata-nexus-iac

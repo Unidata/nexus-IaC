@@ -6,9 +6,12 @@ nexus_version: 'latest'
 # Where Nexus application data will be stored. Default value: '/var/nexus'
 nexus_data_dir: '/var/opt/nexus'
 
+# Location of the main Nexus log.
+nexus_log: "{{ nexus_data_dir }}/log/nexus.log"
+
 # Location where backups of databases and blob stores will go. Default value: '/var/nexus-backup'.
-# '/var/backups' is not an appropriate place. See http://www.pathname.com/fhs/pub/fhs-2.3.html#REQUIREMENTS12
-nexus_backup_dir: '/var/opt/nexus-backups'
+# '/var/backup' is not an appropriate place. See http://www.pathname.com/fhs/pub/fhs-2.3.html#REQUIREMENTS12
+nexus_backup_dir: '/var/opt/nexus-backup'
 
 # Accept connections from localhost only. Apache is acting as a reverse proxy; only it will talk directly to Nexus.
 application_host: 127.0.0.1
@@ -146,6 +149,7 @@ nexus_scheduled_tasks:
 # Values for the variables below are NOT CHANGED from the role defaults.
 # However, the variables need to be redefined here so that they're visible to playbooks that don't include the role.
 
+nexus_os_group: 'nexus'
 nexus_os_user: 'nexus'
 nexus_default_port: 8081
 nexus_default_context_path: ''

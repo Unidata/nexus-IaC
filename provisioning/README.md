@@ -18,9 +18,9 @@ So, in order to run any of the playbooks, you'll need to have the Vault password
 Once you've [launched the Vagrant VM](../README.md#launching-nexus-server-in-a-vagrant-vm), you can do:
 
 ```
-ansible all -i inventories/vagrant/hosts -a date
-ansible all -i inventories/vagrant/hosts -m setup -a 'gather_subset=!all'
-ansible all -i inventories/vagrant/hosts -m service -a 'name=nexus state=restarted'
+ansible nexus -i inventories/vagrant/hosts -v -a date
+ansible nexus -i inventories/vagrant/hosts -v -m setup -a 'gather_subset=!all'
+ansible nexus -i inventories/vagrant/hosts -v -m service -a 'name=nexus state=restarted'
 ```
 [Reference](http://docs.ansible.com/ansible/intro_adhoc.html)
 
@@ -31,9 +31,9 @@ ansible all -i inventories/vagrant/hosts -m service -a 'name=nexus state=restart
 [Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml --tags "nexus"
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts site.yml --start-at-task="Install Nexus as a service"
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml --tags "nexus"
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml --start-at-task="Install Nexus as a service"
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
@@ -43,11 +43,11 @@ add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#speci
 ### Backup Nexus application data to S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts backup.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v backup.yml
 ```
 
 ### Restore Nexus application data from S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts restore.yml
+ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v restore.yml
 ```
