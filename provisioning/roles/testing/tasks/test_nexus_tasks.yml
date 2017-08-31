@@ -17,6 +17,7 @@
     args:
       methodName: readTypes
   register: webpage
+  # Needs 'jmespath' Python package to be installed on target. We do that in 'prepare_ansible.yml'. Run it first.
   failed_when: "nexus_test_task_type_id not in
                     webpage.json.result | from_json | json_query('response.types[*].id')"  # Extract all task type IDs.
 
@@ -83,5 +84,6 @@
     args:
       methodName: read
   register: webpage
+  # Needs 'jmespath' Python package to be installed on target. We do that in 'prepare_ansible.yml'. Run it first.
   failed_when: "nexus_test_task_type_id in
                     webpage.json.result | from_json | json_query('response.tasks[*].name')"  # Extract task names.

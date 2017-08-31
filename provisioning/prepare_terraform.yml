@@ -2,6 +2,7 @@
 - name: Prepare Terraform to provision resources on OpenStack.
   hosts: localhost
   gather_facts: true  # Needed for all the "ansible_*" facts that we use.
+  become: true
 
   vars:
     releases_url: https://releases.hashicorp.com/index.json
@@ -31,7 +32,6 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/terraform"
         remote_src: yes
-      become: true
 
     - name: Ensure home directories for OpenStack and AWS exist.
       file: path={{ item }} state=directory

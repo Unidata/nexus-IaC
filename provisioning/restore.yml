@@ -12,21 +12,11 @@
       tags: [ duply ]
 
   tasks:
-    - name: Install pip Python package manager, updating the cache first, if needed.
-      apt:
-        name: python-pip
-        state: latest
-        update_cache: yes
-        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
-
-    - name: Install 'boto' Python package, which is needed by duplicity's S3 backend.
-      pip: "name=boto state=latest"
-
-
     # See https://stackoverflow.com/a/41209087/3874643
     - name: Retrieve the last line in '{{ nexus_log }}'.
       command: tail -n 1 {{ nexus_log }}
       register: tail_output
+      changed_when: false  # Task is purely informational.
 
     - name: Escape the log's last line and our wanted pattern so that they are suitable for use in a regular expression.
       set_fact:
@@ -74,6 +64,7 @@
       when: blobs_stat.stat.exists  # 'blobs' directory exists.
 
 
+    # Needs 'boto' Python package to be installed on target. We do that in 'prepare_ansible.yml'. Run it first.
     - name: Restore Nexus application data from S3 backup.
       command: duply nexus restore {{ duply_backup_profiles.nexus.conf.source }} --force
       environment:

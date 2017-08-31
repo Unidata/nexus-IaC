@@ -4,9 +4,10 @@
 # instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Python
 # interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
 # own playbook (this file). This playbook should be run before other playbooks that require the packages.
-- name: Prepare Ansible to run main playbook on OpenStack target.
+- name: Prepare Ansible to connect to the OpenStack target and to run the test, backup, and restore playbooks.
   hosts: localhost
   gather_facts: true  # Needed for all the "ansible_*" facts that we use.
+  become: true
 
   tasks:
     - name: Install pip Python package manager, updating the cache first, if needed.
@@ -15,16 +16,12 @@
         state: latest
         update_cache: yes
         cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
-      become: true
 
-    # FIXME: Do we actually need to install any of this? Probably 'jmespath', but that could be it.
-    # boto and awscli can be installed in backup.yml and restore.yml, I think.
     - name: Install Python packages.
       pip: "name={{ item }} state=latest"
       with_items:
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
-        - boto      # Required by 's3_bucket' module. Used in backup.yml playbook.
-      become: true
+        - boto      # Required by 's3_bucket' module and the duplicity S3 backend. Used in backup.yml and restore.yml.
 
     - block:
       - name: Ensure home directory for SSH exists.

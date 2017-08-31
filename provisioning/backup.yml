@@ -12,16 +12,6 @@
       tags: [ duply ]
 
   tasks:
-    - name: Install pip Python package manager, updating the cache first, if needed.
-      apt:
-        name: python-pip
-        state: latest
-        update_cache: yes
-        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
-
-    - name: Install 'boto' Python package, which is needed by duplicity's S3 backend.
-      pip: "name=boto state=latest"
-
     - name: Ensure '{{ nexus_backup_dir }}' exists and is empty.
       file:
         path: "{{ nexus_backup_dir }}"
@@ -36,6 +26,7 @@
     - name: Retrieve the last line in '{{ nexus_log }}'.
       command: tail -n 1 {{ nexus_log }}
       register: tail_output
+      changed_when: false  # Task is purely informational.
 
     - name: Escape the log's last line and our wanted pattern so that they are suitable for use in a regular expression.
       set_fact:
@@ -70,7 +61,7 @@
         timeout: 30
 
 
-#    # Needs 'boto' Python package to be installed on target machine. We do that in 'prepare_ansible.yml'. Run it first.
+#    # Needs 'boto' Python package to be installed on machine. We do that in 'prepare_ansible.yml'. Run it first.
 #    - name: Create S3 bucket to store our backups.
 #      s3_bucket:
 #        name: "{{ nexus_s3_bucket }}"
@@ -78,6 +69,7 @@
 #        aws_access_key: "{{ aws_access_key_id }}"
 #        aws_secret_key: "{{ aws_secret_access_key }}"
 
+    # Ditto.
     - name: Create new backup in S3 and purge any existing backups that are too old.
       command: duply nexus backup_purge
       changed_when: false  # Task backs up to S3; it doesn't modify anything on the target.

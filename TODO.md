@@ -11,5 +11,3 @@ that we must share with Terraform. Such variables include the S3 bucket name, re
 That'll free us from needing to install `~/.aws/credentials` on the machine that runs terraform.
 IMPORTANT: Don't forget to add `terraform.tfvars` to `.gitignore`!
 1. `prepare_terraform.yml` and `backup.yml` should both have tasks to create `nexus_s3_bucket`, if necessary.
-1. Refactor so that we need to run `prepare_ansible.yml` before the other playbooks. Move common, duplicate config
-from the other playbooks into `prepare_ansible.yml`. I'm mostly talking about installation of Python packages.

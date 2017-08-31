@@ -2,7 +2,7 @@
 - name: Test playbook. Execute integration and functional tests against running Nexus server.
   hosts: nexus
   gather_facts: true  # Needed for all the "ansible_*" facts that we use.
-  become: yes         # For installing software needed by tests.
+  become: true        # For installing software needed by tests.
 
   roles:
     - role: github-git-lfs
