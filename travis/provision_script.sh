@@ -7,5 +7,7 @@ set -e
 source ~/.openstack/openrc.sh
 
 cd $TRAVIS_BUILD_DIR/orchestration
-terraform init
-terraform apply
+
+# See https://www.terraform.io/guides/running-terraform-in-automation.html#auto-approval-of-plans
+terraform init -input=false
+terraform apply -input=false -auto-approve=true

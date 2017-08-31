@@ -3,8 +3,8 @@ terraform {
   required_version = ">= 0.10.0"
 
   backend "s3" {
-    bucket = "unidata-nexus-iac"
-    key    = "terraform.tfstate"
+    bucket = "unidata-terraform-state"
+    key    = "nexus-prod/terraform.tfstate"
     region = "us-east-1"
   }
 }

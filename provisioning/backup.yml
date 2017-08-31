@@ -61,13 +61,12 @@
         timeout: 30
 
 
-#    # Needs 'boto' Python package to be installed on machine. We do that in 'prepare_ansible.yml'. Run it first.
-#    - name: Create S3 bucket to store our backups.
-#      s3_bucket:
-#        name: "{{ nexus_s3_bucket }}"
-#        versioning: yes
-#        aws_access_key: "{{ aws_access_key_id }}"
-#        aws_secret_key: "{{ aws_secret_access_key }}"
+    # Needs 'boto' Python package to be installed on machine. We do that in 'prepare_ansible.yml'. Run it first.
+    - name: Create S3 bucket to store our backups.
+      s3_bucket:
+        name: "{{ unidata_backups_bucket }}"
+        aws_access_key: "{{ aws_access_key_id }}"
+        aws_secret_key: "{{ aws_secret_access_key }}"
 
     # Ditto.
     - name: Create new backup in S3 and purge any existing backups that are too old.
