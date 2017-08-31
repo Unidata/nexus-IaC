@@ -1,3 +1,23 @@
+/////////////////////////////// For S3 remote backend ///////////////////////////////
+
+variable "bucket" {
+  default = "unidata-terraform-state"
+}
+
+variable "key" {
+  default = "nexus-prod/terraform.tfstate"
+}
+
+variable "region" {
+  default = "us-east-1"
+}
+
+variable "encrypt" {
+  default = true
+}
+
+/////////////////////////////// For OpenStack ///////////////////////////////
+
 variable "image" {
   // See available images with: openstack image list
   default = "JS-API-Featured-Ubuntu16-Jun-8-2017"
