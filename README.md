@@ -36,7 +36,13 @@ vagrant up
 
 You'll be asked for the [Vault password](provisioning/README.md#ansible-vault). Once provided, Ansible will provision
 the VM, and when it's done, the Nexus Repository Manager will be available at `https://192.168.22.22/`.
-The default admin login is `admin`/`changeme`.
+The admin username is `admin`. The admin password is assigned to the `vault_nexus_admin_password` variable in
+`provisioning/group_vars/all/vault.yml`. `vault.yml` is encrypted by Ansible Vault, and in order to decrypt it,
+you'll need the Vault password. Then, run the command:
+
+```
+ansible-vault view --ask-vault-pass provisioning/group_vars/all/vault.yml
+```
 
 ## Licensing
 

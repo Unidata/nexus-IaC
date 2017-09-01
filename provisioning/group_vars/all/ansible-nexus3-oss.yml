@@ -16,8 +16,8 @@ nexus_backup_dir: '/var/opt/nexus-backup'
 # Accept connections from localhost only. Apache is acting as a reverse proxy; only it will talk directly to Nexus.
 application_host: 127.0.0.1
 
-# The password to set for the admin account. The default is 'admin123'.
-nexus_admin_password: 'changeme'
+# The password to set for the admin account.
+nexus_admin_password: "{{ vault_nexus_admin_password }}"
 
 # Delete the repositories that Nexus is configured with by default. This step is only executed on first-time install.
 nexus_delete_default_repos: true
@@ -60,7 +60,7 @@ nexus_local_users:
     first_name: THREDDS
     last_name: Developer
     email: "{{ admin_email }}"
-    password: "changeme"
+    password: "{{ vault_nexus_developer_password }}"
     roles:
       - developer
 

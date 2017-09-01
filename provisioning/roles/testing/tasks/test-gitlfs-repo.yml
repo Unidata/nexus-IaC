@@ -16,6 +16,7 @@
 
 - name: Configure Git LFS. Creates '.lfsconfig'.
   command: git config -f {{ test_lfs_push_dir }}/.lfsconfig lfs.url {{ lfs_url }}
+  no_log: true  # Don't log 'lfs_url', which contains Nexus user credentials.
 
 - name: Track NetCDF files with Git LFS. Creates '.gitattributes'.
   command: git lfs track '*.nc'
@@ -44,6 +45,7 @@
   command: git push origin master
   args:
     chdir: "{{ test_lfs_push_dir }}"
+  no_log: true  # Don't log 'lfs_url', which contains Nexus user credentials.
 
 - name: "Get status of '{{ local_remote_repo }}' directory."
   stat: "path={{ local_remote_repo }}"
