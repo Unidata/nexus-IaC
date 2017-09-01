@@ -17,14 +17,9 @@ sudo apt-get install -y ansible
 
 cd $TRAVIS_BUILD_DIR/provisioning
 
-# Use 'openstack' inventory.
-ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
-# Verbose mode.
-ANSIBLE_OPTIONS+=(--verbose)
-
 # Installs Terraform. Decrypts OpenStack credentials script and copies them to /etc/profile.d/openrc.sh
-ansible-playbook "${ANSIBLE_OPTIONS[@]}" prepare_terraform.yml
+ansible-playbook --verbose prepare_terraform.yml
 
 # Prepares Ansible for running the site.yml playbook. Most importantly, it installs the private SSH key needed to
 # connect to the OpenStack host.
-ansible-playbook "${ANSIBLE_OPTIONS[@]}" prepare_ansible.yml
+ansible-playbook --verbose prepare_ansible.yml

@@ -3,10 +3,10 @@ terraform {
   required_version = ">= 0.10.0"
 
   backend "s3" {
-    bucket = "${var.bucket}"
-    key    = "${var.key}"
-    region = "${var.region}"
+    bucket = "unidata-terraform-state"
+    key    = "nexus-prod/terraform.tfstate"
+    region = "us-east-1"
 
-    encrypt = "${var.encrypt}"
+    encrypt = true
   }
 }

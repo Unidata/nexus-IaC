@@ -1,2 +1,8 @@
 [nexus]
+# Note: This is the value of the Terraform variable "${openstack_networking_floatingip_v2.nexus.address}".
+# Unfortunately, I don't think there's a simple, automatic way to have its value written here and then persisted to Git.
+# Maybe we could use a dynamic inventory script instead:
+#    http://docs.ansible.com/ansible/latest/intro_dynamic_inventory.html#example-openstack-external-inventory-script
+# I suppose that eventually we'll be able to put "artifacts.unidata.ucar.edu" here and handle any hostname-to-IP
+# mapping updates in DNS or /etc/hosts.
 129.114.17.236
