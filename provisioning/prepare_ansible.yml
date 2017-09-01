@@ -23,18 +23,11 @@
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
         - boto      # Required by 's3_bucket' module and the duplicity S3 backend. Used in backup.yml and restore.yml.
 
-    - block:
-      - name: Ensure home directory for SSH exists.
-        file: path=~/.ssh state=directory
+    - name: Ensure home directory for SSH exists.
+      file: path=~/.ssh state=directory
 
-      - name: Decrypt OpenStack SSH private key and copy it to home directory.
-        copy:
-          src: unidata_provisioner_id_rsa.enc
-          dest: ~/.ssh/unidata_provisioner_id_rsa
-          mode: 0400
-
-      # We only need the secret key if we're provisioning an OpenStack host; don't bother decrypting it otherwise,
-      # as that's a potential security vulnerability.
-      when: ansible_hostname == 'nexus-prod'
-
-  # TODO: Could these tasks--and the stuff in provisioning/files--be moved to a 'prepare' role?
+    - name: Decrypt OpenStack SSH private key and copy it to home directory.
+      copy:
+        src: unidata_provisioner_id_rsa.enc
+        dest: ~/.ssh/unidata_provisioner_id_rsa
+        mode: 0400
