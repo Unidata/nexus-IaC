@@ -12,6 +12,16 @@
       tags: [ duply ]
 
   tasks:
+    - name: Install pip Python package manager, updating the cache first, if needed.
+      apt:
+        name: python-pip
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
+
+    - name: Install 'boto' Python package.
+      pip: name=boto state=latest  # Required by the duplicity S3 backend.
+
     # See https://stackoverflow.com/a/41209087/3874643
     - name: Retrieve the last line in '{{ nexus_log }}'.
       command: tail -n 1 {{ nexus_log }}
@@ -33,7 +43,6 @@
         search_regex: "{{ last_line_escaped }}\n(.*\n)*.*{{ wanted_pattern_escaped }}"
         timeout: 30
       when: service_result.changed  # Only wait for service to stop if it's not already stopped.
-
 
     - name: Get status of 'db' directory.
       stat: path={{ nexus_data_dir }}/db
@@ -63,8 +72,6 @@
           command: mv {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
       when: blobs_stat.stat.exists  # 'blobs' directory exists.
 
-
-    # Needs 'boto' Python package to be installed on target. We do that in 'prepare_ansible.yml'. Run it first.
     - name: Restore Nexus application data from S3 backup.
       command: duply nexus restore {{ duply_backup_profiles.nexus.conf.source }} --force
       environment:

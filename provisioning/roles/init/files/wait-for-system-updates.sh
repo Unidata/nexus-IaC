@@ -7,7 +7,7 @@
 # to when trying to update the Apt cache.
 
 elapsed=0
-timeout=180
+timeout=300
 sleep_time=3
 lock_file=/var/lib/dpkg/lock
 

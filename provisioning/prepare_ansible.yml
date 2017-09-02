@@ -1,13 +1,14 @@
 ---
-# Some Ansible features depend on Python packages that aren't installed with the default Python distribution.
+# Some Ansible filters depend on Python packages that aren't installed with the default Python distribution.
 # We must install those packages ourselves, and of course we use Ansible for the task. Unfortunately, the Ansible
-# instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Python
-# interpreter running a new Ansible instance. As a result, we've separated the Python package installation into its
-# own playbook (this file). This playbook should be run before other playbooks that require the packages.
-- name: Prepare Ansible to connect to the OpenStack target and to run the test, backup, and restore playbooks.
+# instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Ansible
+# instance. As a result, we've separated the Python package installation into its own playbook (this file). This
+# playbook should be run before other playbooks that the filters.
+#
+# NOTE: Strangely, it IS possible to install a Python package and then use an Ansible module that depends on that
+# package within the same play. It seems that only filters have the shortcoming.
+- name: Install Python packages needed by Ansible filters.
   hosts: localhost
-  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
-  become: true
 
   tasks:
     - name: Install pip Python package manager, updating the cache first, if needed.
@@ -21,13 +22,3 @@
       pip: "name={{ item }} state=latest"
       with_items:
         - jmespath  # Required by the json_query Jinja2 filter. Used in test.yml playbook.
-        - boto      # Required by 's3_bucket' module and the duplicity S3 backend. Used in backup.yml and restore.yml.
-
-    - name: Ensure home directory for SSH exists.
-      file: path=~/.ssh state=directory
-
-    - name: Decrypt OpenStack SSH private key and copy it to home directory.
-      copy:
-        src: unidata_provisioner_id_rsa.enc
-        dest: ~/.ssh/unidata_provisioner_id_rsa
-        mode: 0400

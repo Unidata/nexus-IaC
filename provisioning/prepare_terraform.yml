@@ -1,8 +1,6 @@
 ---
 - name: Prepare Terraform to provision resources on OpenStack.
   hosts: localhost
-  gather_facts: true  # Needed for all the "ansible_*" facts that we use.
-  become: true
 
   vars:
     releases_url: https://releases.hashicorp.com/index.json
@@ -32,19 +30,18 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/terraform"
         remote_src: yes
+      become: true  # User may need eleveated privileges to write to 'install_dir'.
 
-    - name: Ensure home directories for OpenStack and AWS exist.
+    - name: Ensure home directories for SSH, OpenStack, and AWS exist.
       file: path={{ item }} state=directory
-      with_items: [ '~/.openstack', '~/.aws' ]
+      with_items: [ '~/.ssh', '~/.openstack', '~/.aws' ]
 
-    - name: Decrypt OpenStack credentials script and copy it to home directory.
+    - name: Decrypt credentials files and place them in their respective home directories.
       copy:
-        src: openrc.sh.enc
-        dest: ~/.openstack/openrc.sh
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         mode: 0400
-
-    - name: Decrypt AWS credentials file and copy it to home directory.
-      copy:
-        src: aws_credentials.enc
-        dest: ~/.aws/credentials
-        mode: 0400
+      with_items:
+        - { src: unidata_provisioner_id_rsa.enc, dest: ~/.ssh/unidata_provisioner_id_rsa }
+        - { src: openrc.sh.enc,                  dest: ~/.openstack/openrc.sh }
+        - { src: aws_credentials.enc,            dest: ~/.aws/credentials }

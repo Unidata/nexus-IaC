@@ -19,7 +19,3 @@ cd $TRAVIS_BUILD_DIR/provisioning
 
 # Installs Terraform. Decrypts OpenStack credentials script and copies them to /etc/profile.d/openrc.sh
 ansible-playbook --verbose prepare_terraform.yml
-
-# Prepares Ansible for running the site.yml playbook. Most importantly, it installs the private SSH key needed to
-# connect to the OpenStack host.
-ansible-playbook --verbose prepare_ansible.yml
