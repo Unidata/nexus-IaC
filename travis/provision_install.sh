@@ -18,4 +18,4 @@ sudo apt-get install -y ansible
 cd $TRAVIS_BUILD_DIR/provisioning
 
 # Installs Terraform. Decrypts OpenStack credentials script and copies them to /etc/profile.d/openrc.sh
-ansible-playbook --verbose prepare_terraform.yml
+ansible-playbook prepare_terraform.yml

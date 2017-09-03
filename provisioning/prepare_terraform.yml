@@ -30,7 +30,7 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/terraform"
         remote_src: yes
-      become: true  # User may need eleveated privileges to write to 'install_dir'.
+      become: true  # User may need elevated privileges to write to 'install_dir'.
 
     - name: Ensure home directories for SSH, OpenStack, and AWS exist.
       file: path={{ item }} state=directory

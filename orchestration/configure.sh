@@ -17,8 +17,6 @@ cd $provis_dir
 
 # Use 'openstack' inventory.
 ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
-# Verbose mode.
-ANSIBLE_OPTIONS+=(--verbose)
 
 # Wait for target's sshd to accept our connection.
 ansible nexus "${ANSIBLE_OPTIONS[@]}" --module-name=wait_for_connection --args='timeout=120'
