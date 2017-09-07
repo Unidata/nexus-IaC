@@ -5,6 +5,7 @@ variable "image" {
   // provisioning time compared to using the JS-API base image.
   // See available images with: openstack image list
   default = "ubuntu-16.04.3-fully-updated-20170903"
+//  default = "Debian 8 x64 (pre-installed murano-agent)"
 }
 
 variable "flavor" {
