@@ -19,7 +19,7 @@ application_host: 127.0.0.1
 # The password to set for the admin account.
 nexus_admin_password: "{{ vault_nexus_admin_password }}"
 
-# Delete the repositories that Nexus is configured with by default. This step is only executed on first-time install.
+# Delete the repositories that Nexus is configured with by default.
 nexus_delete_default_repos: true
 
 # See https://books.sonatype.com/nexus-book/reference3/security.html#anonymous
@@ -66,10 +66,19 @@ nexus_local_users:
 
 # Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
 nexus_repos_maven_hosted:
-  - name: maven-releases
+    # We can't use the name 'maven-releases' because it's the name of a default repo that ships with Nexus and we have
+    # 'nexus_delete_default_repos==true'. If we chose that name, our repo would be deleted every playbook run.
+  - name: mvn-releases
     version_policy: release
+    # Need this temporarily because during :tds:publishTdsWebPublicationToReleasesRepository, we get:
+    #   java.io.IOException: Could not PUT
+    #   'https://artifacts2.unidata.ucar.edu/repository/mvn-releases/edu/ucar/tds/4.6.10/tds-4.6.10.pom'.
+    #   Received status code 400 from server: Repository does not allow updating assets: mvn-releases
+    # The issue is that :tds:publishTdsJavaPublicationToReleasesRepository has already written tds-4.6.10.pom, and
+    # the second task is not allowed to overwrite it.
+    write_policy: allow
 
-  - name: maven-snapshots
+  - name: mvn-snapshots  # Can't use the name 'maven-snapshots' for the same reason.
     version_policy: snapshot
 
 nexus_repos_maven_proxy:
@@ -82,10 +91,10 @@ nexus_repos_maven_proxy:
     version_policy: snapshot
 
 nexus_repos_maven_group:
-  - name: maven-public
+  - name: mvn-public  # Can't use the name 'maven-public' for the same reason.
     member_repos:
-      - maven-releases
-      - maven-snapshots
+      - mvn-releases
+      - mvn-snapshots
       - unidata-releases-old
       - unidata-snapshots-old
 
@@ -135,7 +144,7 @@ nexus_scheduled_tasks:
     cronExpression: '0 0 3 * * ?'
     properties:
       # Maven repository or repository group to remove snapshots from.
-      repositoryName: maven-snapshots
+      repositoryName: mvn-snapshots
       # Minimum number of snapshots to keep for one GAV.
       minimumRetained: 1
       # Purge all snapshots older than this, provided we still keep the minimum number specified.

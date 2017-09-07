@@ -26,7 +26,7 @@ lfs_url: "{{ lfs_url_without_creds | replace('https://', http_creds_prefix) }}"
 # URL in /provisioning/templates/vhosts.conf.
 docs_base_url: "https://{{ docs_hostname }}"
 
-# Pull from 'maven-public', which is a group repository that includes all other repositories.
+# Pull from 'mvn-public', which is a group repository that includes all other repositories.
 maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
 
 # The Maven repository we're pushing to in "test-maven-repos.yml". The test could be run more than once, and the

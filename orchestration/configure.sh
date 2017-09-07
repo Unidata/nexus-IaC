@@ -23,3 +23,13 @@ ansible nexus "${ANSIBLE_OPTIONS[@]}" --module-name=wait_for_connection --args='
 
 # Run main playbook.
 ansible-playbook "${ANSIBLE_OPTIONS[@]}" site.yml
+
+# Restore application data from S3. NOTE: When we do something like:
+#   terraform taint openstack_compute_instance_v2.nexus && terraform apply
+#
+# then running restore.yml afterwards COULD result in data loss! It'll happen if the Cinder volume has some data on it
+# that's not backed up before it's detached from the old, tainted VM. The data initially survives the migration to the
+# new VM, but restore.yml then wipes out any data that's not part of the backup.
+#
+# Therefore, we've commented this out for now. It's not a bad idea to leave restoration as a manual step anyway.
+#ansible-playbook "${ANSIBLE_OPTIONS[@]}" restore.yml
