@@ -77,8 +77,8 @@ DOCKER_RUN_PARAMS+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/file
 # Propagates the 'VAULT_PASSWORD' variable I've set in my local environment to the container.
 DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
-DOCKER_RUN_PARAMS+=(--add-host='artifacts2.unidata.ucar.edu:127.0.0.1')
-DOCKER_RUN_PARAMS+=(--add-host='docs2.unidata.ucar.edu:127.0.0.1')
+DOCKER_RUN_PARAMS+=(--add-host='artifacts.unidata.ucar.edu:127.0.0.1')
+DOCKER_RUN_PARAMS+=(--add-host='thredds-doc.unidata.ucar.edu:127.0.0.1')
 # Set a consistent hostname. Otherwise, it'll be the container ID, which is different every time.
 # Duplicity gets mad if you try to make an incremental backup and you have a different hostname than before.
 DOCKER_RUN_PARAMS+=(--hostname='nexus-test')

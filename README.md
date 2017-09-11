@@ -52,9 +52,9 @@ Furthermore, this project includes code from third-party open-source software co
 
 ### Roles
 
-All of the Ansible roles in `/provisioning/roles/`--except for `testing` and `security`--are git submodules pointing to
-third-party repositories. As such, any licensing terms that those projects have are reproduced in their
-respective role directories.
+All of the Ansible roles in `/provisioning/roles/`--except for `testing`, `security`, and `init`--are git submodules
+git submodules pointing to third-party repositories. As such, any licensing terms that those projects have are
+reproduced in their respective role directories.
 
 ### Testing
 

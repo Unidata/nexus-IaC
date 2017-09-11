@@ -24,7 +24,10 @@ lfs_url: "{{ lfs_url_without_creds | replace('https://', http_creds_prefix) }}"
 
 # The public base URL of the raw repository where we store our docs. It is mapped to the appropriate Nexus private
 # URL in /provisioning/templates/vhosts.conf.
-docs_base_url: "https://{{ docs_hostname }}"
+thredds_doc_base_pull_url: "http://{{ thredds_doc_hostname }}"  # HTTP, not HTTPS!
+
+# The base URL to which we push artifacts in the 'thredds_doc' repo.
+thredds_doc_base_push_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_raw_hosted[0].name }}"
 
 # Pull from 'mvn-public', which is a group repository that includes all other repositories.
 maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"

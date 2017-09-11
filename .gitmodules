@@ -14,9 +14,6 @@
 [submodule "provisioning/roles/ansible-role-apache"]
 	path = provisioning/roles/ansible-role-apache
 	url = https://github.com/geerlingguy/ansible-role-apache.git
-[submodule "provisioning/roles/ansible-role-ssl-certs"]
-	path = provisioning/roles/ansible-role-ssl-certs
-	url = https://github.com/cwardgar/ansible-role-ssl-certs.git
 [submodule "provisioning/roles/ansible-debian-upgrade-reboot"]
 	path = provisioning/roles/ansible-debian-upgrade-reboot
 	url = https://github.com/cwardgar/ansible-debian-upgrade-reboot.git

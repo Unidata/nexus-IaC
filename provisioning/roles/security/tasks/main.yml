@@ -4,3 +4,6 @@
 
 - include: ssh.yml
   tags: [ ssh ]
+
+- include: ssl.yml
+  tags: [ ssl ]

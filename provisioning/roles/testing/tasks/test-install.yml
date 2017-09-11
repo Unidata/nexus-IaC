@@ -9,7 +9,6 @@
     url: "{{ artifacts_base_url }}"
     status_code: 200
     return_content: yes
-    validate_certs: no  # We're using a self-signed cert for testing.
   register: webpage
   failed_when: "'<title>Nexus Repository Manager</title>' not in webpage.content"
 

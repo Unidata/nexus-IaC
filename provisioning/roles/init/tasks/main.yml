@@ -32,4 +32,4 @@
   with_items:
     # Defined in provisioning/group_vars/all/other.yml
     - "{{ artifacts_apache_log_dir }}"
-    - "{{ docs_apache_log_dir }}"
+    - "{{ thredds_doc_apache_log_dir }}"

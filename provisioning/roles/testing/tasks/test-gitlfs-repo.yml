@@ -11,9 +11,6 @@
 - name: Configure git 'user.email'.
   command: git config --global user.email '{{ nexus_local_users[0].username }}@{{ public_hostname }}'
 
-- name: Configure git to NOT verify the SSL certificate when fetching or pushing over HTTPS.
-  command: git config --global http.sslVerify false   # We're using a self-signed cert for testing.
-
 - name: Configure Git LFS. Creates '.lfsconfig'.
   command: git config -f {{ test_lfs_push_dir }}/.lfsconfig lfs.url {{ lfs_url }}
   no_log: true  # Don't log 'lfs_url', which contains Nexus user credentials.

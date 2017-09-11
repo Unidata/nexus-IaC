@@ -1,6 +1,10 @@
 # Security
 
-Performs basic security configuration.
+Performs basic security configuration including:
+
+1. creating users and adding them to the privileged `wheel` group.
+1. locking down SSH access (no root login).
+1. copying SSL certificate for `artifacts.unidata.ucar.edu` into place.
 
 ## Inclusion of third-party software
 

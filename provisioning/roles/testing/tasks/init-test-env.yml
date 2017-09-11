@@ -1,13 +1,13 @@
 ---
   # Edit /etc/hosts so that we can resolve these hostnames in our tests. In production, DNS will do the mapping.
-- name: Map '{{ artifacts_hostname }}' and '{{ docs_hostname }}' to '{{ application_host }}' in '/etc/hosts'.
+- name: Map '{{ artifacts_hostname }}' and '{{ thredds_doc_hostname }}' to '{{ application_host }}' in '/etc/hosts'.
   lineinfile:
     path: "/etc/hosts"
     line: "{{ application_host }} {{ item }}"
     state: present
   with_items:
     - "{{ artifacts_hostname }}"
-    - "{{ docs_hostname }}"
+    - "{{ thredds_doc_hostname }}"
   # Don't run this task on Docker because /etc/hosts is read-only within the container.
   # Instead, we're adding our mapping in the docker run command using the "--add-host" flag. See test.sh.
   when: ansible_hostname != 'nexus-test'
@@ -20,7 +20,6 @@
     src: https://dl.bintray.com/groovy/maven/apache-groovy-binary-{{ groovy_version }}.zip
     dest: "{{ groovy_install_dir }}"
     creates: "{{ groovy_home }}"
-    validate_certs: yes
     remote_src: yes
 
 - name: "Delete existing local backup of '{{ testing_dir }}', if it exists."
@@ -33,20 +32,3 @@
 
 - name: "Recreate testing directory."
   file: "path={{ testing_dir }} state=directory"
-
-# In test-maven-repos.yml, we want to push to and pull from the Maven repos using HTTPS endpoints. However, Nexus is
-# secured by a self-signed SSL certificate, and there's no easy way in Gradle or Grape to disable cert verification.
-# Instead, we'll need to make Java trust our cert by adding it to the JRE's cacert file (see https://goo.gl/mZzMtw).
-# Also see https://stackoverflow.com/questions/33564199.
-
-- name: Check if Nexus cert is already in JRE truststore.
-  command: >
-    keytool -list -keystore {{ jre_truststore }} -storepass {{ jre_truststore_password }} -alias {{ cert_alias }}
-  ignore_errors: yes  # Expected to fail when cert not in truststore.
-  register: keytool_output
-
-- name: Add self-signed cert to Java truststore.
-  command: >
-    keytool -noprompt -importcert -trustcacerts -alias {{ cert_alias }} -keystore {{ jre_truststore }}
-    -storepass {{ jre_truststore_password }} -file {{ ssl_certs_cert_path }}
-  when: "'Alias <' + cert_alias + '> does not exist' in keytool_output.stdout"

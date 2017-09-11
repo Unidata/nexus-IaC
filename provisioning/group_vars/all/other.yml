@@ -1,11 +1,11 @@
 ---
 apache_log_dir: /var/log/apache2
 
-artifacts_hostname: artifacts2.unidata.ucar.edu
+artifacts_hostname: artifacts.unidata.ucar.edu
 artifacts_apache_log_dir: "{{ apache_log_dir }}/{{ artifacts_hostname }}"
 
-docs_hostname: docs2.unidata.ucar.edu
-docs_apache_log_dir: "{{ apache_log_dir }}/{{ docs_hostname }}"
+thredds_doc_hostname: thredds-doc.unidata.ucar.edu
+thredds_doc_apache_log_dir: "{{ apache_log_dir }}/{{ thredds_doc_hostname }}"
 
 # This will appear in the error page that Apache displays for HTTP 5XX responses.
 # It'll also be where alert emails are sent when something goes wrong with one of our Nexus scheduled tasks.
