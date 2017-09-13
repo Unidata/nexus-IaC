@@ -10,15 +10,34 @@ apache_vhosts_template: "vhosts.conf"
 # Our vhost.conf is a combination of an example found in the Nexus documentation (https://goo.gl/JeauuY) and another
 # at /provisioning/roles/ansible-nexus3-oss/templates/nexus-vhost.conf.
 apache_mods_enabled:
-  - ssl.load      # For SSL* directives.
-  - proxy.load    # For ProxyPass* directives.
-    # For RequestHeader directive. Without this, I get errors when pushing LFS objects to the 'cdm-unit-test' repo:
-    #   LFS: Put <artifact_url>: read /tmp/nexus-IaC-testing/test-lfs-push/.git/lfs/objects/<hash>: file already closed,
-    #   error: failed to push some refs to '/tmp/nexus-IaC-testing/repo.git'
-    # I don't know why the error happens without the directive, but RequestHeader was included in the example
-    # vhosts.conf file provided in the Nexus documentation, so I guess I shouldn't worry too much about it.
+  # For SSL* directives.
+  - ssl.load
+  - ssl.conf
+
+  # For ProxyPass* directives.
+  - proxy.load
+  - proxy.conf
+
+  # For RequestHeader directive. Without this, I get errors when pushing LFS objects to the 'cdm-unit-test' repo:
+  #   LFS: Put <artifact_url>: read /tmp/nexus-IaC-testing/test-lfs-push/.git/lfs/objects/<hash>: file already closed,
+  #   error: failed to push some refs to '/tmp/nexus-IaC-testing/repo.git'
+  # I don't know why the error happens without the directive, but RequestHeader was included in the example
+  # vhosts.conf file provided in the Nexus documentation, so I guess I shouldn't worry too much about it.
   - headers.load
-    # Without this, I was getting the following in the Apache error.log:
-    #   No protocol handler was valid for the URL /. If you are using a DSO version of mod_proxy, make sure the proxy
-    #   submodules are included in the configuration using LoadModule.
+  # There is no 'headers.conf' in '/etc/apache2/mods-available'.
+
+  # Without this, I was getting the following in the Apache error.log:
+  #   No protocol handler was valid for the URL /. If you are using a DSO version of mod_proxy, make sure the proxy
+  #   submodules are included in the configuration using LoadModule.
   - proxy_http.load
+  # There is no proxy_http.conf
+
+  # For Rewrite* directives.
+  - rewrite.load
+  # There is no rewrite.conf
+
+  # In ssl.conf, we have:
+  #     SSLSessionCache         shmcb:${APACHE_RUN_DIR}/ssl_scache(512000)
+  # In order for that directive to work, we must load the appropriate socache module (mod_socache_shmcb).
+  - socache_shmcb.load
+  # There is no socache_shmcb.conf
