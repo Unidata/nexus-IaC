@@ -4,30 +4,44 @@
   gather_facts: true  # Needed for all the "ansible_*" facts that we use.
   become: true        # Need this for installing packages and starting Nexus service.
 
-  roles:
-    - role: init
+  tasks:
+    - name: Include 'init' role.
+      include_role: name=init
       tags: [ always ]
 
-    # Upgrades ALL system software, rebooting afterwards if necessary.
-    # We're not running this on Docker because a) it's slow, and b) you cannot reboot the host from within a container.
+    # Upgrades ALL system software, rebooting afterwards if necessary. We're not running this on Docker because
+    # a) it's slow, and b) you cannot reboot the host from within a container.
     # FIXME: This will lead to differences between the test environment and production. Could be a problem.
-#    - role: ansible-debian-upgrade-reboot
+#    - name: Include 'ansible-debian-upgrade-reboot' role.
+#      include_role: name=ansible-debian-upgrade-reboot
 #      tags: [ upgrade ]
 #      when: ansible_hostname != 'nexus-test'
 
-    - role: volume
+    - name: Include 'volume' role.
+      include_role: name=volume
       tags: [ volume ]
       when: ansible_hostname == 'nexus-prod'  # OpenStack is the only target where we're mounting a volume.
 
-    - role: security
+    - name: Include 'security' role.
+      include_role: name=security
       tags: [ security ]
-    - role: ansible-role-firewall
+
+    - name: Include 'ansible-role-firewall' role.
+      include_role: name=ansible-role-firewall
       tags: [ firewall ]
-    - role: ansible-role-ntp
+
+    - name: Include 'ansible-role-ntp' role.
+      include_role: name=ansible-role-ntp
       tags: [ ntp ]
-    - role: ansible-role-apache
+
+    - name: Include 'ansible-role-apache' role.
+      include_role: name=ansible-role-apache
       tags: [ apache ]
-    - role: oracle-java
+
+    - name: Include 'oracle-java' role.
+      include_role: name=oracle-java
       tags: [ java ]
-    - role: ansible-nexus3-oss
+
+    - name: Include 'ansible-nexus3-oss' role.
+      include_role: name=ansible-nexus3-oss
       tags: [ nexus ]

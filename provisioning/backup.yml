@@ -7,11 +7,11 @@
   vars:
     wanted_pattern: "Task 'db.backup' [db.backup] state change RUNNING -> WAITING (OK)"
 
-  roles:
-    - role: ansible-duply-backup
+  tasks:
+    - name: Include 'ansible-duply-backup' role.
+      include_role: name=ansible-duply-backup
       tags: [ duply ]
 
-  tasks:
     - name: Install pip Python package manager, updating the cache first, if needed.
       apt:
         name: python-pip

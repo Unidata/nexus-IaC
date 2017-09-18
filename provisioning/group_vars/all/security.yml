@@ -1,0 +1,12 @@
+---
+# Values for the variables below are NOT CHANGED from the role defaults.
+# However, the variables need to be redefined here so that they're visible to roles other than 'security'.
+# Specifically, 'ansible-role-apache' needs these variables when it copies (with templating) vhosts.conf into place.
+# This kludge is only necessary because "include_role does not expose variables to rest of playbook", as it should.
+# See https://github.com/ansible/ansible/issues/21890
+
+ssl_certs_path: "/etc/ssl/nexus"
+ssl_certs_common_name: "{{ artifacts_hostname }}"
+ssl_cert_file: "{{ ssl_certs_path }}/{{ ssl_certs_common_name }}.crt"
+ssl_cert_key_file: "{{ ssl_certs_path }}/{{ ssl_certs_common_name }}.key"
+ssl_cert_chain_file: "{{ ssl_certs_path }}/DigiCertCA.crt"

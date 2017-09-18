@@ -5,8 +5,11 @@
   gather_facts: true  # Needed for all the "ansible_*" facts that we use.
   become: true        # For installing software needed by tests.
 
-  roles:
-    - role: github-git-lfs
+  tasks:
+    - name: Include 'github-git-lfs' role.
+      include_role: name=github-git-lfs
       tags: [ git-lfs ]
-    - role: testing
+
+    - name: Include 'testing' role.
+      include_role: name=testing
       tags: [ test ]
