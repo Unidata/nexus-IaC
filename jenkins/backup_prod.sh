@@ -3,11 +3,15 @@
 # Exit on any individual command failure.
 set -e
 
+# Upgrade to the latest version of pip. Note that we cannot simply call "sudo pip" on Amazon Linux:
+# https://stackoverflow.com/questions/32020594
+sudo `which pip` install --upgrade pip
+
 # Install Ansible via pip. This is okay for simple playbooks like backup.yml, but more complicated playbooks are likely
 # going to require the "full" Ansible installation. For example, prepare_terraform with pip's ansible, I get:
 #   failed: [localhost] (item=jq) => {"failed": true, "item": "jq", "msg":
 #     "Could not import python modules: apt, apt_pkg. Please install python-apt package."}
-sudo pip install ansible
+sudo `which pip` install --upgrade ansible
 
 # See http://docs.ansible.com/ansible/intro_configuration.html#force-color
 export ANSIBLE_FORCE_COLOR=true
