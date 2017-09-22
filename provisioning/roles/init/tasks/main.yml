@@ -24,12 +24,3 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
-
-- name: Ensure Apache log directories exist for the two domains.
-  file:
-    path: "{{ item }}"
-    state: "directory"
-  with_items:
-    # Defined in provisioning/group_vars/all/ansible-role-apache.yml
-    - "{{ artifacts_apache_log_dir }}"
-    - "{{ thredds_doc_apache_log_dir }}"
