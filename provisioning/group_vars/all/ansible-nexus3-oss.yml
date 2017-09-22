@@ -57,8 +57,8 @@ nexus_roles:
 
 nexus_local_users:
   - username: developer
-    first_name: THREDDS
-    last_name: Developer
+    first_name: Developer
+    last_name: User
     email: "{{ nexus_admin_email }}"
     password: "{{ vault_nexus_developer_password }}"
     roles:
@@ -145,7 +145,7 @@ nexus_scheduled_tasks:
     typeId: blobstore.compact
     alertEmail: "{{ nexus_admin_email }}"
     schedule: advanced
-    cronExpression: '0 0 4 * * ?'
+    cronExpression: '0 0 2 * * ?'
     properties:
       blobstoreName: 'default'
 
@@ -154,7 +154,7 @@ nexus_scheduled_tasks:
     typeId: repository.maven.remove-snapshots
     alertEmail: "{{ nexus_admin_email }}"
     schedule: advanced
-    cronExpression: '0 0 3 * * ?'
+    cronExpression: '0 0 1 * * ?'
     properties:
       # Maven repository or repository group to remove snapshots from.
       repositoryName: "{{ nexus_repos_maven_hosted[1].name }}"
@@ -165,7 +165,7 @@ nexus_scheduled_tasks:
       # Purge all snapshots that have a corresponding release.
       removeIfReleased: false
       # The grace period during which snapshots with an associated release will not be purged.
-      gracePeriodInDays: -1
+      gracePeriodInDays: 7
 
 
 # Values for the variables below are NOT CHANGED from the role defaults.
