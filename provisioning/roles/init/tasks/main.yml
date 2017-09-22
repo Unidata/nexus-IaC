@@ -30,6 +30,6 @@
     path: "{{ item }}"
     state: "directory"
   with_items:
-    # Defined in provisioning/group_vars/all/other.yml
+    # Defined in provisioning/group_vars/all/ansible-role-apache.yml
     - "{{ artifacts_apache_log_dir }}"
     - "{{ thredds_doc_apache_log_dir }}"

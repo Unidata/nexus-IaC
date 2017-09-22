@@ -41,3 +41,16 @@ apache_mods_enabled:
   # In order for that directive to work, we must load the appropriate socache module (mod_socache_shmcb).
   - socache_shmcb.load
   # There is no socache_shmcb.conf
+
+
+# The variables below are not actually defined in the role; they're new variables that logically belong with the rest.
+
+artifacts_hostname: artifacts.unidata.ucar.edu
+thredds_doc_hostname: thredds-doc.unidata.ucar.edu
+
+apache_log_dir: /var/log/apache2
+artifacts_apache_log_dir: "{{ apache_log_dir }}/{{ artifacts_hostname }}"
+thredds_doc_apache_log_dir: "{{ apache_log_dir }}/{{ thredds_doc_hostname }}"
+
+# This will appear in the error page that Apache displays for HTTP 5XX responses.
+apache_admin_email: thredds-dev@unidata.ucar.edu

@@ -59,7 +59,7 @@ nexus_local_users:
   - username: developer
     first_name: THREDDS
     last_name: Developer
-    email: "{{ admin_email }}"
+    email: "{{ nexus_admin_email }}"
     password: "{{ vault_nexus_developer_password }}"
     roles:
       - developer
@@ -135,7 +135,7 @@ nexus_scheduled_tasks:
   # See org.sonatype.nexus.internal.backup.DatabaseBackupTaskDescriptor
   - name: db.backup  # NOTE: This only backs up the databases. We must back up the blobstore separately.
     typeId: db.backup
-    alertEmail: "{{ admin_email }}"
+    alertEmail: "{{ nexus_admin_email }}"
     schedule: manual
     properties:
       location: "{{ nexus_backup_dir }}"
@@ -143,7 +143,7 @@ nexus_scheduled_tasks:
   # See org.sonatype.nexus.repository.internal.blobstore.CompactBlobStoreTaskDescriptor
   - name: blobstore.compact
     typeId: blobstore.compact
-    alertEmail: "{{ admin_email }}"
+    alertEmail: "{{ nexus_admin_email }}"
     schedule: advanced
     cronExpression: '0 0 4 * * ?'
     properties:
@@ -152,7 +152,7 @@ nexus_scheduled_tasks:
   # See org.sonatype.nexus.repository.maven.tasks.RemoveSnapshotsTaskDescriptor
   - name: repository.maven.remove-snapshots
     typeId: repository.maven.remove-snapshots
-    alertEmail: "{{ admin_email }}"
+    alertEmail: "{{ nexus_admin_email }}"
     schedule: advanced
     cronExpression: '0 0 3 * * ?'
     properties:
@@ -177,3 +177,9 @@ nexus_default_port: 8081
 nexus_default_context_path: ''
 nexus_private_base_url: "http://{{ application_host }}:{{ nexus_default_port }}{{ nexus_default_context_path }}"
 rest_api_endpoint: "{{ nexus_private_base_url }}/service/siesta/rest/v1/script"
+
+
+# The variables below are not actually defined in the role; they're new variables that logically belong with the rest.
+
+# This will be where alert emails are sent when something goes wrong with one of our Nexus scheduled tasks.
+nexus_admin_email: thredds-dev@unidata.ucar.edu

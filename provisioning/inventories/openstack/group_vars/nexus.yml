@@ -13,6 +13,6 @@ data_partition_mount_dir: /data
 nexus_data_dir: "{{ data_partition_mount_dir }}/nexus"
 nexus_backup_dir: "{{ data_partition_mount_dir }}/nexus-backup"
 
-# Overrides definition in group_vars/all/other.yml.
+# Overrides definition in group_vars/all/ansible-role-apache.yml.
 # On OpenStack, we want for all data that will be backed up to live on the Cinder volume.
 apache_log_dir: "{{ data_partition_mount_dir }}/apache2-log"
