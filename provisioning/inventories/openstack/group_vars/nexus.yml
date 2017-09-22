@@ -16,3 +16,9 @@ nexus_backup_dir: "{{ data_partition_mount_dir }}/nexus-backup"
 # Overrides definition in group_vars/all/ansible-role-apache.yml.
 # On OpenStack, we want for all data that will be backed up to live on the Cinder volume.
 apache_log_dir: "{{ data_partition_mount_dir }}/apache2-log"
+
+# Overrides defaults in ansible-nexus3-oss role. We're using values for the "16GB Physical Memory" config:
+# https://help.sonatype.com/display/NXRM3/System+Requirements#SystemRequirements-ExampleMaximumMemoryConfigurations
+nexus_min_heap_size: 4G
+nexus_max_heap_size: 4G
+nexus_max_direct_memory_size: 6717M
