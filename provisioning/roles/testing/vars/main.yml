@@ -6,11 +6,6 @@ groovy_exe: "{{ groovy_home }}/bin/groovy"
 
 testing_dir: /tmp/nexus-IaC-testing
 
-# See https://goo.gl/mZzMtw
-jre_truststore: "{{ oracle_java_home }}/jre/lib/security/cacerts"
-jre_truststore_password: changeit
-cert_alias: nexus
-
 local_remote_repo: "{{ testing_dir }}/repo.git"
 test_lfs_push_dir: "{{ testing_dir }}/test-lfs-push"
 test_lfs_pull_dir: "{{ testing_dir }}/test-lfs-pull"
@@ -29,8 +24,8 @@ thredds_doc_base_pull_url: "http://{{ thredds_doc_hostname }}"  # HTTP, not HTTP
 # The base URL to which we push artifacts in the 'thredds_doc' repo.
 thredds_doc_base_push_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_raw_hosted[0].name }}"
 
-# Pull from 'mvn-public', which is a group repository that includes all other repositories.
-maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
+# Pull from 'unidata-all', which is a group repository that includes all other repositories.
+maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[2].name }}"
 
 # The Maven repository we're pushing to in "test-maven-repos.yml". The test could be run more than once, and the
 # deployment needs to work each time. To that end, we're going to push a "1.0.0-SNAPSHOT" version of our library
