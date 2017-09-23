@@ -5,7 +5,7 @@
 
 This project contains code for the [orchestration and configuration](
 https://blog.gruntwork.io/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation-7989dad2865c#3f44)
-of a Nexus Repository Manager in the cloud. At first, only orchestration for localhost
+of a Nexus Repository Manager 3 instance in the cloud. At first, only orchestration for localhost
 (via [Vagrant](https://www.vagrantup.com/)) and [OpenStack](https://www.openstack.org/) are provided.
 
 ## Working with submodules - IMPORTANT!!
@@ -52,8 +52,8 @@ Furthermore, this project includes code from third-party open-source software co
 
 ### Roles
 
-All of the Ansible roles in `/provisioning/roles/`--except for `testing`, `security`, and `init`--are git submodules
-git submodules pointing to third-party repositories. As such, any licensing terms that those projects have are
+All of the Ansible roles in `/provisioning/roles/`—except for `testing`, `security`, and `init`—are git submodules
+pointing to third-party repositories. As such, any licensing terms that those projects have are
 reproduced in their respective role directories.
 
 ### Testing
