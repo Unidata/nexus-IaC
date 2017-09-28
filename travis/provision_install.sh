@@ -18,4 +18,4 @@ sudo apt-get install -y ansible
 cd $TRAVIS_BUILD_DIR/provisioning
 
 # Installs Terraform. Decrypts SSH, OpenStack, and AWS credentials and places them in their respective home directories.
-ansible-playbook prepare_terraform.yml
+ansible-playbook --verbose prepare_terraform.yml

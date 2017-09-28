@@ -27,6 +27,8 @@ ansible-vault decrypt --output=~/.ssh/unidata_provisioner_id_rsa files/unidata_p
 
 # Use 'openstack' inventory.
 ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
+# Verbose mode.
+ANSIBLE_OPTIONS+=(--verbose)
 
 # Backup Nexus application data to S3.
 ansible-playbook "${ANSIBLE_OPTIONS[@]}" backup.yml

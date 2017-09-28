@@ -38,7 +38,9 @@ parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 host_provis_dir="$(dirname $parent_dir_of_this_script)/provisioning"
 
 container_provis_dir="/usr/local/nexus-IaC/provisioning"
-container_inventory="--inventory-file=$container_provis_dir/inventories/docker/hosts"
+
+ansible_opts=(--inventory-file=$container_provis_dir/inventories/docker/hosts)
+ansible_opts+=(--verbose)
 
 # From Ansible for DevOps, version 2017-06-02, page 349:
 #   Why use an init system in Docker? With Docker, it’s preferable to either
@@ -61,55 +63,55 @@ docker pull geerlingguy/docker-$distro-ansible:latest
 # https://stackoverflow.com/questions/1455988/commenting-in-bash-script#comment18282079_1456059
 
 # Run container in background.
-DOCKER_RUN_PARAMS=(--detach)
+docker_run_params=(--detach)
 # The name of the container. By default, it is a timestamp of when this script was run.
-DOCKER_RUN_PARAMS+=(--name $container_id)
+docker_run_params+=(--name $container_id)
 # Mount the host's nexus-IaC project directory to the container, with read-only privileges.
-DOCKER_RUN_PARAMS+=(--volume=$host_provis_dir:$container_provis_dir:ro)
+docker_run_params+=(--volume=$host_provis_dir:$container_provis_dir:ro)
 # Some black magic to make systemD init work in the container.
-DOCKER_RUN_PARAMS+=($init_opts)
+docker_run_params+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
 # See http://docs.ansible.com/ansible/intro_configuration.html#configuration-file
-DOCKER_RUN_PARAMS+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
+docker_run_params+=(--env ANSIBLE_CONFIG=$container_provis_dir/ansible.cfg)
 # Set an environment variable to allow ansible-playbook to find the Vault password file.
 # See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
-DOCKER_RUN_PARAMS+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/files/vault-password)
+docker_run_params+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_provis_dir/files/vault-password)
 # Propagates the 'VAULT_PASSWORD' variable I've set in my local environment to the container.
-DOCKER_RUN_PARAMS+=(--env VAULT_PASSWORD)
+docker_run_params+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
-DOCKER_RUN_PARAMS+=(--add-host='artifacts.unidata.ucar.edu:127.0.0.1')
-DOCKER_RUN_PARAMS+=(--add-host='thredds-doc.unidata.ucar.edu:127.0.0.1')
+docker_run_params+=(--add-host='artifacts.unidata.ucar.edu:127.0.0.1')
+docker_run_params+=(--add-host='thredds-doc.unidata.ucar.edu:127.0.0.1')
 # Set a consistent hostname. Otherwise, it'll be the container ID, which is different every time.
 # Duplicity gets mad if you try to make an incremental backup and you have a different hostname than before.
-DOCKER_RUN_PARAMS+=(--hostname='nexus-test')
+docker_run_params+=(--hostname='nexus-test')
 # The image to run.
-DOCKER_RUN_PARAMS+=(geerlingguy/docker-$distro-ansible:latest)
+docker_run_params+=(geerlingguy/docker-$distro-ansible:latest)
 # The name of the system initialization program that will run first in the container.
-DOCKER_RUN_PARAMS+=($init_exe)
+docker_run_params+=($init_exe)
 
-docker run "${DOCKER_RUN_PARAMS[@]}"
+docker run "${docker_run_params[@]}"
 
 printf "\n"
 
 printf ${blue}"Provisioning the provisioner."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/prepare_ansible.yml
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/prepare_ansible.yml
 
 printf ${blue}"Checking Ansible playbook syntax."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/site.yml --syntax-check
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/site.yml --syntax-check
 
 printf "\n"
 
 printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/site.yml
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/site.yml
 
 if [ "$test_idempotence" = true ]; then
   printf ${blue}"Running playbook again: idempotence test"${neutral}
   idempotence=$(mktemp)
   docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/site.yml | tee -a $idempotence
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/site.yml | tee -a $idempotence
   tail $idempotence \
     | grep -q 'changed=0.*failed=0' \
     && (printf ${green}'Idempotence test: pass'${neutral}"\n") \
@@ -120,25 +122,25 @@ printf "\n"
 
 printf ${blue}"Running integration and functional tests against live instance."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/test.yml
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/test.yml
 
 printf "\n"
 
 printf ${blue}"Backing up application data to S3."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/backup.yml
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/backup.yml
 
 printf "\n"
 
 printf ${blue}"Restoring application data from S3."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/restore.yml
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/restore.yml
 
 printf "\n"
 
 printf ${blue}"Re-running tests that pull artifacts against the restored Nexus server."${neutral}
 docker exec $container_id $color_opts \
-        ansible-playbook $container_inventory $container_provis_dir/test.yml --tags "test-pull"
+        ansible-playbook "${ansible_opts[@]}" $container_provis_dir/test.yml --tags "test-pull"
 
 if [ "$cleanup" = true ]; then
   printf ${blue}"Removing Docker container...\n"${neutral}
