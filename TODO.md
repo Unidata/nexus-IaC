@@ -10,3 +10,6 @@ duplicity's rysnc functionality to restore 'blobs' in-place. Should be much fast
 1. For security, delete the default OS user (e.g. 'ubuntu' or 'debian'). It should correspond to `ansible_user`.
 At the very least, delete the user's `authorized_keys`, so that login—post provisioning—is restricted to the users we
 setup in `users-and-groups.yml`.
+1. As of Nexus 3.3, tasks can be manually run using a simpler REST API endpoint that does *not* involve a Groovy
+script. Let's use that instead in backup.yml. See https://artifacts.unidata.ucar.edu/swagger-ui/#/ and
+http://www.sonatype.org/nexus/2017/09/25/nexus-repository-new-beta-rest-api-for-content/.
