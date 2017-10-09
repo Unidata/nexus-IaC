@@ -49,9 +49,9 @@ nexus_roles:
     privileges:
       - nx-repository-view-*-*-add
       - nx-repository-view-*-*-browse
+      - nx-repository-view-*-*-delete
       - nx-repository-view-*-*-edit
       - nx-repository-view-*-*-read
-      # No 'delete' privilege.
       - nx-search-read
     roles: []
 
