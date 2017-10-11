@@ -26,10 +26,6 @@
       include_role: name=security
       tags: [ security ]
 
-    - name: Include 'ansible-role-firewall' role.
-      include_role: name=ansible-role-firewall
-      tags: [ firewall ]
-
     - name: Include 'ansible-role-ntp' role.
       include_role: name=ansible-role-ntp
       tags: [ ntp ]
