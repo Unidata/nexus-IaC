@@ -31,8 +31,14 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     to_port = "443"
     cidr = "0.0.0.0/0"
   }
-
-  // TODO: Do we need to permit NTP traffic on port 123? Test this.
+  // Allow HTTP traffic on 8081 from localhost. Nexus runs at 127.0.0.1:8081 and we need to be able to access it
+  // from localhost in order to determine if the server is ready (i.e. after a restart).
+  rule {
+    ip_protocol = "tcp"
+    from_port = "8081"
+    to_port = "8081"
+    cidr = "127.0.0.1/32"
+  }
 
   // Allow SSH traffic from a limited set of IPs.
   rule {
@@ -46,6 +52,12 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     from_port = "22"
     to_port = "22"
     cidr = "128.117.144.0/24"  // Unidata
+  }
+  rule {
+    ip_protocol = "tcp"
+    from_port = "22"
+    to_port = "22"
+    cidr = "128.117.153.0/24"  // Unidata
   }
   rule {
     ip_protocol = "tcp"
@@ -115,7 +127,7 @@ resource "null_resource" "dummy" {
   }
 
   // We need the floating IP to have been associated with the instance, so that we can use it to connect.
-  depends_on = ["openstack_compute_floatingip_associate_v2.nexus"]
+  depends_on = [ "openstack_compute_floatingip_associate_v2.nexus", "openstack_compute_volume_attach_v2.nexus" ]
 
   provisioner "local-exec" {
     command = "./configure.sh"

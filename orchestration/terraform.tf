@@ -4,7 +4,7 @@ terraform {
 
   backend "s3" {
     bucket = "unidata-terraform-state"
-    key    = "nexus-prod/terraform.tfstate"
+    key = "nexus-prod/terraform.tfstate"
     region = "us-east-1"
 
     encrypt = true

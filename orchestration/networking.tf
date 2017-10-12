@@ -7,18 +7,18 @@ resource "openstack_networking_floatingip_v2" "nexus" {
 }
 
 resource "openstack_networking_network_v2" "nexus" {
-  name           = "nexus-network"
+  name = "nexus-network"
 }
 
 resource "openstack_networking_subnet_v2" "nexus" {
-  name            = "nexus-subnet"
-  network_id      = "${openstack_networking_network_v2.nexus.id}"
-  cidr            = "192.168.1.0/24"
+  name = "nexus-subnet"
+  network_id = "${openstack_networking_network_v2.nexus.id}"
+  cidr = "192.168.1.0/24"
 }
 
 resource "openstack_networking_router_v2" "nexus" {
-  name             = "nexus-router"
-  admin_state_up   = true   // Whether the resource is "ON" or not.
+  name = "nexus-router"
+  admin_state_up = true   // Whether the resource is "ON" or not.
   external_gateway = "${var.external_gateway_network["id"]}"
 }
 

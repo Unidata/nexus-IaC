@@ -1,10 +1,5 @@
 variable "image" {
-  // This is a snapshot created by cwardgar. It was created by starting out with "JS-API-Featured-Ubuntu16-Jun-8-2017"
-  // as a base image and then updating all software (even the kernel) to the latest versions, using just the
-  // 'ansible-debian-upgrade-reboot' role in site.yml. As of 2017-09-03, it shaves over 4 minutes off the OpenStack
-  // provisioning time compared to using the JS-API base image.
-  // See available images with: openstack image list
-  default = "ubuntu-16.04.3-fully-updated-20170903"
+  default = "JS-API-Featured-Ubuntu16-Jun-8-2017"
 }
 
 variable "flavor" {
@@ -17,8 +12,8 @@ variable "flavor" {
 variable "external_gateway_network" {
   type = "map"
   default = {
-    name  = "public"
-    id    = "865ff018-8894-40c2-99b7-d9f8701ddb0b"
+    name = "public"
+    id = "4367cd20-722f-4dc2-97e8-90d98c25f12e"
   }
 }
 
