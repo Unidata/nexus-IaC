@@ -45,8 +45,8 @@
       include_role: name=ansible-role-apache
       tags: [ apache ]
 
-    - name: Include 'oracle-java' role.
-      include_role: name=oracle-java
+    - name: Include 'ansible-oracle-java' role.
+      include_role: name=ansible-oracle-java
       tags: [ java ]
 
     - name: Include 'ansible-nexus3-oss' role.

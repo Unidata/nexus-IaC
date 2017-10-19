@@ -3,7 +3,7 @@
 # We must install those packages ourselves, and of course we use Ansible for the task. Unfortunately, the Ansible
 # instance that INSTALLS the packages cannot then USE the packages; they can only be loaded by a brand new Ansible
 # instance. As a result, we've separated the Python package installation into its own playbook (this file). This
-# playbook should be run before other playbooks that the filters.
+# playbook should be run before other playbooks that use the filters.
 #
 # NOTE: Strangely, it IS possible to install a Python package and then use an Ansible module that depends on that
 # package within the same play. It seems that only filters have the shortcoming.
@@ -16,7 +16,6 @@
         name: python-pip
         state: latest
         update_cache: yes
-        cache_valid_time: 3600  # Update cache if it's been over an hour since the last update.
 
     - name: Install Python packages.
       pip: "name={{ item }} state=latest"

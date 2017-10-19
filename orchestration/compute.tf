@@ -69,7 +69,7 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     ip_protocol = "tcp"
     from_port = "22"
     to_port = "22"
-    cidr = "52.22.28.125/32"  // jenkins-aws
+    cidr = "34.236.85.159/32"  // jenkins-aws
   }
   rule {
     ip_protocol = "tcp"

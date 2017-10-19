@@ -1,6 +1,3 @@
-[submodule "provisioning/roles/oracle-java"]
-	path = provisioning/roles/oracle-java
-	url = https://github.com/cwardgar/oracle-java.git
 [submodule "provisioning/roles/ansible-role-ntp"]
 	path = provisioning/roles/ansible-role-ntp
 	url = https://github.com/cwardgar/ansible-role-ntp.git
@@ -20,3 +17,6 @@
 [submodule "provisioning/roles/ansible-duply-backup"]
 	path = provisioning/roles/ansible-duply-backup
 	url = https://github.com/cwardgar/ansible-duply-backup.git
+[submodule "provisioning/roles/ansible-oracle-java"]
+	path = provisioning/roles/ansible-oracle-java
+	url = https://github.com/cwardgar/ansible-oracle-java.git
