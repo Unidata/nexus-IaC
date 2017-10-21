@@ -33,10 +33,7 @@ cleanup=${cleanup:-"true"}
 container_id=${container_id:-$timestamp}
 test_idempotence=${test_idempotence:-"true"}
 
-# See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
-parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-host_provis_dir="$(dirname $parent_dir_of_this_script)/provisioning"
-
+host_provis_dir="$WORKSPACE/provisioning"
 container_provis_dir="/usr/local/nexus-IaC/provisioning"
 
 ansible_opts=(--inventory-file=$container_provis_dir/inventories/docker/hosts)

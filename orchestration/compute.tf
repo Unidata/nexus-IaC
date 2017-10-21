@@ -75,30 +75,6 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     ip_protocol = "tcp"
     from_port = "22"
     to_port = "22"
-    cidr = "52.45.185.117/32"  // travis-ci.org. See https://docs.travis-ci.com/user/ip-addresses/
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "52.54.31.11/32"  // travis-ci.org
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "54.87.185.35/32"  // travis-ci.org
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "54.87.141.246/32"  // travis-ci.org
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
     cidr = "76.120.68.217/32"  // cwardgar
   }
 }
