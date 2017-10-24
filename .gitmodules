@@ -1,0 +1,21 @@
+[submodule "ansible/roles/ansible-debian-upgrade-reboot"]
+	path = ansible/roles/ansible-debian-upgrade-reboot
+	url = https://github.com/cwardgar/ansible-debian-upgrade-reboot.git
+[submodule "ansible/roles/ansible-duply-backup"]
+	path = ansible/roles/ansible-duply-backup
+	url = https://github.com/cwardgar/ansible-duply-backup.git
+[submodule "ansible/roles/ansible-nexus3-oss"]
+	path = ansible/roles/ansible-nexus3-oss
+	url = https://github.com/cwardgar/ansible-nexus3-oss.git
+[submodule "ansible/roles/ansible-oracle-java"]
+	path = ansible/roles/ansible-oracle-java
+	url = https://github.com/cwardgar/ansible-oracle-java.git
+[submodule "ansible/roles/ansible-role-apache"]
+	path = ansible/roles/ansible-role-apache
+	url = https://github.com/cwardgar/ansible-role-apache.git
+[submodule "ansible/roles/ansible-role-ntp"]
+	path = ansible/roles/ansible-role-ntp
+	url = https://github.com/cwardgar/ansible-role-ntp.git
+[submodule "ansible/roles/github-git-lfs"]
+	path = ansible/roles/github-git-lfs
+	url = https://github.com/cwardgar/github-git-lfs.git
