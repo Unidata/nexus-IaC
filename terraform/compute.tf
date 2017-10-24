@@ -103,9 +103,10 @@ resource "null_resource" "dummy" {
   }
 
   // We need the floating IP to have been associated with the instance, so that we can use it to connect.
+  // Also, the 'volume' role needs the Cinder volume to be attached.
   depends_on = [ "openstack_compute_floatingip_associate_v2.nexus", "openstack_compute_volume_attach_v2.nexus" ]
 
   provisioner "local-exec" {
-    command = "./configure.sh"
+    command = "../scripts/configure_prod.sh"
   }
 }

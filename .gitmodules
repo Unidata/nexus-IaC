@@ -16,6 +16,7 @@
 [submodule "ansible/roles/ansible-role-ntp"]
 	path = ansible/roles/ansible-role-ntp
 	url = https://github.com/cwardgar/ansible-role-ntp.git
+	branch = no-timezone-module
 [submodule "ansible/roles/github-git-lfs"]
 	path = ansible/roles/github-git-lfs
 	url = https://github.com/cwardgar/github-git-lfs.git
