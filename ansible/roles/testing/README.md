@@ -8,7 +8,7 @@ Tests can be executed locally in two ways.
 
 ### Against an already-running Nexus instance on a Vagrant VM
 
-In the provisioning directory, do:
+In the 'ansible' directory, do:
 ```
 ansible-playbook -i inventories/vagrant/hosts test.yml
 ansible-playbook -i inventories/vagrant/hosts -v test.yml --tags "test-gitlfs-repo"

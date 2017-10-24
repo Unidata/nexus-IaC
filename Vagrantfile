@@ -18,10 +18,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Provision VM using the main Ansible playbook.
   config.vm.provision :ansible do |ansible|
-    ansible.inventory_path = "provisioning/inventories/vagrant/hosts"
+    ansible.inventory_path = "ansible/inventories/vagrant/hosts"
     ansible.verbose = "v"
-    ansible.playbook = "provisioning/site.yml"
-    ansible.config_file = "provisioning/ansible.cfg"
+    ansible.playbook = "ansible/site.yml"
+    ansible.config_file = "ansible/ansible.cfg"
     ansible.limit = "all"  # Do not limit the hosts here; do it in the playbook instead.
     ansible.ask_vault_pass = true
   end

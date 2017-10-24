@@ -2,13 +2,13 @@
 # Install the latest version of Apache.
 apache_packages_state: latest
 
-# Use our own VirtualHost configuration template. It's in /provisioning/templates/vhosts.conf.
+# Use our own VirtualHost configuration template. It's in /ansible/templates/vhosts.conf.
 apache_vhosts_template: "vhosts.conf"
 
 # The Apache modules to enable. These are necessary for the directives we use in our vhosts.conf file.
 # vhost.conf can't have comments in it, so we'll have to add them here.
 # Our vhost.conf is a combination of an example found in the Nexus documentation (https://goo.gl/JeauuY) and another
-# at /provisioning/roles/ansible-nexus3-oss/templates/nexus-vhost.conf.
+# at /ansible/roles/ansible-nexus3-oss/templates/nexus-vhost.conf.
 apache_mods_enabled:
   # For SSL* directives.
   - ssl.load

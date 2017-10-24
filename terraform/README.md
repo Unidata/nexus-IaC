@@ -1,11 +1,11 @@
-# Orchestrating Jetstream resources using Terraform
+# Provisioning Jetstream resources using Terraform
 
 We aim to describe the entirety of the infrastructure as code, and provision that infrastructure with [Terraform](
 https://www.terraform.io/).
 
 ## OpenStack
 
-Jetstream runs atop the [OpenStack cloud operating system](https://www.openstack.org/software/). To orchestrate
+Jetstream runs atop the [OpenStack cloud operating system](https://www.openstack.org/software/). To provision
 resources with Terraform, we'll need to interact with the system at the OpenStack level, not the Atmosphere level.
 
 ### Authentication

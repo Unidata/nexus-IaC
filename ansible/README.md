@@ -1,4 +1,4 @@
-# Provisioning
+# Ansible
 
 We use [Ansible](ansible.com) to provision our machines.
 
@@ -27,7 +27,7 @@ ansible nexus -i inventories/vagrant/hosts -v -m service -a 'name=nexus state=re
 
 ## Execute playbooks on Vagrant VM
 
-`ansible-playbook` should be run from the `provisioning/` directory, so that it can find `ansible.cfg`.
+`ansible-playbook` should be run from the `ansible/` directory, so that it can find `ansible.cfg`.
 
 [Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
 

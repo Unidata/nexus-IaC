@@ -21,8 +21,8 @@ variable "volume_size" {  // In gigabytes.
   default = 300
 }
 
-// The path to the public SSH key, relative to the Terraform root module (i.e. the 'orchestration' directory).
+// The path to the public SSH key, relative to the Terraform root module (i.e. the 'terraform' directory).
 variable "public_key_path" {
   description = "The path of the ssh pub key"
-  default = "../provisioning/files/unidata_provisioner_id_rsa.pub"
+  default = "../ansible/files/unidata_provisioner_id_rsa.pub"
 }
