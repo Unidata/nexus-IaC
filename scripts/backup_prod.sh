@@ -13,8 +13,12 @@ cd $ansible_dir
 export ANSIBLE_FORCE_COLOR=1
 # See https://github.com/hashicorp/terraform/issues/2661#issuecomment-269866440
 export PYTHONUNBUFFERED=1
-# VAULT_PASSWORD will also be provided by the Credentials Binding plugin.
-export ANSIBLE_VAULT_PASSWORD_FILE=files/vault-password
+
+# This is a Python script that simply prints the value of the VAULT_PASSWORD variable.
+# That variable must be added to the environment elsewhere, in a secure manner.
+# If it is not available or is incorrect, the 'ansible-vault' command below will fail.
+# See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
+export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
 
 # Decrypt and install private key so that we can connect to OpenStack target.
 ansible-vault decrypt --output=~/.ssh/unidata_provisioner_id_rsa files/unidata_provisioner_id_rsa.enc

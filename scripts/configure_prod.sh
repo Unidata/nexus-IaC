@@ -14,6 +14,12 @@ export ANSIBLE_FORCE_COLOR=1
 # See https://github.com/hashicorp/terraform/issues/2661#issuecomment-269866440
 export PYTHONUNBUFFERED=1
 
+# This is a Python script that simply prints the value of the VAULT_PASSWORD variable.
+# That variable must be added to the environment elsewhere, in a secure manner.
+# If it is not available or is incorrect, the 'ansible-playbook' command below will fail.
+# See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
+export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
+
 # Use 'openstack' inventory.
 ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
 # Verbose mode.
