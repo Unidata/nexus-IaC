@@ -13,3 +13,4 @@ duplicity's rysnc functionality to restore 'blobs' in-place. Should be much fast
 1. On Travis, change the 2nd stage to run site.yml against OpenStack if the 1st stage is successful.
 1. ansible-debian-upgrade-reboot seems to always restart the host, even if nothing was updated. If we're going to run
 site.yml against the OpenStack VM nightly and after every commit, that's gonna lead to unacceptable downtime.
+   - Made a small change to the 'removes' argument of "Reboot host". Maybe that fixed it?
