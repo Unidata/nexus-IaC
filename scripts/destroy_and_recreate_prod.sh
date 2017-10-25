@@ -33,6 +33,6 @@ cd ../terraform
 # One-time Terraform initialization.
 terraform init -input=false
 # Taint the VM, which will cause Terraform to recreate it.
-terraform taint openstack_compute_instance_v2.nexus -input=false
+terraform taint openstack_compute_instance_v2.nexus
 # Apply the changes.
 terraform apply -input=false -auto-approve=true
