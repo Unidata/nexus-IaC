@@ -1,0 +1,36 @@
+{
+  "variables": {
+    "ansible_dir": "../ansible",
+    "timestamp": "{{isotime \"2006-01-02T15:04:05Z\"}}"
+  },
+  "builders": [
+    {
+      "type": "openstack",
+      "flavor": "m1.medium",
+      "source_image_name": "JS-API-Featured-Ubuntu16-Oct-25-2017",
+      "image_name": "nexus-image-{{user `timestamp`}}",
+      "ssh_username": "ubuntu",
+      "networks": [
+        "a180e538-acac-42cc-bdfa-ab93d068af0b"
+      ],
+      "security_groups": [
+        "b4a21fb7-b0e0-45c7-b11e-977d00e49ebb"
+      ],
+      "floating_ip_pool": "public"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "user": "ubuntu",
+      "playbook_file": "{{user `ansible_dir`}}/site.yml",
+      "inventory_directory": "{{user `ansible_dir`}}/inventories/openstack",
+      "groups": [ "nexus" ],
+      "ansible_env_vars": [
+        "ANSIBLE_CONFIG={{user `ansible_dir`}}/ansible.cfg",
+        "ANSIBLE_VAULT_PASSWORD_FILE={{user `ansible_dir`}}/files/vault-password"
+      ],
+      "extra_arguments": [ "-v" ]
+    }
+  ]
+}

@@ -20,7 +20,13 @@
     - name: Include 'volume' role.
       include_role: name=volume
       tags: [ volume ]
-      when: ansible_hostname == 'nexus-prod'  # OpenStack is the only target where we're mounting a volume.
+      # This role relies on a variable that is only defined in the OpenStack inventory (data_partition_mount_dir).
+      # We use the hostname to determine whether we're provisioning an OpenStack target.
+      # For our Terraform VM, the hostname is the value of "openstack_compute_instance_v2.nexus.name": 'nexus-prod'.
+      # For our temporary Packer VMs, the hostname is the same as the image name, and our image names are of the
+      # format "nexus-image-{{timestamp}}". So, we can't match it exactly, but we do have a reliable prefix.
+      # startswith(s) is a function from the Python standard library.
+      when: ansible_hostname == 'nexus-prod' or ansible_hostname.startswith('nexus-image-')
 
     - name: Include 'security' role.
       include_role: name=security

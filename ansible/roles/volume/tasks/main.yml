@@ -1,27 +1,43 @@
 ---
-- name: "Install 'parted' package, which is needed by the 'parted' module."
-  package: "name=parted state=latest"
+- name: List information about '{{ volume_device_name }}' block device.
+  command: lsblk {{ volume_device_name }}
+  register: lsblk_output
+  changed_when: false  # Task is purely informational; it doesn't change anything.
+  ignore_errors: true  # Task is expected to fail when device doesn't exist. We handle that case below.
 
-- name: "Create primary partition on volume."
-  parted:
-    device: "{{ volume_device_name }}"
-    number: "{{ data_partition_number }}"
-    state: "present"
+- name: Determine if '{{ volume_device_name }}' block device exists.
+  set_fact:
+    volume_device_exists: "{{ lsblk_output.rc == 0 }}"
 
-- name: "Create an ext4 file system on new partition."
-  filesystem:
-    fstype: "{{ filesystem_type }}"
-    dev: "{{ data_partition_name }}"
+- name: Prepare volume at '{{ volume_device_name }}'.
+  block:
+    - name: Install 'parted' package, which is needed by the 'parted' module.
+      package: name=parted state=latest
 
-- name: "Ensure the mount directory exists."
-  file:
-    path: "{{ data_partition_mount_dir }}"  # Defined in inventories/openstack/group_vars/nexus.yml
-    state: "directory"
-    # We change permissions of this directory later in the ansible-nexus3-oss role.
+    - name: Create primary partition on volume.
+      parted:
+        device: "{{ volume_device_name }}"
+        number: "{{ data_partition_number }}"
+        state: present
 
-- name: "Mount partition to directory and update /etc/fstab."
+    - name: Create an ext4 file system on new partition.
+      filesystem:
+        fstype: "{{ filesystem_type }}"
+        dev: "{{ data_partition_name }}"
+
+    - name: Ensure the mount directory exists.
+      file:
+        path: "{{ data_partition_mount_dir }}"  # Defined in inventories/openstack/group_vars/nexus.yml
+        state: directory
+        # We change permissions of this directory later in the ansible-nexus3-oss role.
+  when: volume_device_exists
+
+- name: Add entry for '{{ volume_device_name }}' to /etc/fstab, and mount it if it's available.
   mount:
+    src: "{{ data_partition_name }}"
     path: "{{ data_partition_mount_dir }}"
     fstype: "{{ filesystem_type }}"
-    src: "{{ data_partition_name }}"
-    state: "mounted"
+    opts: defaults,nofail  # Don't fail when the device isn't available, which'll happen when the volume isn't attached.
+    dump: 0
+    passno: 2
+    state: "{{ volume_device_exists | ternary('mounted', 'present') }}"

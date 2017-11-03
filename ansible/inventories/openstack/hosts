@@ -6,3 +6,11 @@
 # I suppose that eventually we'll be able to put "artifacts.unidata.ucar.edu" here and handle any hostname-to-IP
 # mapping updates in DNS or /etc/hosts.
 149.165.157.61
+
+[nexus:vars]
+# This variable used to be declared in group_vars/nexus.yml, but we had to move it when we incorporated Packer into
+# the project. The reason is that when Packer runs, it creates a temporary inventory file in the same directory as
+# this file, so that it will get access to the variables in group_vars/. If 'ansible_ssh_private_key_file' is defined
+# there, it'll override the temporary keypair that Packer created and passed to ansible-playbook with the
+# '--private-key' option.
+ansible_ssh_private_key_file=~/.ssh/unidata_provisioner_id_rsa

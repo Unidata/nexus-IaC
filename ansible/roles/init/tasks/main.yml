@@ -5,7 +5,7 @@
     path: "/etc/hosts"
     line: "127.0.0.1 {{ ansible_hostname }}"
     state: present
-  when: ansible_hostname == 'nexus-prod'
+  when: ansible_hostname != 'nexus-test'  # In Docker, hostname must be set with the 'docker run' --hostname option.
 
 # To update the Apt cache below, we need exclusive access to /var/lib/dpkg/lock.
 # However, when an Ubuntu 16 system is first booted, a series of update processes will hold the lock
