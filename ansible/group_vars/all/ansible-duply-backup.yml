@@ -10,6 +10,19 @@ duply_backup_profiles:
       max_age: 1Y          # Delete backups when they are more than a year old.
       max_fullbkp_age: 2M  # Do a full backup (instead of incremental) if the last full was done more than 2 months ago.
 
+      # Additional duplicity command line options. Don't forget to leave a separating space char at the end.
+      #
+      # This parameter will ignore the following error:
+      #     Fatal Error: Backup source host has changed.
+      #     Current hostname: nexus-prod.jetstreamlocal
+      #     Previous hostname: localhost
+      #     Aborting because you may have accidentally tried to backup two different data sets to the same remote
+      #     location, or using the same archive directory. If this is not a mistake, use the --allow-source-mismatch
+      #     switch to avoid seeing this message.
+      # We're commenting it out because it's not something we should need to (or WANT to) do every backup.
+      # But it's here in case we need to do it again in the future.
+      # dupl_params: '--allow-source-mismatch '
+
       # Although we could encrypt the archive, we've decided not to bother because our data is being stored in a
       # private S3 bucket. Moreover, none of the data is sensitive anyway.
 
