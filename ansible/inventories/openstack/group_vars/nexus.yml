@@ -21,3 +21,9 @@ apache_log_dir: "{{ data_partition_mount_dir }}/apache2-log"
 nexus_min_heap_size: 4G
 nexus_max_heap_size: 4G
 nexus_max_direct_memory_size: 6717M
+
+# The time, in seconds, to wait for Nexus to restart before failing the playbook run. As of 2017-11-02, the initial
+# startup was taking a very long time on OpenStack VMs: it was exceeding a timeout of 360 seconds! Meanwhile, the
+# same operation only took ~30 seconds on AWS, so poor performance in Jetstream seems to be the culprit.
+# I've submitted a ticket about this poor performance to the help desk.
+nexus_restart_timeout: 600

@@ -6,8 +6,10 @@
 # The script is intended to be used with lock files, specifically /var/lib/dpkg/lock, which we need exclusive access
 # to when trying to update the Apt cache.
 
+# "set -e" isn't appropriate here because fuser is expected to return non-zero.
+
 elapsed=0
-timeout=300
+timeout=360
 poll_interval=3
 
 # Script will exit when the file has been free for this many consecutive seconds.
