@@ -14,3 +14,5 @@ duplicity's rysnc functionality to restore 'blobs' in-place. Should be much fast
 site.yml against the OpenStack VM nightly and after every commit, that's gonna lead to unacceptable downtime.
 1. Now that we've incorporated Packer, I don't think we need to provide unidata_provisioner_id_rsa in
 prepare_tools.yml any longer. The key is still needed by backup_prod.sh, however.
+1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
+Ansible 2.4.2 is released.

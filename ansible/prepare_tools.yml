@@ -20,6 +20,9 @@
       get_url:
         url: "{{ releases_url }}"
         dest: "{{ releases_dest }}"
+        # Temporary workaround for https://github.com/ansible/ansible/issues/25402. The bug has been fixed, but won't
+        # be available until Ansible 2.4.2. See https://github.com/ansible/ansible/pull/32053#issuecomment-339012192
+        validate_certs: false
 
     - name: Extract URLs of latest versions of Packer and Terraform.
       # 1. Print {{ releases_dest }} to STDOUT and pipe it onward.
@@ -63,6 +66,8 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/{{ item.bin_name }}"
         remote_src: yes
+        # Same temporary workaround as for get_url.
+        validate_certs: false
       with_items:
         - { url: "{{ latest_hashicorp_urls.results[0].stdout }}", bin_name: 'packer' }
         - { url: "{{ latest_hashicorp_urls.results[1].stdout }}", bin_name: 'terraform' }
