@@ -74,6 +74,10 @@
 
     - name: Ensure home directories for SSH, OpenStack, and AWS exist.
       file: path={{ item }} state=directory
+      # We have "become: true" at the top of the playbook, which means that all tasks will be run as root.
+      # When running as root, '~' will evaluate to '/root', and thus these directories will be created there.
+      # However, we want them to live under '/home/ubuntu' instead, so we have to temporarily drop out of "become".
+      become: false
       with_items: [ '~/.ssh', '~/.openstack', '~/.aws' ]
 
     - name: Decrypt credentials files and place them in their respective home directories.
@@ -81,6 +85,8 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         mode: 0400
+      # Ditto.
+      become: false
       with_items:
         - { src: unidata_provisioner_id_rsa.enc, dest: ~/.ssh/unidata_provisioner_id_rsa }  # LOOK: Do we still need?
         - { src: openrc.sh.enc,                  dest: ~/.openstack/openrc.sh }
