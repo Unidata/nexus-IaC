@@ -16,7 +16,7 @@
 set -e
 
 # Pretty colors.
-blue='\033[0;34m'
+purple='\033[0;35m'
 red='\033[0;31m'
 green='\033[0;32m'
 neutral='\033[0m'
@@ -55,7 +55,7 @@ init_opts='--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
 init_exe='/lib/systemd/systemd'
 
 # Run the container using the supplied OS.
-printf ${blue}"Starting Docker container: geerlingguy/docker-$distro-ansible."${neutral}"\n"
+printf ${purple}"Starting Docker container: geerlingguy/docker-$distro-ansible.\n\n"${neutral}
 docker pull geerlingguy/docker-$distro-ansible:latest
 
 # Below is a trick for documenting a long argument list. See https://unix.stackexchange.com/a/152554.
@@ -91,58 +91,46 @@ docker_run_params+=($init_exe)
 
 docker run "${docker_run_params[@]}"
 
-printf "\n"
-
-printf ${blue}"Provisioning the provisioner."${neutral}
+printf ${purple}"\nProvisioning the provisioner.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/prepare_ansible.yml
 
-printf ${blue}"Checking Ansible playbook syntax."${neutral}
+printf ${purple}"Checking Ansible playbook syntax.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml --syntax-check
 
-printf "\n"
-
-printf ${blue}"Running playbook: ensure configuration succeeds."${neutral}"\n"
+printf ${purple}"\nRunning playbook: ensure configuration succeeds.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml
 
 if [ "$test_idempotence" = true ]; then
-  printf ${blue}"Running playbook again: idempotence test"${neutral}
+  printf ${purple}"Running playbook again: idempotence test.\n\n"${neutral}
   idempotence=$(mktemp)
   docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml | tee -a $idempotence
   tail $idempotence \
-    | grep -q 'changed=0.*failed=0' \
-    && (printf ${green}'Idempotence test: pass'${neutral}"\n") \
-    || (printf ${red}'Idempotence test: fail'${neutral}"\n" && exit 1)
+    | grep -q "changed=0.*failed=0" \
+    && (printf ${green}"Idempotence test: pass\n\n"${neutral}) \
+    || (printf ${red}"Idempotence test: fail\n\n"${neutral} && exit 1)
 fi
 
-printf "\n"
-
-printf ${blue}"Running integration and functional tests against live instance."${neutral}
+printf ${purple}"Running integration and functional tests against live instance.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/test.yml
 
-printf "\n"
-
-printf ${blue}"Backing up application data to S3."${neutral}
+printf ${purple}"Backing up application data to S3.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/backup.yml
 
-printf "\n"
-
-printf ${blue}"Restoring application data from S3."${neutral}
+printf ${purple}"Restoring application data from S3.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/restore.yml
 
-printf "\n"
-
-printf ${blue}"Re-running tests that pull artifacts against the restored Nexus server."${neutral}
+printf ${purple}"Re-running tests that pull artifacts against the restored Nexus server.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/test.yml --tags "test-pull"
 
 if [ "$cleanup" = true ]; then
-  printf ${blue}"Removing Docker container...\n"${neutral}
+  printf ${purple}"Removing Docker container...\n\n"${neutral}
   docker rm -f $container_id
 fi

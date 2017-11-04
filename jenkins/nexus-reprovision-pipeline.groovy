@@ -48,9 +48,7 @@ pipeline {
         stage('Create Nexus image') {
             steps {
                 withCredentials([string(credentialsId: 'nexus-iac-vault-password', variable: 'VAULT_PASSWORD')]) {
-                    ansiColor('xterm') {
-                        sh "$WORKSPACE/scripts/create_image.sh"
-                    }
+                    sh "$WORKSPACE/scripts/create_image.sh"
                 }
             }
         }
