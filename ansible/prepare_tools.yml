@@ -1,0 +1,82 @@
+---
+- name: Install and configure software for interacting with cloud resources.
+  hosts: localhost
+  become: true
+
+  vars:
+    releases_url: https://releases.hashicorp.com/index.json
+    releases_dest: /tmp/index.json
+    install_dir: /usr/local/bin
+
+  tasks:
+    - name: Install 'python-openstackclient' Python package for interacting with OpenStack.
+      pip: name=python-openstackclient state=latest  # Needed by /scripts/delete_old_images.sh
+
+    - name: Install 'jq' for parsing JSON and 'unzip' for extracting archives.
+      package: "name={{ item }} state=latest"
+      with_items: [ 'jq', 'unzip' ]
+
+    - name: Download Hashicorp releases index.
+      get_url:
+        url: "{{ releases_url }}"
+        dest: "{{ releases_dest }}"
+
+    - name: Extract URLs of latest versions of Packer and Terraform.
+      # 1. Print {{ releases_dest }} to STDOUT and pipe it onward.
+      # 2. Extract relevant URLs from {{ releases_dest }} using jq. Note that the pipe (|) symbols within the single
+      #    quotes are interpreted by jq, not bash. Only the very last pipe on the line will be handled by bash.
+      #    a) Use STDIN as input to jq. Print the raw output, i.e. don't surround strings with quotes.
+      #    b) Get the value of the top-level key named {{ item }}. The value will be a hash.
+      #    c) In the hash resulting from (b), get the value of its 'versions' key. The value will be another hash,
+      #       with keys corresponding to the released versions of the software, e.g. "0.1.0", "0.1.1", etc.
+      #    d) Create a result for each value of the hash. In so doing, jq has gone from producing a single result
+      #       to producing a collection of results, one for each released version of the software. Subsequent filters
+      #       will be applied to each result. Each result is a hash containing info for one software release.
+      #    e) For each result, get the value of 'builds', which is an array. Then, for each array, produce a result
+      #       for each of its elements. So now, the number of results has gone from '$num_software_releases' to
+      #       '$num_software_releases * $num_build_configurations'. Each result currently looks something like:
+      #           {
+      #             "name": "packer",
+      #             "version": "0.1.0",
+      #             "os": "darwin",
+      #             "arch": "386",
+      #             "filename": "packer_0.1.0_darwin_386.zip",
+      #             "url": "https://releases.hashicorp.com/packer/0.1.0/packer_0.1.0_darwin_386.zip"
+      #           }
+      #    f) Filter the results, retaining only those with 'os == "linux" and arch == "amd64"'.
+      #    g) For each result, print the value of 'url'.
+      # 3. We now have the release URLs of all linux_amd64 builds of the software, but in no particular order.
+      #    Sort them in reverse order of their versions.
+      # 4. Grab the top line of the sorted URLs. It will be the URL of the latest release of the software.
+      shell: >
+          cat {{ releases_dest }} |
+          jq -r '.{{ item }} | .versions | .[] | .builds[] | select(.os == "linux" and .arch == "amd64") | .url' |
+          sort --version-sort --reverse |
+          head -n 1
+      with_items: [ 'packer', 'terraform' ]
+      register: latest_hashicorp_urls
+      changed_when: false  # Task simply extracts information; it doesn't change anything.
+
+    - name: Download and unpack Packer and Terraform.
+      unarchive:
+        src: "{{ item.url }}"
+        dest: "{{ install_dir }}"
+        creates: "{{ install_dir }}/{{ item.bin_name }}"
+        remote_src: yes
+      with_items:
+        - { url: "{{ latest_hashicorp_urls.results[0].stdout }}", bin_name: 'packer' }
+        - { url: "{{ latest_hashicorp_urls.results[1].stdout }}", bin_name: 'terraform' }
+
+    - name: Ensure home directories for SSH, OpenStack, and AWS exist.
+      file: path={{ item }} state=directory
+      with_items: [ '~/.ssh', '~/.openstack', '~/.aws' ]
+
+    - name: Decrypt credentials files and place them in their respective home directories.
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: 0400
+      with_items:
+        - { src: unidata_provisioner_id_rsa.enc, dest: ~/.ssh/unidata_provisioner_id_rsa }  # LOOK: Do we still need?
+        - { src: openrc.sh.enc,                  dest: ~/.openstack/openrc.sh }
+        - { src: aws_credentials.enc,            dest: ~/.aws/credentials }
