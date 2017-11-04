@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Exit on any individual command failure.
+# Exit immediately if any command exits with a non-zero status.
 set -e
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within

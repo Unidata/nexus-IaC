@@ -12,7 +12,7 @@
 # This script was derived from Jeff Geerling's Ansible Role Test Shim Script
 # See https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181/
 
-# Exit on any individual command failure.
+# Exit immediately if any command exits with a non-zero status.
 set -e
 
 # Pretty colors.
