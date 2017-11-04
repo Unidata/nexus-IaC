@@ -16,3 +16,6 @@ build/
 # Terraform files.
 *.tfstate.backup
 .terraform/
+
+# Shouldn't be in version control, but keep one around for testing provision_prod.sh.
+packer/packer_output.txt
