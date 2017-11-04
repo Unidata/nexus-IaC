@@ -45,25 +45,7 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     ip_protocol = "tcp"
     from_port = "22"
     to_port = "22"
-    cidr = "128.117.140.0/24"  // Unidata
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "128.117.144.0/24"  // Unidata
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "128.117.153.0/24"  // Unidata
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "128.117.156.0/24"  // Unidata
+    cidr = "128.117.0.0/16"  // UCAR
   }
   rule {
     ip_protocol = "tcp"
@@ -81,10 +63,11 @@ resource "openstack_compute_secgroup_v2" "nexus" {
 
 resource "openstack_compute_instance_v2" "nexus" {
   name = "nexus-prod"   // Will become hostname of VM.
-  image_name = "${var.image}"
+  image_id = "${var.image_id}"
   flavor_name = "${var.flavor}"
   key_pair = "${openstack_compute_keypair_v2.nexus.name}"
   security_groups = ["${openstack_compute_secgroup_v2.nexus.name}"]
+  stop_before_destroy = true
 
   network {
     name = "${openstack_networking_network_v2.nexus.name}"
@@ -94,19 +77,4 @@ resource "openstack_compute_instance_v2" "nexus" {
 resource "openstack_compute_floatingip_associate_v2" "nexus" {
   instance_id = "${openstack_compute_instance_v2.nexus.id}"
   floating_ip = "${openstack_networking_floatingip_v2.nexus.address}"
-}
-
-resource "null_resource" "dummy" {
-  triggers {
-    // Trigger the provisioner whenever the compute instance's ID changes, likely because it was recreated.
-    compute_instance_id = "${openstack_compute_instance_v2.nexus.id}"
-  }
-
-  // We need the floating IP to have been associated with the instance, so that we can use it to connect.
-  // Also, the 'volume' role needs the Cinder volume to be attached.
-  depends_on = [ "openstack_compute_floatingip_associate_v2.nexus", "openstack_compute_volume_attach_v2.nexus" ]
-
-  provisioner "local-exec" {
-    command = "../scripts/configure_prod.sh"
-  }
 }

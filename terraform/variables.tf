@@ -1,10 +1,5 @@
-variable "image" {
-  // This is a snapshot created by cwardgar. It was created by starting out with "JS-API-Featured-Ubuntu16-Jun-8-2017"
-  // as a base image and then updating all software (even the kernel) to the latest versions, using just the
-  // 'ansible-debian-upgrade-reboot' role in site.yml. As of 2017-09-03, it shaves over 4 minutes off the OpenStack
-  // provisioning time compared to using the JS-API base image.
-  // See available images with: openstack image list
-  default = "ubuntu-16.04.3-fully-updated-20171025"
+variable "image_id" {
+  // No default. Must specify a value at the command-line use the -var option.
 }
 
 variable "flavor" {
