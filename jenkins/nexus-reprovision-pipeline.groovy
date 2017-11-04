@@ -25,7 +25,7 @@ pipeline {
             }
         }
     
-        stage('Test') {
+        stage('Test in Docker') {
             steps {
                 withCredentials([string(credentialsId: 'nexus-iac-vault-password', variable: 'VAULT_PASSWORD')]) {
                     ansiColor('xterm') {
@@ -35,13 +35,37 @@ pipeline {
             }
         }
         
-        stage('Prepare and run Terraform') {
+        stage('Prepare and configure tools') {
             steps {
                 withCredentials([string(credentialsId: 'nexus-iac-vault-password', variable: 'VAULT_PASSWORD')]) {
                     ansiColor('xterm') {
-                        sh "$WORKSPACE/scripts/destroy_and_recreate_prod.sh"
+                        sh "$WORKSPACE/scripts/prepare_tools.sh"
                     }
                 }
+            }
+        }
+        
+        stage('Create Nexus image') {
+            steps {
+                withCredentials([string(credentialsId: 'nexus-iac-vault-password', variable: 'VAULT_PASSWORD')]) {
+                    ansiColor('xterm') {
+                        sh "$WORKSPACE/scripts/create_image.sh"
+                    }
+                }
+            }
+        }
+        
+        stage('Reprovision production server') {
+            steps {
+                ansiColor('xterm') {
+                    sh "$WORKSPACE/scripts/provision_prod.sh"
+                }
+            }
+        }
+    
+        stage('Delete old images') {
+            steps {
+                sh "$WORKSPACE/scripts/delete_old_images.sh"
             }
         }
     }
