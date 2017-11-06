@@ -2,7 +2,9 @@
 - name: Assert that timezone has been changed to MDT.
   command: date
   register: date
-  failed_when: "'MDT' not in date.stdout"
+  # Mountain Time (MT) is Mountain Standard Time (MST, UTC−7:00) when observing standard time,
+  # and Mountain Daylight Time (MDT, UTC−6:00) when observing daylight saving time.
+  failed_when: "'MDT' not in date.stdout and 'MST' not in date.stdout"
 
 - name: Assert that Nexus returns a status 200 and page content has expected title.
   uri:

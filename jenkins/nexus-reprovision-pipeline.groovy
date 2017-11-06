@@ -72,6 +72,7 @@ pipeline {
         always {
             deleteDir()
         }
+        // LOOK: I'm not sure that this works.
         changed {
             // The 'when' directive is only supported within a 'stage' directive. Therefore,
             // to get conditional execution, we must resort to scripted pipeline code.
