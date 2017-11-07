@@ -1,3 +1,7 @@
+#!/usr/bin/env groovy
+
+def buildStateHasChanged = false
+
 pipeline {
     agent any
     
@@ -72,20 +76,34 @@ pipeline {
         always {
             deleteDir()
         }
-        // LOOK: I'm not sure that this works.
-        changed {
+        
+        // Only send email on failure or when a previously-failing build succeeds. See https://goo.gl/6T2DQb.
+        
+        success {
             // The 'when' directive is only supported within a 'stage' directive. Therefore,
             // to get conditional execution, we must resort to scripted pipeline code.
             // See https://jenkins.io/doc/book/pipeline/syntax/#when
             // See https://jenkins.io/doc/book/pipeline/syntax/#script
             script {
-                if (currentBuild.result == 'SUCCESS') {
+                if (buildStateHasChanged == true) {
                     mail to: "cwardgar@ucar.edu",
                          subject: "Jenkins build is back to normal: ${currentBuild.fullDisplayName}",
                          body: "See <${currentBuild.absoluteUrl}>"
                 }
             }
         }
+        
+        // Apparently, if a previously-failing build succeeds, the 'changed' closure will be invoked before
+        // the 'success' closure. Thus, 'success' will see the updated value of 'buildStateHasChanged'.
+        // See https://goo.gl/6T2DQb.
+        changed {
+            script {
+                // There is a variable -- ${currentBuild.result} -- that one would expect to be suitable for this
+                // purpose. However, that variable is never set during the pipeline. See https://goo.gl/6T2DQb.
+                buildStateHasChanged = true
+            }
+        }
+        
         failure {
             mail to: "cwardgar@ucar.edu",
                  subject: "Build failed in Jenkins: ${currentBuild.fullDisplayName}",

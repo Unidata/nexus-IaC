@@ -14,3 +14,5 @@ duplicity's rysnc functionality to restore 'blobs' in-place. Should be much fast
 site.yml against the OpenStack VM nightly and after every commit, that's gonna lead to unacceptable downtime.
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.
+1. The "Jenkins build is back to normal" notification doesn't work in `nexus-reprovision-pipeline.groovy`.
+I've attempted to fix this, but I don't know if it worked yet. We'll have to wait for the next pipeline failure.
