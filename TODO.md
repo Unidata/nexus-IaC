@@ -12,7 +12,5 @@ the ENTIRE blobstore from S3. Slow and expensive! Instead, make a copy of 'blobs
 duplicity's rysnc functionality to restore 'blobs' in-place. Should be much faster.
 1. ansible-debian-upgrade-reboot seems to always restart the host, even if nothing was updated. If we're going to run
 site.yml against the OpenStack VM nightly and after every commit, that's gonna lead to unacceptable downtime.
-1. Now that we've incorporated Packer, I don't think we need to provide unidata_provisioner_id_rsa in
-prepare_tools.yml any longer. The key is still needed by backup_prod.sh, however.
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.

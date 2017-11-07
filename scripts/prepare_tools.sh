@@ -21,5 +21,5 @@ export PYTHONUNBUFFERED=1
 export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
 
 # Installs Packer and Terraform.
-# Decrypts SSH, OpenStack, and AWS credentials and places them in their respective home directories.
+# Decrypts OpenStack and AWS credentials and places them in their respective home directories.
 ansible-playbook --verbose prepare_tools.yml
