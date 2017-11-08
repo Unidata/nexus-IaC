@@ -45,19 +45,13 @@ resource "openstack_compute_secgroup_v2" "nexus" {
     ip_protocol = "tcp"
     from_port = "22"
     to_port = "22"
-    cidr = "128.117.0.0/16"  // UCAR
+    cidr = "128.117.144.0/24"  // Unidata
   }
   rule {
     ip_protocol = "tcp"
     from_port = "22"
     to_port = "22"
     cidr = "34.236.85.159/32"  // jenkins-aws
-  }
-  rule {
-    ip_protocol = "tcp"
-    from_port = "22"
-    to_port = "22"
-    cidr = "76.120.68.217/32"  // cwardgar
   }
 }
 
