@@ -6,7 +6,7 @@
   "builders": [
     {
       "type": "openstack",
-      "flavor": "m1.medium",
+      "flavor": "m1.small",
       "source_image_name": "JS-API-Featured-Ubuntu16-Oct-25-2017",
       "image_name": "nexus-image-{{user `timestamp`}}",
       "ssh_username": "ubuntu",

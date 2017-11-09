@@ -16,3 +16,5 @@ site.yml against the OpenStack VM nightly and after every commit, that's gonna l
 Ansible 2.4.2 is released.
 1. The "Jenkins build is back to normal" notification doesn't work in `nexus-reprovision-pipeline.groovy`.
 I've attempted to fix this, but I don't know if it worked yet. We'll have to wait for the next pipeline failure.
+1. Update description and README.md to indicate that the server is now an immutable phoenix.
+1. If "thredds-doc.unidata.ucar.edu" domain turns out to be unnecessary, remove its config from vhosts.conf.
