@@ -36,15 +36,11 @@
       include_role: name=ansible-role-ntp
       tags: [ ntp ]
 
-    - name: Ensure Apache log directories exist for the two domains.
+    - name: Ensure Apache log directory exists.
       file:
-        path: "{{ item }}"
-        state: "directory"
-      with_items:
         # Defined in /ansible/group_vars/all/ansible-role-apache.yml
-        - "{{ apache_log_dir }}"
-        - "{{ artifacts_apache_log_dir }}"
-        - "{{ thredds_doc_apache_log_dir }}"
+        path: "{{ artifacts_apache_log_dir }}"
+        state: "directory"
       tags: [ apache ]
 
     - name: Include 'ansible-role-apache' role.

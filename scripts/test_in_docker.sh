@@ -80,7 +80,6 @@ docker_run_params+=(--env ANSIBLE_VAULT_PASSWORD_FILE=$container_ansible_dir/fil
 docker_run_params+=(--env VAULT_PASSWORD)
 # /etc/hosts is read-only inside the container, so we must add our host mappings here.
 docker_run_params+=(--add-host='artifacts.unidata.ucar.edu:127.0.0.1')
-docker_run_params+=(--add-host='thredds-doc.unidata.ucar.edu:127.0.0.1')
 # Set a consistent hostname. Otherwise, it'll be the container ID, which is different every time.
 # Duplicity gets mad if you try to make an incremental backup and you have a different hostname than before.
 docker_run_params+=(--hostname='nexus-test')

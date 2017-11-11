@@ -1,13 +1,10 @@
 ---
   # Edit /etc/hosts so that we can resolve these hostnames in our tests. In production, DNS will do the mapping.
-- name: Map '{{ artifacts_hostname }}' and '{{ thredds_doc_hostname }}' to '{{ application_host }}' in '/etc/hosts'.
+- name: Map '{{ artifacts_hostname }}' to '{{ application_host }}' in '/etc/hosts'.
   lineinfile:
     path: "/etc/hosts"
-    line: "{{ application_host }} {{ item }}"
+    line: "{{ application_host }} {{ artifacts_hostname }}"
     state: present
-  with_items:
-    - "{{ artifacts_hostname }}"
-    - "{{ thredds_doc_hostname }}"
   # Don't run this task on Docker because /etc/hosts is read-only within the container.
   # Instead, we're adding our mapping in the docker run command using the "--add-host" flag. See test.sh.
   when: ansible_hostname != 'nexus-test'

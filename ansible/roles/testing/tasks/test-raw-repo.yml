@@ -1,7 +1,7 @@
 ---
 - name: Upload web page to raw repo.
   uri:
-    url: "{{ thredds_doc_base_push_url }}/index.html"
+    url: "{{ thredds_doc_repo_url }}/index.html"
     user: "{{ nexus_local_users[0].username }}"
     password: "{{ nexus_local_users[0].password }}"
     method: PUT
@@ -13,7 +13,7 @@
 
 - name: Assert that web page is being served from raw repo and it has the expected content.
   uri:
-    url: "{{ thredds_doc_base_pull_url }}/index.html"
+    url: "{{ thredds_doc_repo_url }}/index.html"
     status_code: 200
     return_content: yes
   register: webpage
