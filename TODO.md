@@ -19,3 +19,4 @@ I've attempted to fix this, but I don't know if it worked yet. We'll have to wai
 1. Update description and README.md to indicate that the server is now an immutable phoenix.
 1. Begin referring to nexus-prod as 'artifacts.unidata.ucar.edu' everywhere, namely in the OpenStack inventory.
 1. Add monitoring.
+1. Nuke the proxy repositories. In thredds 5.0.0, the only 3rd party repo we use is bintray for Gretty.
