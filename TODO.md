@@ -10,8 +10,6 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
 1. In restore.yml, we rename 'blobs' to 'blobs-old' and then restore 'blobs' from S3. That results in us downloading
 the ENTIRE blobstore from S3. Slow and expensive! Instead, make a copy of 'blobs' at 'blobs-old' and then exploit
 duplicity's rysnc functionality to restore 'blobs' in-place. Should be much faster.
-1. ansible-debian-upgrade-reboot seems to always restart the host, even if nothing was updated. If we're going to run
-site.yml against the OpenStack VM nightly and after every commit, that's gonna lead to unacceptable downtime.
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.
 1. The "Jenkins build is back to normal" notification doesn't work in `nexus-reprovision-pipeline.groovy`.
@@ -20,3 +18,6 @@ I've attempted to fix this, but I don't know if it worked yet. We'll have to wai
 1. Begin referring to nexus-prod as 'artifacts.unidata.ucar.edu' everywhere, namely in the OpenStack inventory.
 1. Add monitoring.
 1. Nuke the proxy repositories. In thredds 5.0.0, the only 3rd party repo we use is bintray for Gretty.
+1. Consider renaming inventory directories to 'nexus-prod', 'nexus-dev', and 'nexus-test'. The reason is that there's
+not actually anything OpenStack-specific in `inventories/openstack` any more. In fact, `amazon-nexus.json` uses it
+as its inventory when it creates a Nexus image on AWS.

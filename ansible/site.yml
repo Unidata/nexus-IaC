@@ -9,13 +9,15 @@
       include_role: name=init
       tags: [ always ]
 
-    # Upgrades ALL system software, rebooting afterwards if necessary. We're not running this on Docker because
-    # a) it's slow, and b) you cannot reboot the host from within a container.
-    # FIXME: This will lead to differences between the test environment and production. Could be a problem.
     - name: Include 'ansible-debian-upgrade-reboot' role.
       include_role: name=ansible-debian-upgrade-reboot
       tags: [ upgrade ]
-      when: ansible_hostname != 'nexus-test'
+      # Here we used to have "when: ansible_hostname != 'nexus-test'", because this role could reboot the host and
+      # rebooting from within a Docker container is not supported. That was not ideal because it could lead to
+      # differences between test and production. However, I think this role is actually safe to run on 'nexus-test'
+      # because our test image derives from "ubuntu:16.04", which is frequently and automatically updated.
+      # Therefore, the chance that Apt grabs an upgrade that requires a restart (such as a new kernel), AND that the
+      # upgrade isn't already part of the latest Docker image, seems quite low. I guess we'll see.
 
     - name: Include 'volume' role.
       include_role: name=volume
