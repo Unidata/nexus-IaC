@@ -51,7 +51,7 @@ Furthermore, this project includes code from third-party open-source software co
 
 ### Roles
 
-All of the Ansible roles in `/ansible/roles/`—except for `testing`, `security`, and `init`—are git submodules
+All of the Ansible roles in `/ansible/roles/`—except for `init`, `security`, `testing`, and `volume`—are git submodules
 pointing to third-party repositories. As such, any licensing terms that those projects have are
 reproduced in their respective role directories.
 
@@ -66,3 +66,7 @@ See `/ansible/roles/security/README.md`.
 ### Ansible plugin
 
 See `/ansible/callback_plugins/README.md`.
+
+### Packer provision script
+
+See `/packer/README.md`

@@ -10,7 +10,8 @@
       "source_ami": "ami-cd0f5cb6",
       "instance_type": "t2.medium",
       "ssh_username": "ubuntu",
-      "ami_name": "nexus-image-{{user `timestamp`}}"
+      "ami_name": "nexus-image-{{user `timestamp`}}",
+      "user_data_file": "user-data.yml"
     }
   ],
   "provisioners": [
@@ -28,7 +29,9 @@
         "ANSIBLE_CONFIG={{user `ansible_dir`}}/ansible.cfg",
         "ANSIBLE_VAULT_PASSWORD_FILE={{user `ansible_dir`}}/files/vault-password"
       ],
-      "extra_arguments": [ "-v" ]
+      "extra_arguments": [
+        "--verbose"
+      ]
     }
   ]
 }

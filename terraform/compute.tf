@@ -62,6 +62,7 @@ resource "openstack_compute_instance_v2" "nexus" {
   key_pair = "${openstack_compute_keypair_v2.nexus.name}"
   security_groups = ["${openstack_compute_secgroup_v2.nexus.name}"]
   stop_before_destroy = true
+  user_data = "${file("${path.root}/${var.user_data_path}")}"
 
   network {
     name = "${openstack_networking_network_v2.nexus.name}"

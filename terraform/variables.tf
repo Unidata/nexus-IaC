@@ -26,3 +26,8 @@ variable "public_key_path" {
   description = "The path of the SSH public key"
   default = "../ansible/files/unidata_provisioner_id_rsa.pub"
 }
+
+variable "user_data_path" {
+  description = "The path to the user-data file that configures the VM via cloud-init."
+  default = "../packer/user-data.yml"
+}

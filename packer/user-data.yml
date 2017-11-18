@@ -1,0 +1,18 @@
+#cloud-config
+# DO NOT DELETE ABOVE LINE. It signals to the cloud-init program that this should be interpreted as a cloud-config file.
+#
+# These keys below belong to the "Package Update Upgrade Install" module.
+# See http://cloudinit.readthedocs.io/en/latest/topics/modules.html#package-update-upgrade-install
+
+# The list of packages to install. This may seem like a no-op, but it's actually overriding the package list declared
+# in vendor-data, as "user supplied cloud-config is merged over cloud-config from vendordata"
+# (see http://cloudinit.readthedocs.io/en/latest/topics/vendordata.html).
+#
+# We want cloud-init to perform no Apt operations whatsoever, and these key/value mappings accomplish that.
+packages: []
+
+package_update: false
+package_upgrade: false
+package_reboot_if_required: false
+
+final_message: "Boot completed in $UPTIME seconds"

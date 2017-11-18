@@ -7,16 +7,17 @@
     {
       "type": "openstack",
       "flavor": "m1.small",
-      "source_image_name": "JS-API-Featured-Ubuntu16-Oct-25-2017",
+      "source_image_name": "ubuntu-16.04.3-base-2017-11-17T00:08:31Z",
       "image_name": "nexus-image-{{user `timestamp`}}",
       "ssh_username": "ubuntu",
       "networks": [
         "a180e538-acac-42cc-bdfa-ab93d068af0b"
       ],
       "security_groups": [
-        "b4a21fb7-b0e0-45c7-b11e-977d00e49ebb"
+        "9c22a40e-ff8a-435a-afcb-41ad3dd44c1f"
       ],
-      "floating_ip_pool": "public"
+      "floating_ip_pool": "public",
+      "user_data_file": "user-data.yml"
     }
   ],
   "provisioners": [
@@ -30,7 +31,9 @@
         "ANSIBLE_CONFIG={{user `ansible_dir`}}/ansible.cfg",
         "ANSIBLE_VAULT_PASSWORD_FILE={{user `ansible_dir`}}/files/vault-password"
       ],
-      "extra_arguments": [ "-v" ]
+      "extra_arguments": [
+        "--verbose"
+      ]
     }
   ]
 }
