@@ -7,13 +7,13 @@
     state: present
   when: ansible_hostname != 'nexus-test'  # In Docker, hostname must be set with the 'docker run' --hostname option.
 
-# To update the Apt cache below, we need exclusive access to /var/lib/dpkg/lock.
+# To update the Apt cache below, we need exclusive access to /var/lib/dpkg/lock and /var/lib/apt/lists/lock.
 # However, when an Ubuntu 16 system is first booted, a series of update processes will hold the lock
 # (see https://github.com/chef/bento/issues/609#issuecomment-226043057).
-# So, we call this script, which waits for /var/lib/dpkg/lock to be free.
+# So, we call this script, which waits for the lock files to be free.
 - name: Wait for automatic system updates to finish.
-  script: wait-for-system-updates.sh
-  changed_when: false  # Task merely waits for a lock to be released; it doesn't change anything.
+  script: wait-for-free.sh /var/lib/dpkg/lock /var/lib/apt/lists/lock
+  changed_when: false  # Task merely waits for locks to be released; it doesn't change anything.
 
 # Roles may install packages without updating the Apt cache beforehand, such as ansible-role-ntp.
 

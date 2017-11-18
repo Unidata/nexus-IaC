@@ -35,9 +35,10 @@ test_idempotence=${test_idempotence:-"true"}
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-host_ansible_dir="$(dirname $parent_dir_of_this_script)/ansible"
+host_project_dir="$(dirname $parent_dir_of_this_script)"
 
-container_ansible_dir="/usr/local/nexus-IaC/ansible"
+container_project_dir="/usr/local/nexus-IaC"
+container_ansible_dir="$container_project_dir/ansible"
 
 ansible_opts=(--inventory-file=$container_ansible_dir/inventories/docker/hosts)
 ansible_opts+=(--verbose)
@@ -67,7 +68,7 @@ docker_run_params=(--detach)
 # The name of the container. By default, it is a timestamp of when this script was run.
 docker_run_params+=(--name $container_id)
 # Mount the host's nexus-IaC project directory to the container, with read-only privileges.
-docker_run_params+=(--volume=$host_ansible_dir:$container_ansible_dir:ro)
+docker_run_params+=(--volume=$host_project_dir:$container_project_dir:ro)
 # Some black magic to make systemD init work in the container.
 docker_run_params+=($init_opts)
 # Set an environment variable to allow ansible-playbook to find the Ansible configuration file.
