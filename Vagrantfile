@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Provision VM using the main Ansible playbook.
   config.vm.provision :ansible do |ansible|
-    ansible.inventory_path = "ansible/inventories/vagrant/hosts"
+    ansible.inventory_path = "ansible/inventories/dev/hosts"
     ansible.verbose = "v"
     ansible.playbook = "ansible/site.yml"
     ansible.config_file = "ansible/ansible.cfg"

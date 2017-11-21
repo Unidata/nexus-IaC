@@ -23,8 +23,8 @@ export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
 # Decrypt and install private key so that we can connect to OpenStack target.
 ansible-vault decrypt --output=~/.ssh/unidata_provisioner_id_rsa files/unidata_provisioner_id_rsa.enc
 
-# Use 'openstack' inventory.
-ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
+# Use 'prod' inventory.
+ANSIBLE_OPTIONS=(--inventory-file=inventories/prod/hosts)
 # Verbose mode.
 ANSIBLE_OPTIONS+=(--verbose)
 

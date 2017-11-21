@@ -88,5 +88,5 @@
       # Ditto.
       become: false
       with_items:
-        - { src: openrc.sh.enc,                  dest: ~/.openstack/openrc.sh }
-        - { src: aws_credentials.enc,            dest: ~/.aws/credentials }
+        - { src: openrc.sh.enc,       dest: ~/.openstack/openrc.sh }
+        - { src: aws_credentials.enc, dest: ~/.aws/credentials }

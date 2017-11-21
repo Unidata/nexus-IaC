@@ -40,7 +40,7 @@ host_project_dir="$(dirname $parent_dir_of_this_script)"
 container_project_dir="/usr/local/nexus-IaC"
 container_ansible_dir="$container_project_dir/ansible"
 
-ansible_opts=(--inventory-file=$container_ansible_dir/inventories/docker/hosts)
+ansible_opts=(--inventory-file=$container_ansible_dir/inventories/test/hosts)
 ansible_opts+=(--verbose)
 
 # From Ansible for DevOps, version 2017-06-02, page 349:

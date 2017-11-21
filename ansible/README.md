@@ -19,9 +19,9 @@ Then, run `ansible-playbook` with the `--ask-vault-pass` option.
 Once you've [launched the Vagrant VM](../README.md#launching-nexus-server-in-a-vagrant-vm), you can do:
 
 ```
-ansible nexus -i inventories/vagrant/hosts -v -a date
-ansible nexus -i inventories/vagrant/hosts -v -m setup -a 'gather_subset=!all'
-ansible nexus -i inventories/vagrant/hosts -v -m service -a 'name=nexus state=restarted'
+ansible nexus -i inventories/dev/hosts -v -a date
+ansible nexus -i inventories/dev/hosts -v -m setup -a 'gather_subset=!all'
+ansible nexus -i inventories/dev/hosts -v -m service -a 'name=nexus state=restarted'
 ```
 [Reference](http://docs.ansible.com/ansible/intro_adhoc.html)
 
@@ -32,9 +32,9 @@ ansible nexus -i inventories/vagrant/hosts -v -m service -a 'name=nexus state=re
 [Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml --tags "nexus"
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v site.yml --start-at-task="Install Nexus as a service"
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --tags "nexus"
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --start-at-task="Install Nexus as a service"
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
@@ -44,11 +44,11 @@ add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#speci
 ### Backup Nexus application data to S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v backup.yml
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v backup.yml
 ```
 
 ### Restore Nexus application data from S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/vagrant/hosts -v restore.yml
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v restore.yml
 ```

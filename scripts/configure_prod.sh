@@ -20,8 +20,8 @@ export PYTHONUNBUFFERED=1
 # See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
 export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
 
-# Use 'openstack' inventory.
-ANSIBLE_OPTIONS=(--inventory-file=inventories/openstack/hosts)
+# Use 'prod' inventory.
+ANSIBLE_OPTIONS=(--inventory-file=inventories/prod/hosts)
 # Verbose mode.
 ANSIBLE_OPTIONS+=(--verbose)
 

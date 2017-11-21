@@ -27,7 +27,7 @@
 
     - name: Ensure the mount directory exists.
       file:
-        path: "{{ data_partition_mount_dir }}"  # Defined in inventories/openstack/group_vars/nexus.yml
+        path: "{{ data_partition_mount_dir }}"  # Defined in inventories/prod/group_vars/nexus.yml
         state: directory
         # We change permissions of this directory later in the ansible-nexus3-oss role.
   when: volume_device_exists
