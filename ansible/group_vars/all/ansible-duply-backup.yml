@@ -7,7 +7,7 @@ duply_backup_profiles:
       target: s3+http://{{ unidata_backups_bucket }}/nexus-iac/{{ ansible_hostname }}
       source: /
 
-      max_age: 1Y          # Delete backups when they are more than a year old.
+      max_age: 6M          # Delete backups when they are more than six months old.
       max_fullbkp_age: 2M  # Do a full backup (instead of incremental) if the last full was done more than 2 months ago.
 
       # Additional duplicity command line options. Don't forget to leave a separating space char at the end.

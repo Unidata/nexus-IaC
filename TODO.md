@@ -20,5 +20,3 @@ I've attempted to fix this, but I don't know if it worked yet. We'll have to wai
 1. Consider renaming inventory directories to 'nexus-prod', 'nexus-dev', and 'nexus-test'. The reason is that there's
 not actually anything OpenStack-specific in `inventories/openstack` any more. In fact, `amazon-nexus.json` uses it
 as its inventory when it creates a Nexus image on AWS.
-1. Change developer password. Couldn't hurt to change the admin password too.
-1. Create a Nexus page on the UCAR wiki. It ought to have the admin password.
