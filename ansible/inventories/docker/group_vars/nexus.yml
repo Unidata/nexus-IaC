@@ -1,2 +1,5 @@
 ---
+# The type of host(s) targeted by this inventory. Must be one of: "dev", "test", or "prod".
+host_type: test
+
 ansible_connection: local

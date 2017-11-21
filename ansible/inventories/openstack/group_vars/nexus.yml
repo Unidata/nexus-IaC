@@ -1,4 +1,7 @@
 ---
+# The type of host(s) targeted by this inventory. Must be one of: "dev", "test", or "prod".
+host_type: prod
+
 ansible_user: ubuntu
 
 # The directory to which the Cinder volume's partition will be mounted.

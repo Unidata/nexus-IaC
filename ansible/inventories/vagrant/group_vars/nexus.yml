@@ -1,3 +1,6 @@
 ---
+# The type of host(s) targeted by this inventory. Must be one of: "dev", "test", or "prod".
+host_type: dev
+
 ansible_user: vagrant
 ansible_ssh_private_key_file: ~/.vagrant.d/insecure_private_key

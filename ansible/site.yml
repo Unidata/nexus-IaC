@@ -12,9 +12,9 @@
     - name: Include 'ansible-debian-upgrade-reboot' role.
       include_role: name=ansible-debian-upgrade-reboot
       tags: [ upgrade ]
-      # Here we used to have "when: ansible_hostname != 'nexus-test'", because this role could reboot the host and
+      # Here we used to have "when: host_type != 'test'", because this role could reboot the host and
       # rebooting from within a Docker container is not supported. That was not ideal because it could lead to
-      # differences between test and production. However, I think this role is actually safe to run on 'nexus-test'
+      # differences between test and production. However, I think this role is actually safe to run on 'test'
       # because our test image derives from "ubuntu:16.04", which is frequently and automatically updated.
       # Therefore, the chance that Apt grabs an upgrade that requires a restart (such as a new kernel), AND that the
       # upgrade isn't already part of the latest Docker image, seems quite low. I guess we'll see.
@@ -22,13 +22,8 @@
     - name: Include 'volume' role.
       include_role: name=volume
       tags: [ volume ]
-      # This role relies on a variable that is only defined in the OpenStack inventory (data_partition_mount_dir).
-      # We use the hostname to determine whether we're provisioning an OpenStack target.
-      # For our Terraform VM, the hostname is the value of "openstack_compute_instance_v2.nexus.name": 'nexus-prod'.
-      # For our temporary Packer VMs, the hostname is the same as the image name, and our image names are of the
-      # format "nexus-image-{{timestamp}}". So, we can't match it exactly, but we do have a reliable prefix.
-      # startswith(s) is a function from the Python standard library.
-      when: ansible_hostname == 'nexus-prod' or ansible_hostname.startswith('nexus-image-')
+      # This role relies on a variable that is only defined in the 'prod' inventory (data_partition_mount_dir).
+      when: host_type == 'prod'
 
     - name: Include 'security' role.
       include_role: name=security
