@@ -1,11 +1,14 @@
 # Nexus Infrastructure-as-Code
 
-[![Build Status](https://travis-ci.org/cwardgar/nexus-IaC.svg?branch=master)](https://travis-ci.org/cwardgar/nexus-IaC)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This project contains code for the provisioning of a Nexus Repository Manager 3 instance in the cloud.
-Currently, only provisioning of [VirtualBox](https://www.virtualbox.org) VMs
-(via [Vagrant](https://www.vagrantup.com/)) and [OpenStack](https://www.openstack.org/) VMs is supported.
+This project contains code for the provisioning of a Nexus Repository Manager 3 instance in the [Jetstream cloud](
+https://jetstream-cloud.org/). The server is intended to be an [immutable](
+https://martinfowler.com/bliki/ImmutableServer.html) [phoenix](https://martinfowler.com/bliki/PhoenixServer.html),
+meaning that we don't modify it once it's running. Instead, we frequently burn down the old instance of the server and
+launch a new one in its place. The new instance contains all of the changes we've committed to this repository, as well
+as updates of all installed packages. The procedure is implemented in a [Jenkins pipeline](
+jenkins/nexus-reprovision-pipeline.groovy).
 
 ## Working with submodules - IMPORTANT!!
 
@@ -17,11 +20,6 @@ git clone --recursive https://github.com/cwardgar/nexus-IaC.git
 
 However, that's not the only change you'll need to make to your typical Git workflow. Please read this
 [cheat sheet](https://medium.com/@porteneuve/mastering-git-submodules-34c65e940407#5450).
-
-### Future
-
-If working with submodules proves too cumbersome or error-prone, give
-[git-subrepo](https://github.com/ingydotnet/git-subrepo#readme) a try.
 
 ## Launching Nexus server in a Vagrant VM
 
