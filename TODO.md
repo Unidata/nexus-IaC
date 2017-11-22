@@ -15,4 +15,4 @@ Ansible 2.4.2 is released.
 1. The "Jenkins build is back to normal" notification doesn't work in `nexus-reprovision-pipeline.groovy`.
 I've attempted to fix this, but I don't know if it worked yet. We'll have to wait for the next pipeline failure.
 1. Add monitoring.
-1. Nuke the proxy repositories. In thredds 5.0.0, the only 3rd party repo we use is bintray for Gretty.
+1. Rename "nexus-image-" to just "nexus-"? Also, what about the image that I couldn't delete?

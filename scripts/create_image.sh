@@ -15,4 +15,4 @@ source ~/.openstack/openrc.sh
 
 # Invoke Packer. Copy output to both STDOUT and packer_output.txt.
 # We'll need to grab the ID of the generated image from packer_output.txt when we run Terraform later.
-packer build -color=false openstack.json | tee packer_output.txt
+packer build -color=false openstack-nexus.json | tee packer_output.txt
