@@ -12,7 +12,4 @@ the ENTIRE blobstore from S3. Slow and expensive! Instead, make a copy of 'blobs
 duplicity's rysnc functionality to restore 'blobs' in-place. Should be much faster.
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.
-1. The "Jenkins build is back to normal" notification doesn't work in `nexus-reprovision-pipeline.groovy`.
-I've attempted to fix this, but I don't know if it worked yet. We'll have to wait for the next pipeline failure.
-1. Add monitoring.
-1. Rename "nexus-image-" to just "nexus-"? Also, what about the image that I couldn't delete?
+1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.

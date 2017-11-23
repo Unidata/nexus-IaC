@@ -10,7 +10,7 @@
       "source_ami": "ami-cd0f5cb6",
       "instance_type": "t2.medium",
       "ssh_username": "ubuntu",
-      "ami_name": "nexus-image-{{user `timestamp`}}",
+      "ami_name": "nexus-{{user `timestamp`}}",
       "user_data_file": "user-data.yml"
     }
   ],

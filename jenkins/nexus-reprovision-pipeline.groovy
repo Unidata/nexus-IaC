@@ -3,7 +3,9 @@
 def buildStateHasChanged = false
 
 pipeline {
-    agent any
+    agent {
+        label 'jenkins-slaves-t2small'  // Run pipeline on a t2.small slave.
+    }
     
     options {
         skipDefaultCheckout()  // The default checkout doesn't init submodules.
