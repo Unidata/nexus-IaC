@@ -7,9 +7,6 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
      The job will have to account for that delay, possibly with something like this:
      https://stackoverflow.com/a/34522653/3874643
 1. Break up the monolithic Apache config. See the comment at the top of vhosts.conf.
-1. In restore.yml, we rename 'blobs' to 'blobs-old' and then restore 'blobs' from S3. That results in us downloading
-the ENTIRE blobstore from S3. Slow and expensive! Instead, make a copy of 'blobs' at 'blobs-old' and then exploit
-duplicity's rysnc functionality to restore 'blobs' in-place. Should be much faster.
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.
 1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.

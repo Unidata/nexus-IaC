@@ -54,6 +54,10 @@
 
         - name: Move 'db' to 'db-old'.
           command: mv {{ nexus_data_dir }}/db {{ nexus_data_dir }}/db-old
+          args:
+            # This bit is important. If 'db' still exists when Nexus restarts, it won't attempt to restore its databases
+            # from the backups in 'backup'. See https://help.sonatype.com/display/NXRM3/Restore+Exported+Databases
+            removes: "{{ nexus_data_dir }}/db"
       when: db_stat.stat.exists  # 'db' directory exists.
 
     # Below we're repeating the last three tasks, but replacing the string 'db' with 'blobs'.
@@ -68,8 +72,14 @@
         - name: Delete existing local backup of 'blobs', if it exists.
           file: path={{ nexus_data_dir }}/blobs-old state=absent
 
-        - name: Move 'blobs' to 'blobs-old'.
-          command: mv {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
+          # We could move 'blobs' to 'blobs-old', but then duplicity would have to download the entire 'blobs' directory
+          # from S3. Slow and expensive! Instead, we make a copy of 'blobs' at 'blobs-old' and then exploit duplicity's
+          # rsync functionality to restore 'blobs' in-place. This results in MUCH less data being downloaded from S3.
+          # Also, the restoration finishes sooner, though the copy and delta calculations still take a while.
+        - name: Copy 'blobs' to 'blobs-old'.
+          # As of Ansible 2.4, "cp -r" is the best way to do a recursive remote-to-remote copy.
+          # See https://stackoverflow.com/questions/25576871/ansible-best-practice-to-copy-directories
+          command: cp -r {{ nexus_data_dir }}/blobs {{ nexus_data_dir }}/blobs-old
       when: blobs_stat.stat.exists  # 'blobs' directory exists.
 
     - name: Restore Nexus application data from S3 backup.

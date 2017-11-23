@@ -23,7 +23,7 @@
   file: "path={{ testing_dir }}-old state=absent"
 
 - name: "Move '{{ testing_dir }}' to '{{ testing_dir }}-old'."
-  shell: "mv {{ testing_dir }} {{ testing_dir }}-old"
+  command: "mv {{ testing_dir }} {{ testing_dir }}-old"
   args:
     removes: "{{ testing_dir }}"
 
