@@ -9,20 +9,17 @@
     install_dir: /usr/local/bin
 
   tasks:
+    - name: Install 'pip' for Python packages, 'jq' for parsing JSON, and 'unzip' for extracting archives.
+      package: "name={{ item }} state=latest"
+      with_items: [ 'python-pip', 'jq', 'unzip' ]
+
     - name: Install 'python-openstackclient' Python package for interacting with OpenStack.
       pip: name=python-openstackclient state=latest  # Needed by /scripts/delete_old_images.sh
-
-    - name: Install 'jq' for parsing JSON and 'unzip' for extracting archives.
-      package: "name={{ item }} state=latest"
-      with_items: [ 'jq', 'unzip' ]
 
     - name: Download Hashicorp releases index.
       get_url:
         url: "{{ releases_url }}"
         dest: "{{ releases_dest }}"
-        # Temporary workaround for https://github.com/ansible/ansible/issues/25402. The bug has been fixed, but won't
-        # be available until Ansible 2.4.2. See https://github.com/ansible/ansible/pull/32053#issuecomment-339012192
-        validate_certs: false
 
     - name: Extract URLs of latest versions of Packer and Terraform.
       # 1. Print {{ releases_dest }} to STDOUT and pipe it onward.
@@ -66,8 +63,6 @@
         dest: "{{ install_dir }}"
         creates: "{{ install_dir }}/{{ item.bin_name }}"
         remote_src: yes
-        # Same temporary workaround as for get_url.
-        validate_certs: false
       with_items:
         - { url: "{{ latest_hashicorp_urls.results[0].stdout }}", bin_name: 'packer' }
         - { url: "{{ latest_hashicorp_urls.results[1].stdout }}", bin_name: 'terraform' }

@@ -7,6 +7,4 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
      The job will have to account for that delay, possibly with something like this:
      https://stackoverflow.com/a/34522653/3874643
 1. Break up the monolithic Apache config. See the comment at the top of vhosts.conf.
-1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
-Ansible 2.4.2 is released.
 1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.
