@@ -21,7 +21,7 @@ lfs_url: "{{ lfs_url_without_creds | replace('https://', http_creds_prefix) }}"
 thredds_doc_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_raw_hosted[0].name }}"
 
 # Pull from 'unidata-all', which is a group repository that includes all other repositories.
-maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[2].name }}"
+maven_pull_repo_url: "{{ artifacts_base_url }}/repository/{{ nexus_repos_maven_group[0].name }}"
 
 # The Maven repository we're pushing to in "test-maven-repos.yml". The test could be run more than once, and the
 # deployment needs to work each time. To that end, we're going to push a "1.0.0-SNAPSHOT" version of our library

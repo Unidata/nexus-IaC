@@ -10,4 +10,3 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
 1. Remove `get_url.validate_certs=false` and `unarchive.validate_certs=false` from `prepare_tools.yml` once
 Ansible 2.4.2 is released.
 1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.
-1. Nuke the proxy repositories. Best to wait until both THREDDS master and 5.0.0 are no longer depending on them.

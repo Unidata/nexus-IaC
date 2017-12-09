@@ -79,37 +79,9 @@ nexus_repos_maven_hosted:
     version_policy: release
 
 
-nexus_repos_maven_proxy:
-    # For "geotk-referencing", needed by ncWMS.
-  - name: unidata-geotoolkit
-    remote_url: 'http://maven.geotoolkit.org/'
-    version_policy: release
-
-    # For "ncsos", needed by thredds:tds.
-  - name: unidata-ncsos
-    remote_url: 'http://maven.asascience.com/maven/ncsos-releases/'
-    version_policy: release
-
-    # For "Gretty", needed by thredds Gradle build.
-  - name: unidata-cwardgar
-    remote_url: 'https://dl.bintray.com/cwardgar/maven/'
-    version_policy: release
-
-    # For "52n-oxf-xmlbeans", needed by thredds:tds and thredds:ui.
-  - name: unidata-52north
-    remote_url: 'http://52north.org/maven/repo/releases/'
-    version_policy: release
-
-
 nexus_repos_maven_group:
-  - name: unidata-hosted
-    member_repos: "{{ nexus_repos_maven_hosted | map(attribute='name') | list }}"
-
-  - name: unidata-proxied
-    member_repos: "{{ nexus_repos_maven_proxy  | map(attribute='name') | list }}"
-
   - name: unidata-all
-    member_repos: [ unidata-hosted, unidata-proxied ]
+    member_repos: "{{ nexus_repos_maven_hosted | map(attribute='name') | list }}"
 
 
 nexus_config_raw: true  # Configure a raw repository.
