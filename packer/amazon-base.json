@@ -1,0 +1,31 @@
+{
+  "variables": {
+    "timestamp": "{{isotime \"2006-01-02T15.04.05Z\"}}"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-east-1",
+      "source_ami": "ami-cd0f5cb6",
+      "instance_type": "t2.small",
+      "ssh_username": "ubuntu",
+      "ami_name": "ubuntu-16.04.3-base-{{user `timestamp`}}",
+      "user_data_file": "user-data.yml"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "scripts/",
+      "destination": "/tmp/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo /tmp/stop-and-remove-daily-apt.sh",
+        "sudo /tmp/full-upgrade.sh",
+        "sudo /tmp/cleanup.sh"
+      ]
+    }
+  ]
+}

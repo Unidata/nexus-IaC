@@ -7,7 +7,7 @@
     {
       "type": "amazon-ebs",
       "region": "us-east-1",
-      "source_ami": "ami-cd0f5cb6",
+      "source_ami": "ami-f529428f",
       "instance_type": "t2.medium",
       "ssh_username": "ubuntu",
       "ami_name": "nexus-{{user `timestamp`}}",
@@ -15,10 +15,6 @@
     }
   ],
   "provisioners": [
-    {
-      "type": "shell",
-      "inline": ["test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)"]
-    },
     {
       "type": "ansible",
       "user": "ubuntu",

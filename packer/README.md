@@ -59,15 +59,24 @@ second run, Terraform will provision the VM using the image that Packer just cre
 
 ## Amazon template
 
-To build a Nexus application image, execute:
+### Unbuntu base template
+
+To build an Ubuntu base image atop which our Nexus application images will be created, execute:
+
+```
+packer build amazon-base.json
+```
+
+The generated AMI ought to have the exact same software and configuration as the analogous OpenStack image.
+
+### Nexus template
+
+To build a Nexus application image, first ensure that `builders[0].source_ami` refers to the base image that you
+just built. You can see the images you've created in the AWS web interface under EC2->Images->AMIs. Then execute:
+
 ```
 packer build amazon-nexus.json
 ```
 
-The source AMI we're using, `ami-cd0f5cb6`, is a completely bare Ubuntu 16.04.3 image, and on recent versions of
-Ubuntu, [Python2 is no longer pre-installed](https://wiki.ubuntu.com/XenialXerus/ReleaseNotes#Python_3).
-That screws up Ansible, because its `gather_facts` phase requires Python2 to be installed on the target machine.
-So, we must install Python via a shell provisioner before we run Ansible.
-
-The `timestamp` variable is slightly different than the ones in the OpenStack templates because AMI names cannot
+The `timestamp` variable is slightly different than the one in the OpenStack templates because AMI names cannot
 contain colons.
