@@ -7,10 +7,13 @@
       "type": "amazon-ebs",
       "region": "us-east-1",
       "source_ami": "ami-cd0f5cb6",
-      "instance_type": "t2.small",
+      "instance_type": "c4.large",
       "ssh_username": "ubuntu",
       "ami_name": "ubuntu-16.04.3-base-{{user `timestamp`}}",
-      "user_data_file": "user-data.yml"
+      "user_data_file": "user-data.yml",
+      "tags": {
+        "Name": "Ubuntu 16.04.3 Base {{user `timestamp`}}"
+      }
     }
   ],
   "provisioners": [

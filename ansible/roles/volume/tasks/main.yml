@@ -32,7 +32,7 @@
         # We change permissions of this directory later in the ansible-nexus3-oss role.
   when: volume_device_exists
 
-- name: Add entry for '{{ volume_device_name }}' to /etc/fstab, and mount it if it's available.
+- name: Add entry for '{{ data_partition_name }}' to /etc/fstab, and mount it if it's available.
   mount:
     src: "{{ data_partition_name }}"
     path: "{{ data_partition_mount_dir }}"
