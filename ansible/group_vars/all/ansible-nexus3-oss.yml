@@ -78,10 +78,22 @@ nexus_repos_maven_hosted:
   - name: unidata-3rdparty    # Ditto.
     version_policy: release
 
+# Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
+nexus_repos_maven_proxy:
+  # For geotoolkit dependencies, which are needed by "ncwms". Gradle NEEDS a proxy repository for those JARs; it
+  # cannot successfully retrieve them from the source repo itself. See this comment in thredds: https://goo.gl/aGGthZ
+  - name: unidata-geotoolkit
+    remote_url: https://nexus.geomatys.com/repository/geotoolkit/
+    version_policy: mixed
 
+# Using the defaults in '_nexus_repos_maven_defaults' where appropriate.
 nexus_repos_maven_group:
   - name: unidata-all
-    member_repos: "{{ nexus_repos_maven_hosted | map(attribute='name') | list }}"
+    member_repos:
+      - unidata-releases
+      - unidata-snapshots
+      - unidata-3rdparty
+      - unidata-geotoolkit
 
 
 nexus_config_raw: true  # Configure a raw repository.

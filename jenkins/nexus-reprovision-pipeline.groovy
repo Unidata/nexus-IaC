@@ -75,10 +75,6 @@ pipeline {
     }
     
     post {
-        always {
-            deleteDir()
-        }
-        
         // Only send email on failure or when a previously-failing build succeeds. See https://goo.gl/6T2DQb.
         
         success {

@@ -18,11 +18,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Provision VM using the main Ansible playbook.
   config.vm.provision :ansible do |ansible|
+    ansible.compatibility_mode = "2.0"
     ansible.inventory_path = "ansible/inventories/dev/hosts"
     ansible.verbose = "v"
     ansible.playbook = "ansible/site.yml"
     ansible.config_file = "ansible/ansible.cfg"
     ansible.limit = "all"  # Do not limit the hosts here; do it in the playbook instead.
     ansible.ask_vault_pass = true
+    # ansible.tags = "apache"
   end
 end
