@@ -87,6 +87,12 @@
       environment:
         AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      # This is a potentially long-running task, especially if we're restoring from a blank slate.
+      # It can exceed the SSH timeout and cause task failures. So, we'll run it asynchronously.
+      # See https://stackoverflow.com/questions/41455002
+      # See http://docs.ansible.com/ansible/latest/playbooks_async.html
+      async: 3600  # Timeout after an hour.
+      poll: 10     # Check if the command is finished every 10 seconds.
 
     - name: Ensure '{{ nexus_data_dir }}/backup' exists and is empty.
       file:
