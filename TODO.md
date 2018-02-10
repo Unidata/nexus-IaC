@@ -8,3 +8,7 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
      https://stackoverflow.com/a/34522653/3874643
 1. Break up the monolithic Apache config. See the comment at the top of vhosts.conf.
 1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.
+1. ansible-oracle-java seems to break each time Oracle releases a new JDK. To fix, I need to pull new commits from
+upstream that manually update the JDK version and hash numbers. Instead, we should be detecting the latest version
+automatically. Oracle doesn't make that easy, but there is a script that seems to work:
+https://gist.github.com/n0ts/40dd9bd45578556f93e7

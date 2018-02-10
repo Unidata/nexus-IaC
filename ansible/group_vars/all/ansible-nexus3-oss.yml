@@ -160,7 +160,7 @@ nexus_os_user: 'nexus'
 nexus_default_port: 8081
 nexus_default_context_path: ''
 nexus_private_base_url: "http://{{ application_host }}:{{ nexus_default_port }}{{ nexus_default_context_path }}"
-rest_api_endpoint: "{{ nexus_private_base_url }}/service/siesta/rest/v1/script"
+rest_api_endpoint: "{{ nexus_private_base_url }}/service/rest/v1/script"
 
 
 # The variables below are not actually defined in the role; they're new variables that logically belong with the rest.
