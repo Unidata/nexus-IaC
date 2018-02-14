@@ -4,7 +4,7 @@ def buildStateHasChanged = false
 
 pipeline {
     agent {
-        label 'jenkins-slaves-t2small'  // Run pipeline on a t2.small slave.
+        label 'jenkins-slaves-t2large'  // Run pipeline on a t2.large slave.
     }
     
     options {
