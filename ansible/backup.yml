@@ -67,7 +67,7 @@
       wait_for:
         path: "{{ nexus_log }}"
         search_regex: "{{ last_line_escaped }}\n(.*\n)*.*{{ wanted_pattern_escaped }}"
-        timeout: 60
+        timeout: 120
 
     - name: Create S3 bucket to store our backups.
       s3_bucket:
