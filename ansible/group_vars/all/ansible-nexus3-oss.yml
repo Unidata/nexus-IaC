@@ -25,6 +25,15 @@ nexus_delete_default_repos: true
 # See https://books.sonatype.com/nexus-book/reference3/security.html#anonymous
 nexus_anonymous_access: true
 
+# The fully qualified domain name under which the nexus instance will be accessible to its clients.
+public_hostname: "{{ artifacts_hostname }}"
+
+# Manage email server configuration.
+nexus_email_server_enabled: true
+nexus_email_server_host: "smtp.unidata.ucar.edu"
+nexus_email_from_address: "nexus@artifacts.unidata.ucar.edu"
+nexus_email_subject_prefix: "Task alert:"
+
 # 'ansible_date_time.iso8601' is almost what we want, except that it gives times in UTC, e.g. "2017-06-14T07:23:21Z".
 # We want them in 'ntp_timezone'. So, we need to create our own iso8601-ish timestamp. This will give something like:
 # "2017-06-14T01:23:21 MDT".
@@ -33,9 +42,6 @@ timestamp: "{{ ansible_date_time.date }}T{{ ansible_date_time.time }} {{ ansible
 # Use the same CSS for our footer that Sonatype uses for its copyright footer. This will cause our message to appear
 # just below the copyright. I used the Chrome developer tools to find the right CSS classes.
 nexus_branding_footer: "<div class='copyright nx-footer'>Last provisioned at {{ timestamp }}.</div>"
-
-# The fully qualified domain name under which the nexus instance will be accessible to its clients.
-public_hostname: "{{ artifacts_hostname }}"
 
 # We don't want the 'all-repos-read' privilege added by ansible-nexus3-oss, so set to empty list.
 # Neither do we want to add any privileges of our own; the ones built into Nexus are sufficient.
@@ -59,7 +65,7 @@ nexus_local_users:
   - username: developer
     first_name: Developer
     last_name: User
-    email: "{{ nexus_admin_email }}"
+    email: thredds-dev@unidata.ucar.edu
     password: "{{ vault_nexus_developer_password }}"
     roles:
       - developer
@@ -166,4 +172,4 @@ rest_api_endpoint: "{{ nexus_private_base_url }}/service/rest/v1/script"
 # The variables below are not actually defined in the role; they're new variables that logically belong with the rest.
 
 # This will be where alert emails are sent when something goes wrong with one of our Nexus scheduled tasks.
-nexus_admin_email: thredds-dev@unidata.ucar.edu
+nexus_admin_email: cwardgar@ucar.edu

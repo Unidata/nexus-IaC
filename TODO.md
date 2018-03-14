@@ -12,3 +12,10 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
 upstream that manually update the JDK version and hash numbers. Instead, we should be detecting the latest version
 automatically. Oracle doesn't make that easy, but there is a script that seems to work:
 https://gist.github.com/n0ts/40dd9bd45578556f93e7
+1. Install [Fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page). nexus-prod is starting to get a lot of
+traffic, apparently from other Maven repo managers that are proxying it. The user agents are strings like
+"Artifactory/4.5.2", "Artifactory/5.6.0", "Nexus/3.6.0-02", etc. I'm seeing up to 3 requests per second. Not sure
+if this is a pressing concern.
+1. The original project at https://github.com/savoirfairelinux/ansible-nexus3-oss (that I forked) is no longer being
+maintained. However, there's a new high-quality fork at https://github.com/ansible-ThoTeam/nexus3-oss. Consider
+integrating my changes into that. I've already copied some of its code for configuring Nexus's email settings.
