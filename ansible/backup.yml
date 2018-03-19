@@ -84,5 +84,5 @@
       # It can exceed the SSH timeout and cause task failures. So, we'll run it asynchronously.
       # See https://stackoverflow.com/questions/41455002
       # See http://docs.ansible.com/ansible/latest/playbooks_async.html
-      async: 3600  # Timeout after an hour.
+      async: 7200  # Timeout after two hours. Full backups can take quite a while.
       poll: 10     # Check if the command is finished every 10 seconds.
