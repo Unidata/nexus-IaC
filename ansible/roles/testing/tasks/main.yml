@@ -1,24 +1,24 @@
 ---
 - name: Initialize test environment.
-  include_tasks: tasks/init-test-env.yml
+  import_tasks: tasks/init-test-env.yml
   tags: [ always ]
 
 - name: Test that Nexus was installed and is running as we expect.
-  include_tasks: tasks/test-install.yml
+  import_tasks: tasks/test-install.yml
   tags: [ test-install ]
 
 - name: Test Git LFS repo.
-  include_tasks: test-gitlfs-repo.yml
+  import_tasks: test-gitlfs-repo.yml
   tags: [ test-gitlfs-repo ]
 
 - name: Test raw repo.
-  include_tasks: test-raw-repo.yml
+  import_tasks: test-raw-repo.yml
   tags: [ test-raw-repo ]
 
 - name: Test Maven repos.
-  include_tasks: test-maven-repos.yml
+  import_tasks: test-maven-repos.yml
   tags: [ test-maven-repos ]
 
 - name: Test Nexus scheduled tasks script.
-  include_tasks: test_nexus_tasks.yml
+  import_tasks: test_nexus_tasks.yml
   tags: [ test-nexus-tasks ]

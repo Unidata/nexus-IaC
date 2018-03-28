@@ -1,9 +1,9 @@
 ---
-- include_tasks: users-and-groups.yml
+- import_tasks: users-and-groups.yml
   tags: [ users-and-groups ]
 
-- include_tasks: ssh.yml
+- import_tasks: ssh.yml
   tags: [ ssh ]
 
-- include_tasks: ssl.yml
+- import_tasks: ssl.yml
   tags: [ ssl ]

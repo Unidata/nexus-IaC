@@ -2,7 +2,8 @@
 # Values for the variables below are NOT CHANGED from the role defaults.
 # However, the variables need to be redefined here so that they're visible to roles other than 'security'.
 # Specifically, 'ansible-role-apache' needs these variables when it copies (with templating) vhosts.conf into place.
-# This kludge is only necessary because "include_role does not expose variables to rest of playbook", as it should.
+# This kludge is only necessary because "import_role" and "include_role" do not expose variables to the rest of the
+# playbook, as they should. Still a problem as of Ansible 2.5.0.0.
 # See https://github.com/ansible/ansible/issues/21890
 
 ssl_certs_path: "/etc/ssl/nexus"

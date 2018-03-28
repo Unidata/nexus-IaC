@@ -6,11 +6,11 @@
 
   tasks:
     - name: Include 'init' role.
-      include_role: name=init
+      import_role: name=init
       tags: [ always ]
 
     - name: Include 'ansible-debian-upgrade-reboot' role.
-      include_role: name=ansible-debian-upgrade-reboot
+      import_role: name=ansible-debian-upgrade-reboot
       tags: [ upgrade ]
       # Here we used to have "when: host_type != 'test'", because this role could reboot the host and
       # rebooting from within a Docker container is not supported. That was not ideal because it could lead to
@@ -20,17 +20,17 @@
       # upgrade isn't already part of the latest Docker image, seems quite low. I guess we'll see.
 
     - name: Include 'volume' role.
-      include_role: name=volume
+      import_role: name=volume
       tags: [ volume ]
       # This role relies on a variable that is only defined in the 'prod' inventory (data_partition_mount_dir).
       when: host_type == 'prod'
 
     - name: Include 'security' role.
-      include_role: name=security
+      import_role: name=security
       tags: [ security ]
 
     - name: Include 'ansible-role-ntp' role.
-      include_role: name=ansible-role-ntp
+      import_role: name=ansible-role-ntp
       tags: [ ntp ]
 
     - name: Ensure Apache log directory exists.
@@ -41,13 +41,13 @@
       tags: [ apache ]
 
     - name: Include 'ansible-role-apache' role.
-      include_role: name=ansible-role-apache
+      import_role: name=ansible-role-apache
       tags: [ apache ]
 
     - name: Include 'ansible-oracle-java' role.
-      include_role: name=ansible-oracle-java
+      import_role: name=ansible-oracle-java
       tags: [ java ]
 
     - name: Include 'ansible-nexus3-oss' role.
-      include_role: name=ansible-nexus3-oss
+      import_role: name=ansible-nexus3-oss
       tags: [ nexus ]

@@ -9,7 +9,7 @@
 
   tasks:
     - name: Include 'ansible-duply-backup' role.
-      include_role: name=ansible-duply-backup
+      import_role: name=ansible-duply-backup
       tags: [ duply ]
 
     - name: Install pip Python package manager, updating the cache first, if needed.

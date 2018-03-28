@@ -7,9 +7,9 @@
 
   tasks:
     - name: Include 'github-git-lfs' role.
-      include_role: name=github-git-lfs
+      import_role: name=github-git-lfs
       tags: [ git-lfs ]
 
     - name: Include 'testing' role.
-      include_role: name=testing
+      import_role: name=testing
       tags: [ test ]
