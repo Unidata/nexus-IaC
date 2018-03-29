@@ -6,7 +6,7 @@
     {
       "type": "openstack",
       "flavor": "m1.tiny",
-      "source_image_name": "JS-API-Featured-Ubuntu16-Oct-25-2017",
+      "source_image_name": "JS-API-Featured-Ubuntu16-Feb-13-2018",
       "image_name": "ubuntu-16.04.3-base-{{user `timestamp`}}",
       "ssh_username": "ubuntu",
       "networks": [

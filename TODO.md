@@ -19,3 +19,6 @@ if this is a pressing concern.
 1. The original project at https://github.com/savoirfairelinux/ansible-nexus3-oss (that I forked) is no longer being
 maintained. However, there's a new high-quality fork at https://github.com/ansible-ThoTeam/nexus3-oss. Consider
 integrating my changes into that. I've already copied some of its code for configuring Nexus's email settings.
+1. Automate the periodic generation of the Ubuntu base image on Jetstream. This is tricky because we need to provide
+appropriate values for `builders[0].source_image_name` in both `packer/openstack-base.json` and
+`packer/openstack-nexus.json`.

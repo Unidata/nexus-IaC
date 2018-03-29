@@ -7,7 +7,7 @@
     {
       "type": "openstack",
       "flavor": "m1.small",
-      "source_image_name": "ubuntu-16.04.3-base-2017-11-17T00:08:31Z",
+      "source_image_name": "ubuntu-16.04.3-base-2018-03-29T06:04:29Z",
       "image_name": "nexus-{{user `timestamp`}}",
       "ssh_username": "ubuntu",
       "networks": [
