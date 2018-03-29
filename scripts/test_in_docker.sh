@@ -2,7 +2,7 @@
 #
 # Ansible test script.
 #
-# Usage: [OPTIONS] ./travis/test_in_docker.sh
+# Usage: [OPTIONS] scripts/test_in_docker.sh
 #   - cleanup: whether to remove the Docker container after tests (default = true)
 #   - container_id: the --name to set for the container (default = timestamp)
 #   - test_idempotence: whether to test playbook's idempotence (default = true)
@@ -28,7 +28,6 @@ color_opts='env ANSIBLE_FORCE_COLOR=1'
 timestamp="$(date +%Y-%m-%dT%H.%M.%S_%Z)"
 
 # Allow environment variables to override defaults.
-distro='ubuntu1604'
 cleanup=${cleanup:-"true"}
 container_id=${container_id:-$timestamp}
 test_idempotence=${test_idempotence:-"true"}
@@ -56,8 +55,8 @@ init_opts='--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
 init_exe='/lib/systemd/systemd'
 
 # Run the container using the supplied OS.
-printf ${purple}"Starting Docker container: geerlingguy/docker-$distro-ansible.\n\n"${neutral}
-docker pull geerlingguy/docker-$distro-ansible:latest
+printf ${purple}"Starting Docker container: cwardgar/docker-ubuntu1604-systemd.\n\n"${neutral}
+docker pull cwardgar/docker-ubuntu1604-systemd:latest
 
 # Below is a trick for documenting a long argument list. See https://unix.stackexchange.com/a/152554.
 # It turns out that embedding the comments within the list (along with continuation operators) doesn't work:
@@ -85,17 +84,21 @@ docker_run_params+=(--add-host='artifacts.unidata.ucar.edu:127.0.0.1')
 # Duplicity gets mad if you try to make an incremental backup and you have a different hostname than before.
 docker_run_params+=(--hostname='nexus-test')
 # The image to run.
-docker_run_params+=(geerlingguy/docker-$distro-ansible:latest)
+docker_run_params+=(cwardgar/docker-ubuntu1604-systemd:latest)
 # The name of the system initialization program that will run first in the container.
 docker_run_params+=($init_exe)
 
 docker run "${docker_run_params[@]}"
 
+printf ${purple}"\nInstalling Ansible.\n\n"${neutral}
+docker exec $container_id $color_opts \
+        pip install --ignore-installed ansible==2.5.0
+
 printf ${purple}"\nProvisioning the provisioner.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/prepare_ansible.yml
 
-printf ${purple}"Checking Ansible playbook syntax.\n\n"${neutral}
+printf ${purple}"\nChecking Ansible playbook syntax.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml --syntax-check
 
@@ -104,33 +107,33 @@ docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml
 
 if [ "$test_idempotence" = true ]; then
-  printf ${purple}"Running playbook again: idempotence test.\n\n"${neutral}
+  printf ${purple}"\nRunning playbook again: idempotence test.\n\n"${neutral}
   idempotence=$(mktemp)
   docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/site.yml | tee -a $idempotence
   tail $idempotence \
     | grep -q "changed=0.*failed=0" \
-    && (printf ${green}"Idempotence test: pass\n\n"${neutral}) \
-    || (printf ${red}"Idempotence test: fail\n\n"${neutral} && exit 1)
+    && (printf ${green}"\nIdempotence test: pass\n"${neutral}) \
+    || (printf ${red}"\nIdempotence test: fail\n"${neutral} && exit 1)
 fi
 
-printf ${purple}"Running integration and functional tests against live instance.\n\n"${neutral}
+printf ${purple}"\nRunning integration and functional tests against live instance.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/test.yml
 
-printf ${purple}"Backing up application data to S3.\n\n"${neutral}
+printf ${purple}"\nBacking up application data to S3.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/backup.yml
 
-printf ${purple}"Restoring application data from S3.\n\n"${neutral}
+printf ${purple}"\nRestoring application data from S3.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/restore.yml
 
-printf ${purple}"Re-running tests that pull artifacts against the restored Nexus server.\n\n"${neutral}
+printf ${purple}"\nRe-running tests that pull artifacts against the restored Nexus server.\n\n"${neutral}
 docker exec $container_id $color_opts \
         ansible-playbook "${ansible_opts[@]}" $container_ansible_dir/test.yml --tags "test-pull"
 
 if [ "$cleanup" = true ]; then
-  printf ${purple}"Removing Docker container...\n\n"${neutral}
+  printf ${purple}"\nRemoving Docker container...\n\n"${neutral}
   docker rm -f $container_id
 fi
