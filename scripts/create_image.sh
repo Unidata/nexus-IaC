@@ -6,8 +6,9 @@ set -e
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-packer_dir="$(dirname $parent_dir_of_this_script)/packer"
 
+# Change to 'packer' directory.
+packer_dir="$(dirname $parent_dir_of_this_script)/packer"
 cd $packer_dir
 
 # Add OpenStack variables to the environment. We created this file in prepare_tools.sh.

@@ -5,8 +5,13 @@ set -e
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ansible_dir="$(dirname $parent_dir_of_this_script)/ansible"
 
+# Install Ansible.
+scripts_dir="$(dirname $parent_dir_of_this_script)/scripts"
+$scripts_dir/install_ansible.sh
+
+# Change to 'ansible' directory.
+ansible_dir="$(dirname $parent_dir_of_this_script)/ansible"
 cd $ansible_dir
 
 # See http://docs.ansible.com/ansible/intro_configuration.html#force-color

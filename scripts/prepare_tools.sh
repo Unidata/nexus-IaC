@@ -5,8 +5,13 @@ set -e
 
 # See https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 parent_dir_of_this_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ansible_dir="$(dirname $parent_dir_of_this_script)/ansible"
 
+# Install Ansible.
+scripts_dir="$(dirname $parent_dir_of_this_script)/scripts"
+$scripts_dir/install_ansible.sh
+
+# Change to 'ansible' directory.
+ansible_dir="$(dirname $parent_dir_of_this_script)/ansible"
 cd $ansible_dir
 
 # See http://docs.ansible.com/ansible/intro_configuration.html#force-color
@@ -19,16 +24,6 @@ export PYTHONUNBUFFERED=1
 # If it is not available or is incorrect, the 'ansible-playbook' command below will fail.
 # See http://docs.ansible.com/ansible/latest/playbooks_vault.html#running-a-playbook-with-vault
 export ANSIBLE_VAULT_PASSWORD_FILE="$ansible_dir/files/vault-password"
-
-# Gotta jump through a few hoops to get the latest Ansible, which is not available in the default Apt repos.
-# See http://docs.ansible.com/ansible/latest/intro_installation.html#latest-releases-via-apt-ubuntu
-#
-# On Jenkins slaves, Ansible is already installed, so this step isn't necessary. However, I'd like for this script to
-# remain usable in other CI environments where the base image doesn't already include Ansible, such as Travis.
-sudo apt-get install -y software-properties-common
-sudo apt-add-repository -y ppa:ansible/ansible
-sudo apt-get -qq update
-sudo apt-get install -y ansible  # If Ansible is already installed, this will upgrade it.
 
 # Installs Packer and Terraform.
 # Decrypts OpenStack and AWS credentials and places them in their respective home directories.

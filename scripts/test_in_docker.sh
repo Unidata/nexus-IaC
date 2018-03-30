@@ -92,7 +92,7 @@ docker run "${docker_run_params[@]}"
 
 printf ${purple}"\nInstalling Ansible.\n\n"${neutral}
 docker exec $container_id $color_opts \
-        pip install --ignore-installed ansible==2.5.0
+        $container_project_dir/scripts/install_ansible.sh
 
 printf ${purple}"\nProvisioning the provisioner.\n\n"${neutral}
 docker exec $container_id $color_opts \
