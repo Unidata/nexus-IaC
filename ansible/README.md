@@ -33,8 +33,7 @@ ansible nexus -i inventories/dev/hosts -v -m service -a 'name=nexus state=restar
 
 ```
 ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --tags "nexus"
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --start-at-task="Install Nexus as a service"
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --start-at-task="Include 'ansible-nexus3-oss' role."
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
