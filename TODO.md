@@ -8,10 +8,6 @@ than every two weeks. Monthly maybe? A full build and test of THREDDS would exer
      https://stackoverflow.com/a/34522653/3874643
 1. Break up the monolithic Apache config. See the comment at the top of vhosts.conf.
 1. During reprovisioning, programmatically pause Uptime Robot's monitoring of artifacts, using its REST API.
-1. ansible-oracle-java seems to break each time Oracle releases a new JDK. To fix, I need to pull new commits from
-upstream that manually update the JDK version and hash numbers. Instead, we should be detecting the latest version
-automatically. Oracle doesn't make that easy, but there is a script that seems to work:
-https://gist.github.com/n0ts/40dd9bd45578556f93e7
 1. Install [Fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page). nexus-prod is starting to get a lot of
 traffic, apparently from other Maven repo managers that are proxying it. The user agents are strings like
 "Artifactory/4.5.2", "Artifactory/5.6.0", "Nexus/3.6.0-02", etc. I'm seeing up to 3 requests per second. Not sure
