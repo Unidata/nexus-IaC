@@ -109,6 +109,9 @@ nexus_repos_raw_hosted:
   - name: thredds-doc
     write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
 
+  - name: thredds-misc
+    write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
+
 nexus_repos_raw_proxy: []  # Don't want ansible-nexus3-oss's default raw proxy repos.
 
 nexus_repos_raw_group: []  # Don't want ansible-nexus3-oss's default raw group repos.
