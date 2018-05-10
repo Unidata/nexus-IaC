@@ -6,6 +6,8 @@
 
   vars:
     wanted_pattern: "NexusLifecycleManager - Stop KERNEL"
+    # Nexus will look in this directory for backups, and restore its databases from the .bak files within.
+    nexus_restore_dir: "{{ nexus_data_dir }}/restore-from-backup"
 
   tasks:
     - name: Include 'ansible-duply-backup' role.
@@ -55,8 +57,8 @@
         - name: Move 'db' to 'db-old'.
           command: mv {{ nexus_data_dir }}/db {{ nexus_data_dir }}/db-old
           args:
-            # This bit is important. If 'db' still exists when Nexus restarts, it won't attempt to restore its databases
-            # from the backups in 'backup'. See https://help.sonatype.com/display/NXRM3/Restore+Exported+Databases
+            # This bit is important. If 'db' still exists when Nexus restarts, it won't attempt to restore its
+            # databases from the backups in 'nexus_restore_dir'. See https://tinyurl.com/ybzp6q94
             removes: "{{ nexus_data_dir }}/db"
       when: db_stat.stat.exists  # 'db' directory exists.
 
@@ -94,17 +96,17 @@
       async: 3600  # Timeout after an hour.
       poll: 10     # Check if the command is finished every 10 seconds.
 
-    - name: Ensure '{{ nexus_data_dir }}/backup' exists and is empty.
+    - name: Ensure '{{ nexus_restore_dir }}' exists and is empty.
       file:
-        path: "{{ nexus_data_dir }}/backup"
+        path: "{{ nexus_restore_dir }}"
         owner: "{{ nexus_os_user }}"
         group: "{{ nexus_os_group }}"
         mode: 0755
         state: "{{ item }}"
       with_items: [ absent, directory ]  # Will delete any files that were part of a previous restoration.
 
-    - name: Move db backup files from '{{ nexus_backup_dir }}' to '{{ nexus_data_dir }}/backup'.
-      shell: mv {{ nexus_backup_dir }}/* {{ nexus_data_dir }}/backup
+    - name: Move db backup files from '{{ nexus_backup_dir }}' to '{{ nexus_restore_dir }}'.
+      shell: mv {{ nexus_backup_dir }}/* {{ nexus_restore_dir }}
 
     - name: Start Nexus service.
       service: name=nexus state=started
