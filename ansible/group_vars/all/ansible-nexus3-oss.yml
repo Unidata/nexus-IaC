@@ -59,6 +59,7 @@ nexus_roles:
       - nx-repository-view-*-*-edit
       - nx-repository-view-*-*-read
       - nx-search-read
+      - nx-component-upload
     roles: []
 
 nexus_local_users:
@@ -110,6 +111,9 @@ nexus_repos_raw_hosted:
     write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
 
   - name: thredds-misc
+    write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
+
+  - name: netcdf-misc
     write_policy: allow  # Raw artifacts can be redeployed, with new replacing old.
 
 nexus_repos_raw_proxy: []  # Don't want ansible-nexus3-oss's default raw proxy repos.
