@@ -1,6 +1,6 @@
 # Ansible
 
-We use [Ansible](ansible.com) to provision our machines.
+We use [Ansible](https://www.ansible.com/) to provision our machines.
 
 ## Content organization
 
