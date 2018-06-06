@@ -18,14 +18,14 @@ This will execute only the tests included in the test playbook; Nexus config is 
 
 ### Against a fresh Docker container
 
-After installing [Docker](https://www.docker.com/), do the following in this directory:
+After installing [Docker](https://www.docker.com/), do the following in the root directory:
 ```
-./test.sh
+scripts/test_in_docker.sh
 ```
 
 This script will:
-
-1. Download the [docker-ubuntu1604-ansible](https://hub.docker.com/r/geerlingguy/docker-ubuntu1604-ansible/) image
+cwardgar/docker-ubuntu1604-systemd
+1. Download the [docker-ubuntu1604-systemd](https://hub.docker.com/r/cwardgar/docker-ubuntu1604-systemd/) image
    and run it in a new container.
 1. [Check the syntax](https://ansible-tips-and-tricks.readthedocs.io/en/latest/ansible/commands/#check-for-bad-syntax)
    of the main playbook.
@@ -40,10 +40,10 @@ in order to do this.
 
 ##### Leave container running
 
-By default, `test.sh` will stop and remove the container after tests finish.
+By default, `test_in_docker.sh` will stop and remove the container after tests finish.
 To skip the removal step, run the script like so:
 ```
-cleanup=false ./test.sh
+cleanup=false ./test_in_docker.sh
 ```
 The container will also be left running if one of the tests fails.
 
@@ -73,7 +73,8 @@ It should no longer appear in `docker ps`.
 
 ## Continuous integration
 
-`test.sh` runs automatically on [Travis](https://travis-ci.org/cwardgar/nexus-IaC) each time we push a commit to GitHub.
+`test_in_docker.sh` runs automatically on [Jenkins](https://jenkins-aws.unidata.ucar.edu/job/nexus-test/) each time we
+push a commit to GitHub.
 
 ## Inclusion of third-party software
 
@@ -85,6 +86,6 @@ A copy of the MIT license can be found in `/licenses/third-party/geerlingguy/`.
 
 ### Details of use
 
-`test.sh` is derived from the aforementioned script. We've simplified it by dropping support for all Linux distros
-except 'ubuntu1604'. We've also done some light refactoring and documentation additions. Finally, we've added
+`test_in_docker.sh` is derived from the aforementioned script. We've simplified it by dropping support for all Linux
+distros except 'ubuntu1604'. We've also done some light refactoring and documentation additions. Finally, we've added
 support for running a separate playbook that includes tests only.

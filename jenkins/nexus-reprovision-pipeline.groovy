@@ -26,7 +26,7 @@ pipeline {
                                         reference: '',
                                         trackingSubmodules: false]],
                           submoduleCfg: [],
-                          userRemoteConfigs: [[url: 'https://github.com/cwardgar/nexus-IaC.git']]
+                          userRemoteConfigs: [[url: 'https://github.com/Unidata/nexus-IaC.git']]
                 ])
             }
         }
@@ -84,7 +84,7 @@ pipeline {
             // See https://jenkins.io/doc/book/pipeline/syntax/#script
             script {
                 if (buildStateHasChanged == true) {
-                    mail to: "cwardgar@ucar.edu",
+                    mail to: "thredds-dev@unidata.ucar.edu",
                          subject: "Jenkins build is back to normal: ${currentBuild.fullDisplayName}",
                          body: "See <${currentBuild.absoluteUrl}>"
                 }
@@ -103,7 +103,7 @@ pipeline {
         }
         
         failure {
-            mail to: "cwardgar@ucar.edu",
+            mail to: "thredds-dev@unidata.ucar.edu",
                  subject: "Build failed in Jenkins: ${currentBuild.fullDisplayName}",
                  body: "See <${currentBuild.absoluteUrl}>"
         }

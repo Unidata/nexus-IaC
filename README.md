@@ -15,7 +15,7 @@ jenkins/nexus-reprovision-pipeline.groovy).
 This repository contains [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules), the sources for which
 will not be downloaded using the typical `git clone` command. Instead, you'll need to do something like:
 ```
-git clone --recursive https://github.com/cwardgar/nexus-IaC.git
+git clone --recursive https://github.com/Unidata/nexus-IaC.git
 ```
 
 However, that's not the only change you'll need to make to your typical Git workflow. Please read this

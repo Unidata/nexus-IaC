@@ -179,4 +179,4 @@ rest_api_endpoint: "{{ nexus_private_base_url }}/service/rest/v1/script"
 # The variables below are not actually defined in the role; they're new variables that logically belong with the rest.
 
 # This will be where alert emails are sent when something goes wrong with one of our Nexus scheduled tasks.
-nexus_admin_email: cwardgar@ucar.edu
+nexus_admin_email: thredds-dev@unidata.ucar.edu
