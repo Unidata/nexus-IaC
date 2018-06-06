@@ -11,8 +11,9 @@ For the most part, the project follows the alternative directory layout describe
 
 Sensitive data such as passwords and keys are stored in encrypted files using [Ansible Vault](
 http://docs.ansible.com/ansible/latest/playbooks_vault.html), rather than as plaintext in the playbooks.
-So, in order to run any of the playbooks, you'll need to have the Vault password (ask Christian for it).
-Then, run `ansible-playbook` with the `--ask-vault-pass` option.
+So, in order to run any of the playbooks, you'll need to have the Vault password, which can be found on the
+[Unidata Departmental Wiki](https://wiki.ucar.edu/display/unidata/Home) on the "nexus-IaC" page.
+With it, you can run `ansible-playbook` with the `--ask-vault-pass` option.
 
 ## Execute ad-hoc commands on Vagrant VM
 
