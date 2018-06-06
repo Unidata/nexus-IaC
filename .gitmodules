@@ -1,22 +1,22 @@
 [submodule "ansible/roles/ansible-debian-upgrade-reboot"]
 	path = ansible/roles/ansible-debian-upgrade-reboot
-	url = https://github.com/cwardgar/ansible-debian-upgrade-reboot.git
+	url = https://github.com/Unidata/ansible-debian-upgrade-reboot.git
 [submodule "ansible/roles/ansible-duply-backup"]
 	path = ansible/roles/ansible-duply-backup
-	url = https://github.com/cwardgar/ansible-duply-backup.git
+	url = https://github.com/Unidata/ansible-duply-backup.git
 [submodule "ansible/roles/ansible-nexus3-oss"]
 	path = ansible/roles/ansible-nexus3-oss
-	url = https://github.com/cwardgar/ansible-nexus3-oss.git
+	url = https://github.com/Unidata/ansible-nexus3-oss.git
 [submodule "ansible/roles/ansible-role-apache"]
 	path = ansible/roles/ansible-role-apache
-	url = https://github.com/cwardgar/ansible-role-apache.git
+	url = https://github.com/Unidata/ansible-role-apache.git
 [submodule "ansible/roles/ansible-role-ntp"]
 	path = ansible/roles/ansible-role-ntp
-	url = https://github.com/cwardgar/ansible-role-ntp.git
+	url = https://github.com/Unidata/ansible-role-ntp.git
 	branch = no-timezone-module
 [submodule "ansible/roles/github-git-lfs"]
 	path = ansible/roles/github-git-lfs
-	url = https://github.com/cwardgar/github-git-lfs.git
+	url = https://github.com/Unidata/github-git-lfs.git
 [submodule "ansible/roles/oracle-java"]
 	path = ansible/roles/oracle-java
-	url = https://github.com/cwardgar/oracle-java.git
+	url = https://github.com/Unidata/oracle-java.git
