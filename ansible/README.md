@@ -34,6 +34,7 @@ ansible nexus -i inventories/dev/hosts -v -m service -a 'name=nexus state=restar
 
 ```
 ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml
+ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --tags "security"
 ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --start-at-task="Include 'ansible-nexus3-oss' role."
 ```
 
