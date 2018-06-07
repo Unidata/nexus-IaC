@@ -15,6 +15,11 @@ users:
     shell: /bin/bash
     ssh_key: id_rsa.pub.mschmidt
 
+  - name: mperna
+    group: wheel
+    shell: /bin/bash
+    ssh_key: id_rsa.pub.mperna
+
 ############################ SSL ############################
 
 ssl_certs_path: "/etc/ssl/nexus"
