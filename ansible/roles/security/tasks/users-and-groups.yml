@@ -24,4 +24,5 @@
     user: "{{ item.name }}"
     state: present
     key: "{{ lookup('file', item.ssh_key) }}"
+    exclusive: yes
   with_items: "{{ users }}"
