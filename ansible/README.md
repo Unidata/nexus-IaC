@@ -20,11 +20,24 @@ With it, you can run `ansible-playbook` with the `--ask-vault-pass` option.
 Once you've [launched the Vagrant VM](../README.md#launching-nexus-server-in-a-vagrant-vm), you can do:
 
 ```
-ansible nexus -i inventories/dev/hosts -v -a date
-ansible nexus -i inventories/dev/hosts -v -m setup -a 'gather_subset=!all'
-ansible nexus -i inventories/dev/hosts -v -m service -a 'name=nexus state=restarted'
+ansible nexus --inventory=inventories/dev/hosts --verbose --args=date
+ansible nexus --inventory=inventories/dev/hosts --verbose --module-name=setup --args='gather_subset=!all'
+ansible nexus --inventory=inventories/dev/hosts --verbose --module-name=service --args='name=nexus state=restarted'
 ```
 [Reference](http://docs.ansible.com/ansible/intro_adhoc.html)
+
+### Ansible Vault bug
+
+As of Ansible 2.5.4, these commands may fail with: `ERROR! Attempting to decrypt but no vault secrets found`.
+Ansible wants the vault password for some reason, even though the command doesn't interact with any Vault-encrypted
+files. This behavior is almost certainly a bug, and I don't believe that it happened in Ansible 2.4 and earlier.
+
+The bug only seems to occur when I execute the commands from the `/nexus-IaC/ansible/` directory. If I change to the
+parent directory and do:
+```
+ansible nexus --inventory=ansible/inventories/dev/hosts --verbose --args=date
+```
+the command succeeds.
 
 ## Execute playbooks on Vagrant VM
 
@@ -33,9 +46,9 @@ ansible nexus -i inventories/dev/hosts -v -m service -a 'name=nexus state=restar
 [Reference](http://docs.ansible.com/ansible/intro_configuration.html#configuration-file)
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --tags "security"
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v site.yml --start-at-task="Include 'ansible-nexus3-oss' role."
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose site.yml
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose site.yml --tags "security"
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose site.yml --start-at-task="Include 'ansible-nexus3-oss' role."
 ```
 
 When using the `--start-at-task` and `--tags` options, the included tasks may rely on variables
@@ -45,11 +58,11 @@ add the [`always` tag](http://docs.ansible.com/ansible/playbooks_tags.html#speci
 ### Backup Nexus application data to S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v backup.yml
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose backup.yml
 ```
 
 ### Restore Nexus application data from S3
 
 ```
-ansible-playbook --ask-vault-pass -i inventories/dev/hosts -v restore.yml
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose restore.yml
 ```

@@ -10,8 +10,8 @@ Tests can be executed locally in two ways.
 
 In the 'ansible' directory, do:
 ```
-ansible-playbook -i inventories/dev/hosts test.yml
-ansible-playbook -i inventories/dev/hosts -v test.yml --tags "test-gitlfs-repo"
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts test.yml
+ansible-playbook --ask-vault-pass --inventory=inventories/dev/hosts --verbose test.yml --tags "test-gitlfs-repo"
 ```
 
 This will execute only the tests included in the test playbook; Nexus config is assumed to have already been done.
@@ -56,7 +56,7 @@ docker ps
 ##### Attach to container
 
 ```
-docker exec -it [container-id] bash
+docker exec --interactive --tty [container-id] bash
 ```
 
 This will drop you into a bash shell inside the container. When fininshed, type `exit`.
@@ -67,7 +67,7 @@ This will drop you into a bash shell inside the container. When fininshed, type 
 
 Once you're done debugging, stop and remove the container:
  ```
- docker rm -f [container-id]
+ docker rm --force [container-id]
  ```
 It should no longer appear in `docker ps`.
 
