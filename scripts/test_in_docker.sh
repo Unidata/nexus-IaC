@@ -55,8 +55,8 @@ init_opts='--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'
 init_exe='/lib/systemd/systemd'
 
 # Run the container using the supplied OS.
-printf ${purple}"Starting Docker container: Unidata/docker-ubuntu1604-systemd.\n\n"${neutral}
-docker pull Unidata/docker-ubuntu1604-systemd:latest
+printf ${purple}"Starting Docker container: unidata/docker-ubuntu1604-systemd.\n\n"${neutral}
+docker pull unidata/docker-ubuntu1604-systemd:latest
 
 # Below is a trick for documenting a long argument list. See https://unix.stackexchange.com/a/152554.
 # It turns out that embedding the comments within the list (along with continuation operators) doesn't work:
