@@ -19,3 +19,13 @@ users:
     group: wheel
     shell: /bin/bash
     ssh_key: id_rsa.pub.mperna
+
+############################ SSL ############################
+
+ssl_certs_path: "/etc/ssl/nexus"
+ssl_certs_owner: "root"
+ssl_certs_group: "root"
+ssl_certs_common_name: "{{ artifacts_hostname }}"
+ssl_cert_file: "{{ ssl_certs_path }}/{{ ssl_certs_common_name }}.crt"
+ssl_cert_key_file: "{{ ssl_certs_path }}/{{ ssl_certs_common_name }}.key"
+ssl_cert_chain_file: "{{ ssl_certs_path }}/DigiCertCA.crt"
