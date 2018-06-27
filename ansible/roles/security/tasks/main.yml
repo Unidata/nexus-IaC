@@ -4,6 +4,3 @@
 
 - import_tasks: ssh.yml
   tags: [ ssh ]
-
-- import_tasks: ssl.yml
-  tags: [ ssl ]
