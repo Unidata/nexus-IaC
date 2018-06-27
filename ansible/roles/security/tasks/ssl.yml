@@ -1,0 +1,32 @@
+---
+- name: Ensure SSL folder exists.
+  file:
+    path: "{{ ssl_certs_path }}"
+    state: directory
+    owner: "{{ ssl_certs_owner }}"
+    group: "{{ ssl_certs_group }}"
+    mode: 0700
+
+- name: Copy SSLCertificateFile.
+  copy:
+    src: "{{ ssl_certs_common_name }}.crt"
+    dest: "{{ ssl_cert_file }}"
+    owner: "{{ ssl_certs_owner }}"
+    group: "{{ ssl_certs_group }}"
+    mode: 0644
+
+- name: Copy SSLCertificateKeyFile.
+  copy:
+    src: "{{ ssl_certs_common_name }}.key"
+    dest: "{{ ssl_cert_key_file }}"
+    owner: "{{ ssl_certs_owner }}"
+    group: "{{ ssl_certs_group }}"
+    mode: 0400
+
+- name: Copy SSLCertificateChainFile.
+  copy:
+    src: "DigiCertCA.crt"
+    dest: "{{ ssl_cert_chain_file }}"
+    owner: "{{ ssl_certs_owner }}"
+    group: "{{ ssl_certs_group }}"
+    mode: 0644
